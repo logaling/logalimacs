@@ -30,6 +30,7 @@
     ))
 
 (defun loga-interactive-command ()
+  "interactive-command for logaling-command, types following mini-buffer."
   (interactive)
   (let* (task)
     (save-current-buffer
@@ -58,7 +59,7 @@
     ))
 
 (defun loga-prompt-command (cmd &optional arg help)
-  "yet can't be docstring"
+  "this function is wrapped program that pass to shell-command"
   (let* ((logabuff "*logalimacs*"))
     (save-current-buffer
       (save-selected-window
