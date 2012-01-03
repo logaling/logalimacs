@@ -1,4 +1,4 @@
-;;; this is wrapped program for logaling-command
+;;; This is front-end program for logaling-command
 ;;;
 ;;; Copyright (C) 2011  yuta yamada <yamada@clear-code.com>
 ;;;
@@ -15,30 +15,81 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-(defun loga-logaling-prompt-command (cmd arg &optional nobuffer)
-  "yet can't be docstring"
-  (interactive)
-  (shell-command (concat "\\loga " cmd " " arg) "*logalimacs*")
-  )
+(defvar loga-command-alist
+  '((?a . "add")
+    (?c . "config")
+    (?d . "delete")
+    (?h . "help")
+    (?i . "import")
+    (?l . "lookup")
+    (?n . "new")
+    (?r . "register")
+    (?U . "unregister")
+    (?u . "update")
+    (?v . "version")
+    ))
 
-(defun loga-search-word-in-hand-or-region ()
-  "search word from logaling. if not mark region, search word type on manual. otherwise passed character inside region."
+(defun loga-interactive-command ()
   (interactive)
-  (let* ((word (loga-point-or-read-string)))
+  (let* (task)
     (save-current-buffer
-      (loga-logaling-prompt-command "lookup" word)
-      )))
+    (read-event "types prefix of feature that want you :\n a)dd,c)onfig,d)elete,h)elp,i)mport,l)ookup,n)ew,r)egister,U)nregister,u)pdate,v)ersion")
+    (setq task (assoc-default last-input-event loga-command-alist))
+    (loga-prompt-command "help" task t)
+    (cond ((equal task "add") (loga-add-word))
+          ((equal task "lookup") (loga-lookup-in-hand-or-region))
+          ((equal task "config")
+           (loga-prompt-command task (read-string "loga config: "))
+           ((equal task "help")
+            (loga-prompt-command task (read-string "loga help: ")))
+           ((equal task "import")
+            (loga-prompt-command task (read-string "loga import: ")))
+           ((equal task "new")
+            (loga-prompt-command task (read-string "loga new: ")))
+           ((equal task "register")
+            (loga-prompt-command task (read-string "loga register: ")))
+           ((equal task "unregister")
+            (loga-prompt-command task (read-string "loga unregister: ")))
+           ((equal task "update")
+            (loga-prompt-command task (read-string "loga update: ")))
+           ((equal task "version")
+            (loga-prompt-command task)) ;;todo examine to avoided output
+           ))
+    )))
+
+(defun loga-prompt-command (cmd &optional arg help)
+  "yet can't be docstring"
+  (let* ((logabuff "*logalimacs*"))
+    (save-current-buffer
+      (save-selected-window
+        (with-current-buffer (get-buffer-create logabuff))
+        (pop-to-buffer (get-buffer logabuff))
+        (switch-to-buffer-other-window logabuff)
+        (if help
+            (shell-command (concat "\\loga " cmd " " arg) logabuff)
+          (shell-command (concat "\\loga " cmd " " arg " &") logabuff)
+          )
+        ))))
 
 (defun loga-add-word ()
-  "this is command to adding word, first origin word, second translated word."
+  "this is command to adding word, first source word, second target word."
   (interactive)
-  (let* (origin translated)
-    (setq origin (loga-point-or-read-string "here to adding word: ")
-          translated (loga-point-or-read-string "here to translated word: " t)
-          )
-    (loga-logaling-prompt-command "add" (concat origin " " translated))
+  (let*
+      ((source (loga-point-or-read-string "adding word here: "))
+       (target (read-string "translated word here: "))
+       (note (read-string "annotation here(optional): "))
+       )
+    (loga-prompt-command "add" (concat source " " target " " note))
     )
   )
+
+(defun loga-lookup-in-hand-or-region ()
+  "search word from logaling. if not mark region, search word type on manual. otherwise passed character inside region."
+  (interactive)
+  (let* ((word (loga-point-or-read-string "Search word here: ")))
+    (save-current-buffer
+      (loga-prompt-command "lookup" word)
+      )))
 
 (defun loga-point-or-read-string (&optional prompt no-region)
   "If mark is active, return the region, otherwise, read string with PROMPT."
@@ -46,6 +97,18 @@
    ((and mark-active (not no-region))
     (buffer-substring-no-properties (region-beginning) (region-end)))
    (t
-    (read-string (or prompt "Search word here: ")))))
+    (read-string (or prompt "types here: ")))))
+
+(defun loga-return-word-of-cursor()
+  "return word where point of cursor"
+  (let* (match-word)
+    (save-excursion
+      (if (looking-at "[\\w ]")
+          (backward-word)
+        )
+      (looking-at "\\w+")
+      (setq match-word (match-string 0))
+      match-word
+      )))
 
 (provide 'logalimacs)
