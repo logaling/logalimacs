@@ -15,6 +15,7 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+(defvar loga-fly-mode nil)
 (defvar loga-command-alist
   '((?a . "add")
     (?c . "config")
@@ -27,6 +28,7 @@
     (?U . "unregister")
     (?u . "update")
     (?v . "version")
+    (?f . "loga-fly-mode")
     ))
 
 (defun loga-interactive-command ()
@@ -34,9 +36,11 @@
   (interactive)
   (let* (task)
     (save-current-buffer
-    (read-event "types prefix of feature that want you :\n a)dd,c)onfig,d)elete,h)elp,i)mport,l)ookup,n)ew,r)egister,U)nregister,u)pdate,v)ersion")
+    (read-event "types prefix of feature that want you :\n a)dd,c)onfig,d)elete,h)elp,i)mport,l)ookup,n)ew,r)egister,U)nregister,u)pdate,v)ersion,f)ly-mode")
     (setq task (assoc-default last-input-event loga-command-alist))
-    (loga-prompt-command "help" task t)
+    (unless (equal task "loga-fly-mode")
+      (loga-prompt-command "help" task t)
+      )
     (cond ((equal task "add") (loga-add-word))
           ((equal task "lookup") (loga-lookup-in-hand-or-region))
           ((equal task "config")
@@ -55,6 +59,8 @@
            (loga-prompt-command task (read-string "loga update: ")))
           ((equal task "version")
            (loga-prompt-command task))
+          ((equal task "loga-fly-mode")
+           (loga-fly-mode))
           ))
     ))
 
@@ -84,10 +90,12 @@
     )
   )
 
-(defun loga-lookup-in-hand-or-region ()
+(defun loga-lookup-in-hand-or-region (&optional word-for-fly-mode)
   "search word from logaling. if not mark region, search word type on manual. otherwise passed character inside region."
   (interactive)
-  (let* ((word (loga-point-or-read-string "Search word here: ")))
+  (let* (word)
+    (setq word (or word-for-fly-mode
+                   (loga-point-or-read-string "Search word here: ")))
     (save-current-buffer
       (loga-prompt-command "lookup" word)
       )))
@@ -102,14 +110,45 @@
 
 (defun loga-return-word-of-cursor()
   "return word where point of cursor"
+  (interactive)
   (let* (match-word)
     (save-excursion
-      (if (looking-at "[\\w ]")
-          (backward-word)
+      (backward-char)
+      (if (looking-at "[ \t\-]")
+          (looking-at "\\w+")
+        (forward-char)
+        (backward-word)
+        (looking-at "\\w+")
         )
-      (looking-at "\\w+")
       (setq match-word (match-string 0))
       match-word
       )))
+
+(defun loga-fly-mode-on()
+  (setq loga-fly-timer
+        (run-with-idle-timer 1 t
+            (lambda()
+             (let* ((fly-word (loga-return-word-of-cursor)))
+               (if fly-word
+                   (loga-lookup-in-hand-or-region fly-word)
+                 )
+               ))))
+  (setq loga-fly-mode t)
+  (message "loga fly mode enable")
+  )
+
+(defun loga-fly-mode-off()
+  (cancel-timer loga-fly-timer)
+  (setq loga-fly-mode nil)
+  (message "loga fly mode disable")
+  )
+
+(defun loga-fly-mode ()
+  (interactive)
+  (if (symbol-value 'loga-fly-mode)
+      (loga-fly-mode-off)
+    (loga-fly-mode-on)
+    )
+  )
 
 (provide 'logalimacs)
