@@ -66,16 +66,20 @@
 
 (defun loga-prompt-command (cmd &optional arg help)
   "this function is wrapped program that pass to shell-command"
-  (let* ((logabuff "*logalimacs*"))
+  (let* ((logabuff "*logalimacs*") result 
+         (to-shell '(lambda()
+                      (shell-command-to-string
+                       (concat "\\loga " cmd " " arg (unless help " &")))))
+         )
     (save-current-buffer
       (save-selected-window
         (with-current-buffer (get-buffer-create logabuff))
         (pop-to-buffer (get-buffer logabuff))
         (switch-to-buffer-other-window logabuff)
-        (if help
-            (shell-command (concat "\\loga " cmd " " arg) logabuff)
-          (shell-command (concat "\\loga " cmd " " arg " &") logabuff)
-          )
+        (erase-buffer) ;;initialize
+        (setq result (funcall to-shell))
+        (insert result)
+        (beginning-of-buffer)
         ))))
 
 (defun loga-add-word ()
@@ -137,7 +141,7 @@
   (setq loga-fly-timer
         (run-with-idle-timer 1 t
             (lambda()
-             (let* ((fly-word (loga-return-word-of-cursor)))
+             (let* ((fly-word (loga-return-word-on-cursor)))
                (if fly-word
                    (loga-lookup-in-hand-or-region fly-word)
                  )
