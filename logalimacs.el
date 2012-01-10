@@ -108,8 +108,8 @@
    (t
     (read-string (or prompt "types here: ")))))
 
-(defun loga-return-word-of-cursor()
-  "return word where point of cursor"
+(defun loga-return-word-on-cursor()
+  "return word where point on cursor"
   (interactive)
   (let* (match-word)
     (save-excursion
@@ -124,6 +124,15 @@
       match-word
       )))
 
+(defun loga-fly-mode ()
+  "toggle loga-fly-mode-on and loga-fly-mode-off"
+  (interactive)
+  (if (symbol-value 'loga-fly-mode)
+      (loga-fly-mode-off)
+    (loga-fly-mode-on)
+    )
+  )
+
 (defun loga-fly-mode-on()
   (setq loga-fly-timer
         (run-with-idle-timer 1 t
@@ -134,21 +143,13 @@
                  )
                ))))
   (setq loga-fly-mode t)
-  (message "loga fly mode enable")
+  (message "loga-fly-mode enable")
   )
 
 (defun loga-fly-mode-off()
   (cancel-timer loga-fly-timer)
   (setq loga-fly-mode nil)
-  (message "loga fly mode disable")
-  )
-
-(defun loga-fly-mode ()
-  (interactive)
-  (if (symbol-value 'loga-fly-mode)
-      (loga-fly-mode-off)
-    (loga-fly-mode-on)
-    )
+  (message "loga-fly-mode disable")
   )
 
 (provide 'logalimacs)
