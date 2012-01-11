@@ -16,6 +16,7 @@
 ;;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 (defvar loga-fly-mode nil)
+(defvar loga-make-buffer "*logalimacs*")
 (defvar loga-command-alist
   '((?a . "add")
     (?c . "config")
@@ -62,21 +63,22 @@
 
 (defun loga-prompt-command (cmd &optional arg help)
   "this function is wrapped program that pass to shell-command"
-  (let* ((logabuff "*logalimacs*") result 
-         (to-shell '(lambda()
+  (let* ((to-shell '(lambda ()
                       (shell-command-to-string
                        (concat "\\loga " cmd " " arg (unless help " &"))))))
+    (loga-make-buffer (funcall to-shell))))
+
+(defun loga-make-buffer(content)
+  "create buffer for logalimacs"
+  (let* ((buff (symbol-value 'loga-make-buffer)))
     (save-current-buffer
       (save-selected-window
-        (with-current-buffer (get-buffer-create logabuff))
-        (pop-to-buffer (get-buffer logabuff))
-        (switch-to-buffer-other-window logabuff)
-        (erase-buffer) ;;initialize
-        (setq result (funcall to-shell))
-        (insert result)
-        (beginning-of-buffer)
-        ))))
-
+        (with-current-buffer
+            (switch-to-buffer-other-window (get-buffer-create buff))
+          (erase-buffer) ;;initialize
+          (insert content)
+          (beginning-of-buffer))))))
+        
 (defun loga-add-word ()
   "this is command to adding word, first source word, second target word."
   (interactive)
