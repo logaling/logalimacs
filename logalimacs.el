@@ -85,8 +85,10 @@
   (let*
       ((source (loga-point-or-read-string "adding word here: "))
        (target (read-string "translated word here: "))
-       (note (read-string "annotation here(optional): ")))
-    (loga-prompt-command "add" (concat source " " target " " note))))
+       (note (read-string "annotation here(optional): "))
+       (sep "\" \""))
+    (loga-prompt-command "add"
+                         (concat "\"" source sep target sep note "\""))))
 
 (defun loga-lookup-in-hand-or-region (&optional word-for-fly-mode)
   "search word from logaling. if not mark region, search word type on manual. otherwise passed character inside region."
