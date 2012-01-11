@@ -28,8 +28,7 @@
     (?U . "unregister")
     (?u . "update")
     (?v . "version")
-    (?f . "loga-fly-mode")
-    ))
+    (?f . "loga-fly-mode")))
 
 (defun loga-interactive-command ()
   "interactive-command for logaling-command, types following mini-buffer."
@@ -39,8 +38,7 @@
     (read-event "types prefix of feature that want you :\n a)dd,c)onfig,d)elete,h)elp,i)mport,l)ookup,n)ew,r)egister,U)nregister,u)pdate,v)ersion,f)ly-mode")
     (setq task (assoc-default last-input-event loga-command-alist))
     (unless (equal task "loga-fly-mode")
-      (loga-prompt-command "help" task t)
-      )
+      (loga-prompt-command "help" task t))
     (cond ((equal task "add") (loga-add-word))
           ((equal task "lookup") (loga-lookup-in-hand-or-region))
           ((equal task "config")
@@ -60,17 +58,14 @@
           ((equal task "version")
            (loga-prompt-command task))
           ((equal task "loga-fly-mode")
-           (loga-fly-mode))
-          ))
-    ))
+           (loga-fly-mode))))))
 
 (defun loga-prompt-command (cmd &optional arg help)
   "this function is wrapped program that pass to shell-command"
   (let* ((logabuff "*logalimacs*") result 
          (to-shell '(lambda()
                       (shell-command-to-string
-                       (concat "\\loga " cmd " " arg (unless help " &")))))
-         )
+                       (concat "\\loga " cmd " " arg (unless help " &"))))))
     (save-current-buffer
       (save-selected-window
         (with-current-buffer (get-buffer-create logabuff))
@@ -88,11 +83,8 @@
   (let*
       ((source (loga-point-or-read-string "adding word here: "))
        (target (read-string "translated word here: "))
-       (note (read-string "annotation here(optional): "))
-       )
-    (loga-prompt-command "add" (concat source " " target " " note))
-    )
-  )
+       (note (read-string "annotation here(optional): ")))
+    (loga-prompt-command "add" (concat source " " target " " note))))
 
 (defun loga-lookup-in-hand-or-region (&optional word-for-fly-mode)
   "search word from logaling. if not mark region, search word type on manual. otherwise passed character inside region."
@@ -101,8 +93,7 @@
     (setq word (or word-for-fly-mode
                    (loga-point-or-read-string "Search word here: ")))
     (save-current-buffer
-      (loga-prompt-command "lookup" word)
-      )))
+      (loga-prompt-command "lookup" word))))
 
 (defun loga-point-or-read-string (&optional prompt no-region)
   "If mark is active, return the region, otherwise, read string with PROMPT."
@@ -112,7 +103,7 @@
    (t
     (read-string (or prompt "types here: ")))))
 
-(defun loga-return-word-on-cursor()
+(defun loga-return-word-on-cursor ()
   "return word where point on cursor"
   (interactive)
   (let* (match-word)
@@ -122,38 +113,30 @@
           (looking-at "\\w+")
         (forward-char)
         (backward-word)
-        (looking-at "\\w+")
-        )
+        (looking-at "\\w+"))
       (setq match-word (match-string 0))
-      match-word
-      )))
+      match-word)))
 
 (defun loga-fly-mode ()
   "toggle loga-fly-mode-on and loga-fly-mode-off"
   (interactive)
   (if (symbol-value 'loga-fly-mode)
       (loga-fly-mode-off)
-    (loga-fly-mode-on)
-    )
-  )
+    (loga-fly-mode-on)))
 
-(defun loga-fly-mode-on()
-  (setq loga-fly-timer
+(defun loga-fly-mode-on ()
+  (setq loga-fly-mode t
+        loga-fly-timer
         (run-with-idle-timer 1 t
             (lambda()
              (let* ((fly-word (loga-return-word-on-cursor)))
                (if fly-word
-                   (loga-lookup-in-hand-or-region fly-word)
-                 )
-               ))))
-  (setq loga-fly-mode t)
-  (message "loga-fly-mode enable")
-  )
+                   (loga-lookup-in-hand-or-region fly-word))))))
+  (message "loga-fly-mode enable"))
 
-(defun loga-fly-mode-off()
+(defun loga-fly-mode-off ()
   (cancel-timer loga-fly-timer)
   (setq loga-fly-mode nil)
-  (message "loga-fly-mode disable")
-  )
+  (message "loga-fly-mode disable"))
 
 (provide 'logalimacs)
