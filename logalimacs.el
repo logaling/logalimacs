@@ -56,12 +56,9 @@
            (loga-prompt-command task (read-string "loga register: ")))
           ((equal task "unregister")
            (loga-prompt-command task (read-string "loga unregister: ")))
-          ((equal task "update")
-           (loga-prompt-command task (read-string "loga update: ")))
-          ((equal task "version")
-           (loga-prompt-command task))
-          ((equal task "loga-fly-mode")
-           (loga-fly-mode))))))
+          ((equal task "update") (loga-update))
+          ((equal task "version") (loga-prompt-command task))
+          ((equal task "loga-fly-mode") (loga-fly-mode))))))
 
 (defun loga-prompt-command (cmd &optional arg help)
   "this function is wrapped program that pass to shell-command"
@@ -91,6 +88,17 @@
        (sep "\" \""))
     (loga-prompt-command "add"
                          (concat "\"" source sep target sep note "\""))))
+
+(defun loga-update ()
+  "update to registered word"
+  (let*
+      ((src (loga-point-or-read-string "source word here: "))
+       (old (read-string "old target here: "))
+       (new (read-string "new target here: "))
+       (note (read-string "annotation here(optional): "))
+       (sep "\" \""))
+    (loga-prompt-command "update"
+                         (concat "\"" src sep old sep new sep note "\""))))
 
 (defun loga-lookup-in-hand-or-region (&optional word-for-fly-mode)
   "search word from logaling. if not mark region, search word type on manual. otherwise passed character inside region."
