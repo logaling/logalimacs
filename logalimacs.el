@@ -103,9 +103,8 @@
 (defun loga-lookup-in-hand-or-region (&optional word-for-fly-mode)
   "search word from logaling. if not mark region, search word type on manual. otherwise passed character inside region."
   (interactive)
-  (let* (word)
-    (setq word (or word-for-fly-mode
-                   (loga-point-or-read-string "Search word here: ")))
+  (let* ((word (or word-for-fly-mode
+                   (loga-point-or-read-string "Search word here: "))))
     (save-current-buffer
       (loga-prompt-command "lookup" word))))
 
