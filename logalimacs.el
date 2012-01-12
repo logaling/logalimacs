@@ -44,6 +44,8 @@
           ((equal task "lookup") (loga-lookup-in-hand-or-region))
           ((equal task "config")
            (loga-prompt-command task (read-string "loga config: ")))
+          ((equal task "delete")
+           (loga-prompt-command task (read-string "loga delete: ")))
           ((equal task "help")
             (loga-prompt-command task (read-string "loga help: ")))
           ((equal task "import")
