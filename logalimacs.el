@@ -60,11 +60,13 @@
           ((equal task "version") (loga-prompt-command task))
           ((equal task "loga-fly-mode") (loga-fly-mode))))))
 
-(defun loga-prompt-command (cmd &optional arg help)
+(defun loga-prompt-command (task &optional arg help ext)
   "this function is wrapped program that pass to shell-command"
   (let* ((to-shell '(lambda ()
                       (shell-command-to-string
-                       (concat "\\loga " cmd " " arg (unless help " &"))))))
+                       (if ext
+                           (concat task " " arg " &")
+                         (concat "\\loga " task " " arg (unless help " &")))))))
     (loga-make-buffer (funcall to-shell))))
 
 (defun loga-make-buffer(content)
