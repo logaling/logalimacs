@@ -2,8 +2,13 @@
   logalimacs is front-end program  of lagaling-command for Ruby gem.
  
 * Usage
-1. Put logalimacs where to pass load-path
-2. Sets as below to your .emacs for setting
+1. Put logalimacs where to pass load-path.
+2. Sets as below to your .emacs for setting.
+3. let's type M-x loga-intarective-command or your set key.
+4. if you like type "f" after the intarective-command,
+   allow to executable "loga lookup" at on the fly.
+   (word to point of current cursor where execute the lookup)
+5. retype like same "4.~" section, you can avoid above used loga-fly-mode.
 
 ;;Example
 (when (require 'logalimacs nil t)
