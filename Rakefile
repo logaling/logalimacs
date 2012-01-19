@@ -39,7 +39,7 @@ end
 desc "Sets constant"
 task :init => "Rakefile" do
   dependencies = "'("
-  DEPENDENCIES.each {|pkg, version| dependencies << "(#{pkg} \"#{version}\")"}
+  DEPENDENCIES.each {|pkg, version| dependencies << %Q{(#{pkg} "#{version}")}}
   dependencies << ")"
   MARMALADE_PACKAGE_NAME = "#{PACKAGE_NAME}-#{PACKAGE_VERSION}"
   PKG_EL = "#{PACKAGE_NAME}-pkg.el"
