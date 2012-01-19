@@ -1,0 +1,11 @@
+!.gitignore
+
+# byte compile file
+*.elc
+
+# yard output
+/doc
+
+# pacakge for marmalade
+/logalimacs-*
+*.tar
