@@ -10,16 +10,10 @@ REQUIREMENTS = ["logalimacs.el", "logalimacs-config.el",
                 "logalimacs-rurema.el"]
 DESCRIPTION = "Front-end of logaling-command for ruby gem"
 
-# Require list structure for Emacs lisp
-# @todo refactor to support against multiple list
-DEPENDENCIES = '\'((popwin "0.4"))'
-
-# Decided at automatic
-PKG_EL = "#{PACKAGE_NAME}-pkg.el"
-PKG_EL_CONTENT = <<-ELISP
-(define-package "#{PACKAGE_NAME}" "#{PACKAGE_VERSION}" "#{DESCRIPTION}" #{DEPENDENCIES})
-ELISP
-MARMALADE_PACKAGE_NAME = "#{PACKAGE_NAME}-#{PACKAGE_VERSION}"
+# Depending on other package
+# @example specify as bellow:
+#   [["package1", "version1"], ["package2", "virsion2"], ...]
+DEPENDENCIES = [["popwin", "0.4"]]
 
 #--rakefile--
 task :default => :package
@@ -30,8 +24,9 @@ task :package => :bundle do
 end
 
 desc "Bundle #{PACKAGE_NAME}"
-task :bundle => "Rakefile" do
+task :bundle => :init do
   rm_rf(MARMALADE_PACKAGE_NAME)
+  rm_rf("#{MARMALADE_PACKAGE_NAME}.tar")
   mkdir(MARMALADE_PACKAGE_NAME)
   REQUIREMENTS.each do |file|
     cp(file, MARMALADE_PACKAGE_NAME)
@@ -39,4 +34,16 @@ task :bundle => "Rakefile" do
   open("#{MARMALADE_PACKAGE_NAME}/#{PKG_EL}", "w") do |content|
     content.print(PKG_EL_CONTENT)
   end
+end
+
+desc "Sets constant"
+task :init => "Rakefile" do
+  dependencies = "'("
+  DEPENDENCIES.each {|pkg, version| dependencies << "(#{pkg} \"#{version}\")"}
+  dependencies << ")"
+  MARMALADE_PACKAGE_NAME = "#{PACKAGE_NAME}-#{PACKAGE_VERSION}"
+  PKG_EL = "#{PACKAGE_NAME}-pkg.el"
+  PKG_EL_CONTENT = <<-ELISP
+(define-package "#{PACKAGE_NAME}" "#{PACKAGE_VERSION}" "#{DESCRIPTION}" #{dependencies})
+ELISP
 end
