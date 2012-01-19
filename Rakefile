@@ -1,48 +1,42 @@
-# -*- coding: utf-8 -*-
+# -*- mode: ruby; coding: utf-8 -*-
 
-# this program is Rakefile for marmalade(Repository site for Emacs lisp). 
-# you can possible to create package-directory for marmalade
+# This program is Rakefile for marmalade(Repository site for Emacs lisp). 
+# You can possible to create package-directory for marmalade.
 
 # Input your configuration
 PACKAGE_NAME = "logalimacs"
-VERSION = "0.0.2"
+PACKAGE_VERSION = "0.0.2"
 REQUIREMENTS = ["logalimacs.el", "logalimacs-config.el",
                 "logalimacs-rurema.el"]
 DESCRIPTION = "Front-end of logaling-command for ruby gem"
 
-# require list structure for Emacs lisp
+# Require list structure for Emacs lisp
 # @todo refactor to support against multiple list
-DEPENDING_ON = '\'((popwin "0.4"))'
-
+DEPENDENCIES = '\'((popwin "0.4"))'
 
 # Decided at automatic
-NAME_OF_PKG_EL = PACKAGE_NAME.to_s + "-pkg.el"
-CONTENT_OF_PKG_EL = "(define-package \"#{PACKAGE_NAME}\" \"#{VERSION}\"
-\"#{DESCRIPTION}\" #{DEPENDING_ON})"
-MARMALADE_PKG_NAME = PACKAGE_NAME + "-" + VERSION
+PKG_EL = "#{PACKAGE_NAME}-pkg.el"
+PKG_EL_CONTENT = <<-ELISP
+(define-package "#{PACKAGE_NAME}" "#{PACKAGE_VERSION}" "#{DESCRIPTION}" #{DEPENDENCIES})
+ELISP
+MARMALADE_PACKAGE_NAME = "#{PACKAGE_NAME}-#{PACKAGE_VERSION}"
 
 #--rakefile--
-task :default => :packaging_for_marmalade
+task :default => :package
 
-task :packaging_for_marmalade => :create_tar do
+desc "Package #{PACKAGE_NAME}"
+task :package => :bundle do
+  sh("tar", "cvf", "#{MARMALADE_PACKAGE_NAME}.tar", MARMALADE_PACKAGE_NAME)
 end
 
-task :make_pkg_el do
-  `rm -fr #{file_name = NAME_OF_PKG_EL}`
-  open(NAME_OF_PKG_EL, "w") do |content|
-    content.print(CONTENT_OF_PKG_EL)
-  end
-end
-
-task :file_handler => :make_pkg_el do
-  `rm -fr #{MARMALADE_PKG_NAME}`
-  `mkdir #{MARMALADE_PKG_NAME}`
+desc "Bundle #{PACKAGE_NAME}"
+task :bundle => "Rakefile" do
+  rm_rf(MARMALADE_PACKAGE_NAME)
+  mkdir(MARMALADE_PACKAGE_NAME)
   REQUIREMENTS.each do |file|
-    `cp #{file} #{MARMALADE_PKG_NAME}`
+    cp(file, MARMALADE_PACKAGE_NAME)
   end
-  `cp #{NAME_OF_PKG_EL} #{MARMALADE_PKG_NAME}`
-end
-
-task :create_tar => :file_handler do
-  `tar cvf #{MARMALADE_PKG_NAME}.tar #{MARMALADE_PKG_NAME}`
+  open("#{MARMALADE_PACKAGE_NAME}/#{PKG_EL}", "w") do |content|
+    content.print(PKG_EL_CONTENT)
+  end
 end
