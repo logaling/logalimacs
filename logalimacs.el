@@ -15,6 +15,8 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+
+
 (defvar loga-fly-mode nil)
 (defvar loga-make-buffer "*logalimacs*")
 (defvar loga-command-alist
@@ -31,6 +33,7 @@
     (?v . "version")
     (?f . "loga-fly-mode")))
 
+;;;###autoload 
 (defun loga-interactive-command ()
   "interactive-command for logaling-command, types following mini-buffer."
   (interactive)
@@ -79,7 +82,8 @@
           (erase-buffer) ;;initialize
           (insert content)
           (beginning-of-buffer))))))
-        
+
+;;;###autoload
 (defun loga-add-word ()
   "this is command to adding word, first source word, second target word."
   (interactive)
@@ -91,8 +95,10 @@
     (loga-prompt-command "add"
                          (concat "\"" source sep target sep note "\""))))
 
+;;;###autoload
 (defun loga-update ()
   "update to registered word"
+  (interactive)
   (let*
       ((src (loga-point-or-read-string "source word here: "))
        (old (read-string "old target here: "))
@@ -102,6 +108,7 @@
     (loga-prompt-command "update"
                          (concat "\"" src sep old sep new sep note "\""))))
 
+;;;###autoload
 (defun loga-lookup-in-hand-or-region (&optional word-for-fly-mode)
   "search word from logaling. if not mark region, search word type on manual. otherwise passed character inside region."
   (interactive)
@@ -120,7 +127,6 @@
 
 (defun loga-return-word-on-cursor ()
   "return word where point on cursor"
-  (interactive)
   (let* (match-word)
     (save-excursion
       (backward-char)
@@ -132,6 +138,7 @@
       (setq match-word (match-string 0))
       match-word)))
 
+;;;###autoload
 (defun loga-fly-mode ()
   "toggle loga-fly-mode-on and loga-fly-mode-off"
   (interactive)
