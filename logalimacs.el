@@ -15,7 +15,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+;;;keybins
+;;;###autoload (global-set-key (kbd "M-g M-u") 'loga-lookup-in-hand-or-region)
+;;;###autoload (global-set-key (kbd "M-g M-a") 'loga-add-word)
+;;;###autoload (global-set-key (kbd "M-g M-i") 'loga-interactive-command)
 
+;;;convenience configuration for popwin
+;;;###autoload (when (require 'popwin nil t) (defvar display-buffer-function 'popwin:display-buffer) (defvar popwin:special-display-config (append '(("*logalimacs*" :position top :height 10 :noselect t :stick t))) popwin:special-display-config))
 
 (defvar loga-fly-mode nil)
 (defvar loga-make-buffer "*logalimacs*")
@@ -33,7 +39,7 @@
     (?v . "version")
     (?f . "loga-fly-mode")))
 
-;;;###autoload 
+;;;###autoload
 (defun loga-interactive-command ()
   "interactive-command for logaling-command, types following mini-buffer."
   (interactive)
@@ -94,7 +100,6 @@
        (sep "\" \""))
     (loga-prompt-command "add"
                          (concat "\"" source sep target sep note "\""))))
-
 ;;;###autoload
 (defun loga-update ()
   "update to registered word"
