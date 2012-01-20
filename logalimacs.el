@@ -36,6 +36,9 @@
 
 (defvar loga-fly-mode nil)
 (defvar loga-make-buffer "*logalimacs*")
+(defvar loga-fly-mode-interval 1
+  "timer-valiable for loga-fly-mode, credit par sec.")
+
 (defvar loga-command-alist
   '((?a . "add")
     (?c . "config")
@@ -165,7 +168,7 @@
 (defun loga-fly-mode-on ()
   (setq loga-fly-mode t
         loga-fly-timer
-        (run-with-idle-timer 1 t
+        (run-with-idle-timer (symbol-value 'loga-fly-mode-interval) t
             (lambda()
              (let* ((fly-word (loga-return-word-on-cursor)))
                (if fly-word
