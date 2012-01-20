@@ -28,19 +28,12 @@
 コマンド実行後、source(元の単語)、target(翻訳後の単語)、注釈を
 個別に聞いてきます。  
 
-@todo オプションに対する変更を確認する
-指定したい場合は、入力の最後でオプションを指定できます。
-
 ## loga-update
 ターミナルからの "% loga update source target(old) target(new) note"をラップするコマンドです。  
 ターミナル上では、英語で複数の単語をスペース区切りで登録するのに、  
 クオートする必要がありますがlogalimacsでこのコマンドを利用する場合は、  
 必要ありません。
 コマンド実行後、source(元の単語)、target(変更前の単語)、target(変更後の単語)、注釈を個別に聞いてきます。  
-
-
-@todo オプションに対する変更を確認する
-指定したい場合は、入力の最後でオプションを指定できます。
 
 ## loga-lookup-in-hand-or-region
 ターミナルからの "% loga lookup target"をラップするコマンドです。
@@ -54,3 +47,6 @@ logalimacs独自の機能で、カーソル位置にある単語を"loga lookup"
 この機能は、通常はoffで_loga-interactive-command_から実行するか、
 _M-x loga-fly-mode_又は、任意のキーバインドで実行する事で、
 onとoffをトグルできます。
+
+## loga-get-flymake-error
+flymakeでのエラーをlogalimacsバッファに出力します。

@@ -1,17 +1,27 @@
-# logalimacsのインストール方法
+# logalimacsのインストール方法,設定
 ## Emacs24でのインストール方法
 
 Emacs24では標準でパッケージインストーラ(package.el)が入っているので、
-以下の様にする事で、インストール可能です。
+以下の様にする事で、インストール可能です。  
+marmaladeの設定をしていない場合(Emacs24用):
+以下の設定を.emacs等の設定ファイルに書く事でmarmaladeからElispをインストールできるようになります。既に設定している方は飛ばして"1."を見て下さい。
+
+    (require 'package)
+    (add-to-list 'package-archives
+        '("marmalade" . "http://marmalade-repo.org/packages/"))
+    ;;パッケージインストールするディレクトリを指定(任意)
+    ;;(setq package-user-dir "~/.emacs.d/elpa")
+    ;;インストールしたパッケージにロードパスを通してロードする
+    (package-initialize)
+
 
 1. "M-x list-packages"とタイプする。
 2. インストール可能なパッケージが表示されるので、
 その中から、logalimacsを探します。
-3. logalimacsのパッケージ名の上で(パッケージ名はハイライトされています)、
-RETしインストール用のバッファが開くので、そこのinstallという色の違うボタンに
-カーソルを合わせ、RETします。
-4. 自動でインストールされるので、.emacsへの設定の項へ進んで下さい。
-
+3. logalimacsのパッケージ名の先頭行で"i"をタイプするとマークできます。
+他にインストールするものがなければ、"x"でインストールを開始します。
+4. 必要な設定は、自動で設定されますが、自分でカスタマイズしたい場合、  
+.emacsへの設定の項を変更する事で自分好みにカスタマイズする時の参考になると思います。
 
 ## それ以外の場合のインストール方法
 
@@ -34,26 +44,41 @@ Emacs24以外の方はgitが使用可能であれば、下記のコマンドで�
 注意1:もしエラーが出るのであれば、閉じ括弧後ろでC-x C-e(又は、M-x eval last sexp)をタイプする事で、その行を評価でき、行単位でのチェックできます。  
 注意2:キーバインド(kbd "ここの部分")は、あなたが使いやすい所に設定して下さい。
 
+
+
 ---
 
-    ;;the second section example
+    ;;; loga-fly-mode用の秒単位の設定
+    ;; "0.5"なども設定可能です。
+    (setq loga-fly-mode-interval "1")
+
+---
+
+    ;;; keybinds
+    ;; Emacs起動時から動作させる場合
     (when (require 'logalimacs nil t)
       (global-set-key (kbd "M-g M-i") 'loga-interactive-command)
       (global-set-key (kbd "M-g M-l") 'loga-lookup-in-hand-or-region)
       (global-set-key (kbd "M-g M-a") 'loga-add-word))
 
-    ;;or, use only interactive-command
-    (autoload 'loga-interactive-command "logalimacs"
-      "front-end for logaling-command")
-    (global-set-key (kbd "M-g M-i") 'loga-interactive-command)
+    ;;又は
 
+    ;; コマンド実行時に読み込み
+    (autoload 'loga-interactive-command "logalimacs")
+    (autoload 'loga-lookup-in-hand-or-region "logalimacs")
+    (autoload 'loga-add-word "logalimacs")
+    (global-set-key (kbd "M-g M-i") 'loga-interactive-command)
+    (global-set-key (kbd "M-g M-l") 'loga-lookup-in-hand-or-region)
+    (global-set-key (kbd "M-g M-a") 'loga-loga-add-word)
+
+    
 ---
 
 ## popwin.el用の便利な設定
 
-
-
-注意:この設定を利用する為には、[_popwin.el_](http://www.emacswiki.org/emacs/PopWin)が必要です。
+注意:この設定を利用する為には、
+[_popwin.el_](http://www.emacswiki.org/emacs/PopWin)が必要です。
+Emacs24経由でlogalimacsをインストールした場合は、自動で設定されます。
 
     (require 'popwin)
     (setq display-buffer-function 'popwin:display-buffer)
@@ -65,15 +90,12 @@ Emacs24以外の方はgitが使用可能であれば、下記のコマンドで�
                 )
               popwin:special-display-config))
 
-    (setq popwin:popup-window-height 15   ;default 15. if left or right, ignored
-          popwin:popup-window-width 30    ;default 30. if top or bottom, ignored
-          )
-
 ## 雑多な設定
 logalimacsを設定する上でのEmacs初心者が躓きそうな所を、フォローするような事を書こうと思います。  
 (初心者に毛が生えた程度の拙い説明かもしれませんが、ご容赦願います。)  
 
-* .emacsって:  
+---             
+.emacs:  
 emacs用の設定ファイルで、通常は、~/.emacs.d/init.el又は、  
 ~/.emacs(昔はこれでしたが今は.emacs.d/init.elに書くのがナウイようです)になります
 もし、設定ファイルを分割したいと思ったら、init.elに下の様に書きます。
@@ -85,7 +107,10 @@ emacs用の設定ファイルで、通常は、~/.emacs.d/init.el又は、
 この二つ目の例は、~/.emacs.d/以下のlogalimacs_config.el又は、logalimacs.elc
 を読むようにしています。
 
-* ロードパスを追加するには:  
+---
+ロードパスを追加するには:  
 add-to-list関数を使います。
 以下をあなたの.emacsに設定します。
-(add-to-list 'load-path pkg-dir)
+
+    ;;"~/.emacs.d/package/hoge/以下にパスを通す場合
+    (add-to-list 'load-path "~/.emacs.d/package/hoge")
