@@ -1,26 +1,37 @@
-;;; This is front-end program for logaling-command
-;;;
-;;; Copyright (C) 2011  yuta yamada <yamada@clear-code.com>
-;;;
-;;; This program is free software: you can redistribute it and/or modify
-;;; it under the terms of the GNU General Public License as published by
-;;; the Free Software Foundation, either version 3 of the License, or
-;;; (at your option) any later version.
-;;;
-;;; This program is distributed in the hope that it will be useful,
-;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;;; GNU General Public License for more details.
-;;;
-;;; You should have received a copy of the GNU General Public License
-;;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+;;; logalimacs.el --- Front-end to logaling-command for Ruby gems
 
-;;;keybins
+;; Copyright (C) 2011, 2012 by Yuta Yamada
+
+;; Author: Yuta Yamada <yamada@clear-code.com>
+;; URL: https://github.com/logaling/logalimacs
+;; Version: 0.0.2
+
+;;; Licence:
+;; This program is free software: you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+;;
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Commentary:
+
+;; This is Front-end to logaling-command for Ruby gems.
+;; Logalimacs.el lookup to registered term at logaling-command and,
+;; Executes other commands for logaling-command from emacs.
+
+;;; keybins:
 ;;;###autoload (global-set-key (kbd "M-g M-u") 'loga-lookup-in-hand-or-region)
 ;;;###autoload (global-set-key (kbd "M-g M-a") 'loga-add-word)
 ;;;###autoload (global-set-key (kbd "M-g M-i") 'loga-interactive-command)
 
-;;;convenience configuration for popwin
+;;; convenience configuration for popwin:
 ;;;###autoload (when (require 'popwin nil t) (defvar display-buffer-function 'popwin:display-buffer) (defvar popwin:special-display-config (append '(("*logalimacs*" :position top :height 10 :noselect t :stick t))) popwin:special-display-config))
 
 (defvar loga-fly-mode nil)
@@ -167,3 +178,4 @@
   (message "loga-fly-mode disable"))
 
 (provide 'logalimacs)
+;;; logalimacs.el ends here
