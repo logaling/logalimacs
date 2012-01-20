@@ -6,9 +6,8 @@
 # Input your configuration
 PACKAGE_NAME = "logalimacs"
 PACKAGE_VERSION = "0.0.2"
-REQUIREMENTS = ["logalimacs.el", "logalimacs-config.el",
-                "logalimacs-rurema.el"]
-DESCRIPTION = "Front-end of logaling-command for ruby gem"
+REQUIREMENTS = ["logalimacs.el", "logalimacs-rurema.el"]
+DESCRIPTION = "Front-end of logaling-command for Ruby gem"
 
 # Depending on other package
 # @example specify as bellow:
