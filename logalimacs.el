@@ -35,7 +35,8 @@
 ;;;###autoload (when (require 'popwin nil t) (defvar display-buffer-function 'popwin:display-buffer) (defvar popwin:special-display-config (append '(("*logalimacs*" :position top :height 10 :noselect t :stick t))) popwin:special-display-config))
 
 (defvar loga-fly-mode nil)
-(defvar loga-make-buffer "*logalimacs*")
+(defvar loga-make-buffer "*logalimacs*" "display buffer name.")
+(defvar loga-log-output nil "if nonnil, output log for developer.")
 (defvar loga-fly-mode-interval 1
   "timer-valiable for loga-fly-mode, credit par sec.")
 
@@ -149,12 +150,17 @@
   (let* (match-word)
     (save-excursion
       (backward-char)
-      (if (looking-at "[ \t\-]")
-          (looking-at "\\w+")
+      (cond
+       ((looking-at "[^\\w]")
         (forward-char)
         (backward-word)
-        (looking-at "\\w+"))
+        (looking-at "\\w+") t)
+       (t
+        (forward-char)
+        (backward-word)
+        (looking-at "\\w+")))
       (setq match-word (match-string 0))
+      (if loga-log-output (print match-word)) ;;log
       match-word)))
 
 ;;;###autoload
