@@ -1,5 +1,5 @@
 # logalimacs
-|[チュートリアル](/logalimacs_tutorial_ja.html) | [コマンド](/logalimacs_commands_ja.html) | [インストール方法](/logalimacs_install_ja.html) | [新機能](/logalimacs_WhatsNew_ja.html) | [コミュニティ](/contribution.html) | [Fork me on github](https://github.com/logaling/logalimacs) |
+| [チュートリアル](/logalimacs_tutorial_ja.html) | [コマンド](/logalimacs_commands_ja.html) | [インストール方法](/logalimacs_install_ja.html) | [新機能](/logalimacs_WhatsNew_ja.html) | [コミュニティ](/contribution.html) | [Fork me on github](https://github.com/logaling/logalimacs) |
 
 ## logalimacsについて
 logalimacsはlogaling-command用のフロントエンドです。logalimacsを使って、
