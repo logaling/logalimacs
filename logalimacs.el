@@ -58,35 +58,37 @@
     (read-event "types prefix of feature that want you :\n a)dd,c)onfig,d)elete,h)elp,i)mport,l)ookup,n)ew,r)egister,U)nregister,u)pdate,v)ersion,f)ly-mode")
     (setq task (assoc-default last-input-event loga-command-alist))
     (unless (equal task "loga-fly-mode")
-      (loga-prompt-command "help" task t))
+      (logaling-command "help" task))
     (cond ((equal task "add") (loga-add-word))
           ((equal task "lookup") (loga-lookup-region-or-manually))
           ((equal task "config")
-           (loga-prompt-command task (read-string "loga config: ")))
+           (logaling-command task (read-string "loga config: ")))
           ((equal task "delete")
-           (loga-prompt-command task (read-string "loga delete: ")))
+           (logaling-command task (read-string "loga delete: ")))
           ((equal task "help")
-            (loga-prompt-command task (read-string "loga help: ")))
+            (logaling-command task (read-string "loga help: ")))
           ((equal task "import")
-            (loga-prompt-command task (read-string "loga import: ")))
+            (logaling-command task (read-string "loga import: ")))
           ((equal task "new")
-           (loga-prompt-command task (read-string "loga new: ")))
+           (logaling-command task (read-string "loga new: ")))
           ((equal task "register")
-           (loga-prompt-command task (read-string "loga register: ")))
+           (logaling-command task (read-string "loga register: ")))
           ((equal task "unregister")
-           (loga-prompt-command task (read-string "loga unregister: ")))
+           (logaling-command task (read-string "loga unregister: ")))
           ((equal task "update") (loga-update))
-          ((equal task "version") (loga-prompt-command task))
+          ((equal task "version") (logaling-command task))
           ((equal task "loga-fly-mode") (loga-fly-mode))))))
 
-(defun loga-prompt-command (task &optional arg help ext)
-  "this function is wrapped program that pass to shell-command"
-  (let* ((to-shell '(lambda ()
-                      (shell-command-to-string
-                       (if ext
-                           (concat task " " arg " &")
-                         (concat "\\loga " task " " arg (unless help " &")))))))
-    (loga-make-buffer (funcall to-shell))))
+;; @todo apply ansi-color
+(defun loga-to-shell (cmd &optional arg)
+  (ansi-color-apply (shell-command-to-string (concat cmd " " arg " &"))))
+
+(defun logaling-command (task &optional arg output)
+  (let*
+      ((content (loga-to-shell (concat "\\loga " task) arg)))
+    (if output
+        (loga-make-popup content)
+      (loga-make-buffer content))))
 
 (defun loga-make-buffer(content)
   "create buffer for logalimacs"
@@ -99,6 +101,12 @@
           (insert content)
           (beginning-of-buffer))))))
 
+(defun loga-make-popup (content)
+  (if (require 'popup nil t)
+      (save-current-buffer
+        (popup-tip content :scroll-bar t))
+    (print "can't lookup, it is require popup.el.")))
+
 ;;;###autoload
 (defun loga-add-word ()
   "this is command to adding word, first source word, second target word."
@@ -108,8 +116,8 @@
        (target (read-string "translated word here: "))
        (note (read-string "annotation here(optional): "))
        (sep "\" \""))
-    (loga-prompt-command "add"
-                         (concat "\"" source sep target sep note "\""))))
+    (logaling-command "add"
+                      (concat "\"" source sep target sep note "\""))))
 ;;;###autoload
 (defun loga-update ()
   "update to registered word"
@@ -120,8 +128,8 @@
        (new (read-string "new target here: "))
        (note (read-string "annotation here(optional): "))
        (sep "\" \""))
-    (loga-prompt-command "update"
-                         (concat "\"" src sep old sep new sep note "\""))))
+    (logaling-command "update"
+                      (concat "\"" src sep old sep new sep note "\""))))
 
 ;;;###autoload
 (defun loga-lookup-region-or-manually (&optional word-for-fly-mode)
@@ -130,24 +138,24 @@
   (let* ((word (or word-for-fly-mode
                    (loga-return-region-or-wait-for-key-in "Search word here: "))))
     (save-current-buffer
-      (loga-prompt-command "lookup" word))))
+      (logaling-command "lookup" word))))
 
 ;;;###autoload
 (defun loga-lookup-for-popup ()
   "Display the output of loga-lookup at tooltip, note require popup.el"
   (interactive)
-  (let ((word
-         (shell-command-to-string
-          (concat "loga lookup " (loga-return-word-on-cursor)))))
-    (if (require 'popup nil t)
-        (save-current-buffer
-            (popup-tip word :scroll-bar t))
-      (print "can't lookup, it is require popup.el."))))
+  (let*
+      ((word (concat "\"" (loga-return-region-or-cursor) "\"")))
+    (logaling-command "lookup" word t)))
 
 (defun loga-return-region-or-wait-for-key-in (&optional prompt)
   "If mark is active, return the region, otherwise, read string with PROMPT."
   (or (loga-return-string-of-region)
       (read-string (or prompt "types here: "))))
+
+(defun loga-return-region-or-cursor ()
+  (or (loga-return-string-of-region)
+      (loga-return-word-on-cursor)))
 
 (defun loga-return-string-of-region ()
   "If active region, return it string. otherwise return nil."
