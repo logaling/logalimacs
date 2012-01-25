@@ -137,6 +137,17 @@
     (save-current-buffer
       (loga-prompt-command "lookup" word))))
 
+;;;###autoload
+(when (require 'popup nil t)
+  (defun loga-lookup-for-popup ()
+    "Display the output of loga-lookup at tooltip, note require popup.el"
+    (interactive)
+    (let ((word
+           (shell-command-to-string
+            (concat "loga lookup " (loga-return-word-on-cursor)))))
+      (save-current-buffer
+        (popup-tip word :scroll-bar t)))))
+
 (defun loga-point-or-read-string (&optional prompt no-region)
   "If mark is active, return the region, otherwise, read string with PROMPT."
   (cond
