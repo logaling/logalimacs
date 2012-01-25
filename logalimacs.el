@@ -65,9 +65,9 @@
           ((equal task "delete")
            (logaling-command task (read-string "loga delete: ")))
           ((equal task "help")
-            (logaling-command task (read-string "loga help: ")))
+           (logaling-command task (read-string "loga help: ")))
           ((equal task "import")
-            (logaling-command task (read-string "loga import: ")))
+           (logaling-command task (read-string "loga import: ")))
           ((equal task "new")
            (logaling-command task (read-string "loga new: ")))
           ((equal task "register")
@@ -85,9 +85,8 @@
 (defun logaling-command (task &optional arg output)
   (let*
       ((content (loga-to-shell (concat "\\loga " task) arg)))
-    (if output
-        (loga-make-popup content)
-      (loga-make-buffer content))))
+    (cond ((eq output :popup) (loga-make-popup content))
+          (t (loga-make-buffer content)))))
 
 (defun loga-make-buffer(content)
   "create buffer for logalimacs"
@@ -145,7 +144,7 @@
   (interactive)
   (let*
       ((word (concat "\"" (loga-return-region-or-cursor) "\"")))
-    (logaling-command "lookup" word t)))
+    (logaling-command "lookup" word :popup)))
 
 (defun loga-return-region-or-wait-for-key-in (&optional prompt)
   "If mark is active, return the region, otherwise, read string with PROMPT."
