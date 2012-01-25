@@ -60,7 +60,7 @@
     (unless (equal task "loga-fly-mode")
       (loga-prompt-command "help" task t))
     (cond ((equal task "add") (loga-add-word))
-          ((equal task "lookup") (loga-lookup-in-hand-or-region))
+          ((equal task "lookup") (loga-lookup-region-or-manually))
           ((equal task "config")
            (loga-prompt-command task (read-string "loga config: ")))
           ((equal task "delete")
@@ -104,7 +104,7 @@
   "this is command to adding word, first source word, second target word."
   (interactive)
   (let*
-      ((source (loga-point-or-read-string "adding word here: "))
+      ((source (loga-return-region-or-wait-for-key-in "adding word here: "))
        (target (read-string "translated word here: "))
        (note (read-string "annotation here(optional): "))
        (sep "\" \""))
@@ -115,7 +115,7 @@
   "update to registered word"
   (interactive)
   (let*
-      ((src (loga-point-or-read-string "source word here: "))
+      ((src (loga-return-region-or-wait-for-key-in "source word here: "))
        (old (read-string "old target here: "))
        (new (read-string "new target here: "))
        (note (read-string "annotation here(optional): "))
@@ -124,11 +124,11 @@
                          (concat "\"" src sep old sep new sep note "\""))))
 
 ;;;###autoload
-(defun loga-lookup-in-hand-or-region (&optional word-for-fly-mode)
+(defun loga-lookup-region-or-manually (&optional word-for-fly-mode)
   "search word from logaling. if not mark region, search word type on manual. otherwise passed character inside region."
   (interactive)
   (let* ((word (or word-for-fly-mode
-                   (loga-point-or-read-string "Search word here: "))))
+                   (loga-return-region-or-wait-for-key-in "Search word here: "))))
     (save-current-buffer
       (loga-prompt-command "lookup" word))))
 
@@ -144,13 +144,17 @@
             (popup-tip word :scroll-bar t))
       (print "can't lookup, it is require popup.el."))))
 
-(defun loga-point-or-read-string (&optional prompt no-region)
+(defun loga-return-region-or-wait-for-key-in (&optional prompt)
   "If mark is active, return the region, otherwise, read string with PROMPT."
-  (cond
-   ((and mark-active (not no-region))
-    (buffer-substring-no-properties (region-beginning) (region-end)))
-   (t
-    (read-string (or prompt "types here: ")))))
+  (or (loga-return-string-of-region)
+      (read-string (or prompt "types here: "))))
+
+(defun loga-return-string-of-region ()
+  "If active region, return it string. otherwise return nil."
+  (interactive)
+  (if mark-active
+      (buffer-substring-no-properties (region-beginning) (region-end))
+    nil))
 
 (defun loga-return-word-on-cursor ()
   "return word where point on cursor"
@@ -185,7 +189,7 @@
             (lambda()
              (let* ((fly-word (loga-return-word-on-cursor)))
                (if fly-word
-                   (loga-lookup-in-hand-or-region fly-word))))))
+                   (loga-lookup-region-or-manually fly-word))))))
   (message "loga-fly-mode enable"))
 
 (defun loga-fly-mode-off ()
