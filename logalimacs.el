@@ -26,11 +26,6 @@
 ;; Logalimacs.el lookup to registered term at logaling-command and,
 ;; Executes other commands for logaling-command from emacs.
 
-;;; keybins:
-;;;###autoload (global-set-key (kbd "M-g M-u") 'loga-lookup-in-hand-or-region)
-;;;###autoload (global-set-key (kbd "M-g M-a") 'loga-add-word)
-;;;###autoload (global-set-key (kbd "M-g M-i") 'loga-interactive-command)
-
 ;;; convenience configuration for popwin:
 ;;;###autoload (when (require 'popwin nil t) (defvar display-buffer-function 'popwin:display-buffer) (defvar popwin:special-display-config (append '(("*logalimacs*" :position top :height 10 :noselect t :stick t))) popwin:special-display-config))
 
@@ -138,15 +133,16 @@
       (loga-prompt-command "lookup" word))))
 
 ;;;###autoload
-(when (require 'popup nil t)
-  (defun loga-lookup-for-popup ()
-    "Display the output of loga-lookup at tooltip, note require popup.el"
-    (interactive)
-    (let ((word
-           (shell-command-to-string
-            (concat "loga lookup " (loga-return-word-on-cursor)))))
-      (save-current-buffer
-        (popup-tip word :scroll-bar t)))))
+(defun loga-lookup-for-popup ()
+  "Display the output of loga-lookup at tooltip, note require popup.el"
+  (interactive)
+  (let ((word
+         (shell-command-to-string
+          (concat "loga lookup " (loga-return-word-on-cursor)))))
+    (if (require 'popup nil t)
+        (save-current-buffer
+            (popup-tip word :scroll-bar t))
+      (print "can't lookup, it is require popup.el."))))
 
 (defun loga-point-or-read-string (&optional prompt no-region)
   "If mark is active, return the region, otherwise, read string with PROMPT."
