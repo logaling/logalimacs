@@ -168,9 +168,8 @@
     (save-excursion
       (backward-char)
       (cond
-       ((looking-at "[^\\w]")
+       ((looking-at "[^a-zぁ-ん上-黑]");; @todo refactor 
         (forward-char)
-        (backward-word)
         (looking-at "\\w+") t)
        (t
         (forward-char)
