@@ -28,25 +28,32 @@
 ;;; convenience configuration for popwin:
 ;;;###autoload (when (require 'popwin nil t) (defvar display-buffer-function 'popwin:display-buffer) (defvar popwin:special-display-config (append '(("*logalimacs*" :position top :height 10 :noselect t :stick t))) popwin:special-display-config))
 
+(eval-when-compile
+  (require 'cl))
+
 (defvar loga-fly-mode nil)
-(defvar loga-make-buffer "*logalimacs*" "display buffer name.")
 (defvar loga-log-output nil "if nonnil, output log for developer.")
 (defvar loga-fly-mode-interval 1
   "timer-valiable for loga-fly-mode, credit par sec.")
+(defvar loga-fly-timer nil)
+(defvar loga-popup-margin 0)
 
+(defvar loga-current-command nil)
 (defvar loga-command-alist
-  '((?a . "add")
-    (?c . "config")
-    (?d . "delete")
-    (?h . "help")
-    (?i . "import")
-    (?l . "lookup")
-    (?n . "new")
-    (?r . "register")
-    (?U . "unregister")
-    (?u . "update")
-    (?v . "version")
-    (?f . "loga-fly-mode")))
+  '((?a . :add)
+    (?c . :config)
+    (?d . :delete)
+    (?h . :help)
+    (?i . :import)
+    (?l . :lookup)
+    (?L . :list)
+    (?n . :new)
+    (?r . :register)
+    (?U . :unregister)
+    (?u . :update)
+    (?v . :version)
+    ;(?f . :loga-fly-mode)
+    ))
 
 ;;;###autoload
 (defun loga-interactive-command ()
@@ -54,130 +61,126 @@
   (interactive)
   (let* (task)
     (save-current-buffer
-    (read-event "types prefix of feature that want you :\n a)dd,c)onfig,d)elete,h)elp,i)mport,l)ookup,n)ew,r)egister,U)nregister,u)pdate,v)ersion,f)ly-mode")
-    (setq task (assoc-default last-input-event loga-command-alist))
-    (unless (equal task "loga-fly-mode")
-      (logaling-command "help" task))
-    (cond ((equal task "add") (loga-add-word))
-          ((equal task "lookup") (loga-lookup-region-or-manually))
-          ((equal task "config")
-           (logaling-command task (read-string "loga config: ")))
-          ((equal task "delete")
-           (logaling-command task (read-string "loga delete: ")))
-          ((equal task "help")
-           (logaling-command task (read-string "loga help: ")))
-          ((equal task "import")
-           (logaling-command task (read-string "loga import: ")))
-          ((equal task "new")
-           (logaling-command task (read-string "loga new: ")))
-          ((equal task "register")
-           (logaling-command task (read-string "loga register: ")))
-          ((equal task "unregister")
-           (logaling-command task (read-string "loga unregister: ")))
-          ((equal task "update") (loga-update))
-          ((equal task "version") (logaling-command task))
-          ((equal task "loga-fly-mode") (loga-fly-mode))))))
+      (read-event "types prefix of feature that want you :\n a)dd,c)onfig,d)elete,h)elp,i)mport,l)ookup,n)ew,r)egister,U)nregister,u)pdate,v)ersion")
+      (setq task (assoc-default last-input-event loga-command-alist))
+      (loga-current-command task)
+      (case task
+        (:add (loga-add))
+        (:lookup (loga-lookup-region-or-manually))
+        (:update (loga-update))
+        (t (loga-command))))))
 
 ;; @todo apply ansi-color
-(defun loga-to-shell (cmd &optional arg)
+(defun loga-to-shell (cmd &optional arg help)
   (ansi-color-apply (shell-command-to-string (concat cmd " " arg " &"))))
 
-(defun logaling-command (task &optional arg output)
-  (let*
-      ((content (loga-to-shell (concat "\\loga " task) arg)))
-    (cond ((eq output :popup) (loga-make-popup content))
-          (t (loga-make-buffer content)))))
+(defun loga-current-command (symbol)
+  (setq loga-current-command
+        (cons symbol (loga-from-symbol-to-string symbol))))
 
-(defun loga-make-buffer(content)
-  "create buffer for logalimacs"
-  (let* ((buff (symbol-value 'loga-make-buffer)))
-    (save-current-buffer
-      (save-selected-window
-        (with-current-buffer
-            (switch-to-buffer-other-window (get-buffer-create buff))
-          (erase-buffer) ;;initialize
-          (insert content)
-          (beginning-of-buffer))))))
+(defun loga-from-symbol-to-string (symbol)
+  (replace-regexp-in-string ":" "" (symbol-name symbol)))
 
-(defun loga-make-popup (content)
-  (if (require 'popup nil t)
-      (save-current-buffer
-        (popup-tip content :scroll-bar t))
-    (print "can't lookup, it is require popup.el.")))
+(defun loga-command (&optional arg)
+  (let* ((cmd "\\loga")
+         (task (cdr loga-current-command))
+         (symbol (car loga-current-command)))
+    (case symbol
+      ((or :add :update :lookup)
+       (loga-to-shell cmd (concat task " " arg)))
+      ((or :config :delete :help :import :new)
+       (loga-make-buffer (loga-to-shell cmd (concat task " " (loga-input)))))
+      ((or :list :register :unregister :version)
+       (minibuffer-message (loga-to-shell cmd task))))))
 
 ;;;###autoload
-(defun loga-add-word ()
+(defun loga-add ()
   "this is command to adding word, first source word, second target word."
   (interactive)
-  (let*
-      ((source (loga-return-region-or-wait-for-key-in "adding word here: "))
-       (target (read-string "translated word here: "))
-       (note (read-string "annotation here(optional): "))
-       (sep "\" \""))
-    (logaling-command "add"
-                      (concat "\"" source sep target sep note "\""))))
+  (loga-current-command :add)
+  (loga-command (loga-input)))
+
 ;;;###autoload
 (defun loga-update ()
   "update to registered word"
   (interactive)
-  (let*
-      ((src (loga-return-region-or-wait-for-key-in "source word here: "))
-       (old (read-string "old target here: "))
-       (new (read-string "new target here: "))
-       (note (read-string "annotation here(optional): "))
-       (sep "\" \""))
-    (logaling-command "update"
-                      (concat "\"" src sep old sep new sep note "\""))))
+  (loga-current-command :update)
+  (loga-command (loga-input)))
+
+(defun loga-lookup (&optional endpoint manual?)
+  (let* (word)
+    (loga-current-command :lookup)
+    (setq word
+          (if mark-active
+              (buffer-substring-no-properties (region-beginning) (region-end))
+            (case manual?
+              (:manual (loga-input))
+              (t (loga-return-word-on-cursor)))))
+    (case endpoint
+      (:popup (loga-make-popup (loga-command word)))
+      (t (loga-make-buffer (loga-command word))))))
+
+(defun loga-query (&optional message)
+  (let* ((input (read-string (or message "types here:"))))
+    (case (car loga-current-command)
+      ((or :add :update :lookup) (concat "\"" input "\""))
+      (t input))))
+
+(defun loga-input ()
+  (let* ((query (cdr loga-current-command))
+         (task (car loga-current-command))
+         (messages (concat query ": "))
+         store)
+    (case task
+      ((or :add :update :config :delete :help :import :new
+           :list :register :unregister)
+       (loga-make-buffer (loga-to-shell "\\loga help" query))))
+    (case task
+      (:add (setq messages '("source: " "target: " "note(optional): ")))
+      (:update (setq messages '("source: " "target(old): " "target(new): " "note(optional): ")))
+      (:lookup (setq messages '("search: ")))
+      (t (setq messages (list messages))))
+    (loop for msg in messages do
+          (push (loga-query msg) store))
+    (mapconcat 'identity (reverse store) " ")))
 
 ;;;###autoload
-(defun loga-lookup-region-or-manually (&optional word-for-fly-mode)
+(defun loga-lookup-region-or-manually ()
   "search word from logaling. if not mark region, search word type on manual. otherwise passed character inside region."
   (interactive)
-  (let* ((word (or word-for-fly-mode
-                   (loga-return-region-or-wait-for-key-in "Search word here: "))))
-    (save-current-buffer
-      (logaling-command "lookup" word))))
+  (loga-lookup nil :manual))
 
 ;;;###autoload
 (defun loga-lookup-for-popup ()
   "Display the output of loga-lookup at tooltip, note require popup.el"
   (interactive)
-  (let*
-      ((word (concat "\"" (loga-return-region-or-cursor) "\"")))
-    (logaling-command "lookup" word :popup)))
-
-(defun loga-return-region-or-wait-for-key-in (&optional prompt)
-  "If mark is active, return the region, otherwise, read string with PROMPT."
-  (or (loga-return-string-of-region)
-      (read-string (or prompt "types here: "))))
-
-(defun loga-return-region-or-cursor ()
-  (or (loga-return-string-of-region)
-      (loga-return-word-on-cursor)))
-
-(defun loga-return-string-of-region ()
-  "If active region, return it string. otherwise return nil."
-  (interactive)
-  (if mark-active
-      (buffer-substring-no-properties (region-beginning) (region-end))
-    nil))
+  (loga-lookup :popup nil))
 
 (defun loga-return-word-on-cursor ()
   "return word where point on cursor"
   (let* (match-word)
     (save-excursion
-      (backward-char)
-      (cond
-       ((not (looking-at "\\w"))
-        (forward-char)
-        (looking-at "\\w+") t)
-       (t
-        (forward-char)
-        (backward-word)
-        (looking-at "\\w+")))
-      (setq match-word (match-string 0))
+      (setq match-word
+            (if (looking-at "\\w")
+                (word-at-point)
+              (backward-word)
+              (word-at-point)))
       (if loga-log-output (print match-word)) ;;log
       match-word)))
+
+(defun loga-make-buffer(content)
+  "create buffer for logalimacs"
+  (with-temp-buffer
+    (switch-to-buffer-other-window (get-buffer-create "*logalimacs*"))
+    (erase-buffer) ;;initialize
+    (insert content)
+    (beginning-of-buffer)))
+
+(defun loga-make-popup (content)
+  (if (require 'popup nil t)
+      (save-current-buffer
+        (popup-tip content :scroll-bar t :margin loga-popup-margin))
+    (print "can't lookup, it is require popup.el.")))
 
 ;;;###autoload
 (defun loga-fly-mode ()
@@ -190,11 +193,11 @@
 (defun loga-fly-mode-on ()
   (setq loga-fly-mode t
         loga-fly-timer
-        (run-with-idle-timer (symbol-value 'loga-fly-mode-interval) t
+        (run-with-idle-timer loga-fly-mode-interval t
             (lambda()
-             (let* ((fly-word (loga-return-word-on-cursor)))
-               (if fly-word
-                   (loga-lookup-region-or-manually fly-word))))))
+              (let* ((fly-word (loga-return-word-on-cursor)))
+                (if fly-word
+                    (loga-lookup-region-or-manually fly-word))))))
   (message "loga-fly-mode enable"))
 
 (defun loga-fly-mode-off ()
@@ -223,4 +226,5 @@
       (setq count (1- count)))))
 
 (provide 'logalimacs)
+
 ;;; logalimacs.el ends here
