@@ -37,8 +37,10 @@
   "timer-valiable for loga-fly-mode, credit par sec.")
 (defvar loga-fly-timer nil)
 (defvar loga-popup-margin 0)
+(defvar loga-word-cache-limit 10)
+(defvar loga-word-cache nil "cache word used by loga-lookup")
+(defvar loga-current-command nil "get executed current command-name and symbol")
 
-(defvar loga-current-command nil)
 (defvar loga-command-alist
   '((?a . :add)
     (?c . :config)
@@ -86,12 +88,22 @@
          (task (cdr loga-current-command))
          (symbol (car loga-current-command)))
     (case symbol
-      ((or :add :update :lookup)
+      (:lookup
+        (loga-word-cache (cons arg (loga-to-shell cmd (concat task " " arg))))
+        (cdar loga-word-cache))
+      ((or :add :update)
        (loga-to-shell cmd (concat task " " arg)))
       ((or :config :delete :help :import :new)
        (loga-make-buffer (loga-to-shell cmd (concat task " " (loga-input)))))
       ((or :list :register :unregister :version)
        (minibuffer-message (loga-to-shell cmd task))))))
+
+(defun loga-word-cache (word)
+  (cond ((<= loga-word-cache-limit (length loga-word-cache))
+         (setq loga-word-cache (reverse loga-word-cache)
+               loga-word-cache (cdr loga-word-cache)
+               loga-word-cache (reverse loga-word-cache))))
+  (push word loga-word-cache))
 
 ;;;###autoload
 (defun loga-add ()
