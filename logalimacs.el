@@ -177,10 +177,11 @@
     (beginning-of-buffer)))
 
 (defun loga-make-popup (content)
-  (if (require 'popup nil t)
-      (save-current-buffer
-        (popup-tip content :scroll-bar t :margin loga-popup-margin))
-    (print "can't lookup, it is require popup.el.")))
+  (cond
+   ((not (require 'popup nil t))
+    (message "Can't lookup, it is require popup.el."))
+   ((equal "" content) (message "Not found"))
+   (t (popup-tip content :scroll-bar t :margin loga-popup-margin))))
 
 ;;;###autoload
 (defun loga-fly-mode ()
