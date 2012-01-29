@@ -57,6 +57,10 @@
     ;(?f . :loga-fly-mode)
     ))
 
+(defvar loga-popup-command-alist
+      '((?b . :buffer)
+        (?q . :quit)))
+
 ;;;###autoload
 (defun loga-interactive-command ()
   "interactive-command for logaling-command, types following mini-buffer."
@@ -71,6 +75,14 @@
         (:lookup (loga-lookup-region-or-manually))
         (:update (loga-update))
         (t (loga-command))))))
+
+(defun loga-popup-command ()
+  (let* (command)
+    (read-event)
+    (setq command (assoc-default last-input-event loga-popup-command-alist))
+    (case command
+      (:buffer (loga-make-buffer (cdar loga-word-cache)))
+      (:quit (keyboard-quit)))))
 
 ;; @todo apply ansi-color
 (defun loga-to-shell (cmd &optional arg help)
@@ -166,7 +178,8 @@
 (defun loga-lookup-for-popup ()
   "Display the output of loga-lookup at tooltip, note require popup.el"
   (interactive)
-  (loga-lookup :popup nil))
+  (loga-lookup :popup nil)
+  (loga-popup-command))
 
 (defun loga-return-word-on-cursor ()
   "return word where point on cursor"
