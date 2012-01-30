@@ -31,6 +31,9 @@
 (eval-when-compile
   (require 'cl))
 
+;;for word-at-point
+(require 'thingatpt)
+
 (defvar loga-fly-mode nil)
 (defvar loga-log-output nil "if nonnil, output log for developer.")
 (defvar loga-fly-mode-interval 1
@@ -40,7 +43,8 @@
 (defvar loga-word-cache-limit 10)
 (defvar loga-word-cache nil "cache word used by loga-lookup")
 (defvar loga-current-command nil "get executed current command-name and symbol")
-
+(defvar loga-current-endpoint nil "store current endpoint symbol")
+(defvar loga-current-buffer nil)
 (defvar loga-command-alist
   '((?a . :add)
     (?c . :config)
@@ -57,32 +61,45 @@
     ;(?f . :loga-fly-mode)
     ))
 
-(defvar loga-popup-command-alist
-      '((?b . :buffer)
-        (?q . :quit)))
+(setq loga-buffer-or-popup-command-alist
+  '((?b . :buffer)
+    (?q . :quit)
+    (?n . :next-line)
+    (?p . :previous-line)
+    (?d . :detail)))
 
 ;;;###autoload
 (defun loga-interactive-command ()
   "interactive-command for logaling-command, types following mini-buffer."
   (interactive)
   (let* (task)
-    (save-current-buffer
-      (read-event "types prefix of feature that want you :\n a)dd,c)onfig,d)elete,h)elp,i)mport,l)ookup,n)ew,r)egister,U)nregister,u)pdate,v)ersion")
-      (setq task (assoc-default last-input-event loga-command-alist))
-      (loga-current-command task)
-      (case task
-        (:add (loga-add))
-        (:lookup (loga-lookup-region-or-manually))
-        (:update (loga-update))
-        (t (loga-command))))))
+    (read-event "types prefix of feature that want you :\n a)dd,c)onfig,d)elete,h)elp,i)mport,l)ookup,n)ew,r)egister,U)nregister,u)pdate,v)ersion")
+    (setq task (assoc-default last-input-event loga-command-alist))
+    (loga-current-command task)
+    (case task
+      (:add (loga-add))
+      (:lookup (loga-lookup-region-or-manually))
+      (:update (loga-update))
+      (t (loga-command)))))
 
-(defun loga-popup-command ()
-  (let* (command)
-    (read-event)
-    (setq command (assoc-default last-input-event loga-popup-command-alist))
-    (case command
-      (:buffer (loga-make-buffer (cdar loga-word-cache)))
-      (:quit (keyboard-quit)))))
+(defun loga-buffer-or-popup-command ()
+  (case (car loga-current-command)
+    (:lookup
+      (read-event)
+      (case (assoc-default last-input-event loga-buffer-or-popup-command-alist)
+        (:next-line (next-line) (loga-buffer-or-popup-command))
+        (:previous-line (previous-line) (loga-buffer-or-popup-command))
+        (:buffer (loga-make-buffer (cdar loga-word-cache)))
+        (:quit  (kill-buffer "*logalimacs*") (keyboard-quit))
+        (:detail (loga-display-detail))))))
+
+(defun loga-display-detail ()
+  "If popup where endpoint, output to buffer. if buffer, quit buffer"
+  (case loga-current-endpoint
+    (:buffer
+      (kill-buffer "*logalimacs*"))
+    (:popup
+      (loga-make-buffer (cdar loga-word-cache)))))
 
 ;; @todo apply ansi-color
 (defun loga-to-shell (cmd &optional arg help)
@@ -179,7 +196,7 @@
   "Display the output of loga-lookup at tooltip, note require popup.el"
   (interactive)
   (loga-lookup :popup nil)
-  (loga-popup-command))
+  (loga-buffer-or-popup-command))
 
 (defun loga-return-word-on-cursor ()
   "return word where point on cursor"
@@ -195,13 +212,20 @@
 
 (defun loga-make-buffer(content)
   "create buffer for logalimacs"
-  (with-temp-buffer
-    (switch-to-buffer-other-window (get-buffer-create "*logalimacs*"))
-    (erase-buffer) ;;initialize
-    (insert content)
-    (beginning-of-buffer)))
+  ;; if Emacs24, no problem with-tmep-buffer only
+  ;; @todo refactor when resolve above problem
+      (setq loga-current-endpoint :buffer)
+      (save-current-buffer
+        (save-selected-window
+          (with-current-buffer
+              (switch-to-buffer-other-window (get-buffer-create "*logalimacs*"))
+            (erase-buffer) ;;initialize
+            (insert content)
+            (beginning-of-buffer))))
+      (loga-buffer-or-popup-command))
 
 (defun loga-make-popup (content)
+  (setq loga-current-endpoint :popup)
   (cond
    ((not (require 'popup nil t))
     (message "Can't lookup, it is require popup.el."))
