@@ -57,6 +57,7 @@
     (?r . :register)
     (?U . :unregister)
     (?u . :update)
+    (?s . :show)
     (?v . :version)
     ;(?f . :loga-fly-mode)
     ))
@@ -122,7 +123,9 @@
         (cdar loga-word-cache))
       ((or :add :update)
        (loga-to-shell cmd (concat task " " arg)))
-      ((or :config :delete :help :import :new)
+      (:show
+        (loga-make-buffer (loga-to-shell cmd task)))
+      ((or :config :delete :help :import :new :show)
        (loga-make-buffer (loga-to-shell cmd (concat task " " (loga-input)))))
       ((or :list :register :unregister :version)
        (minibuffer-message (loga-to-shell cmd task))))))
