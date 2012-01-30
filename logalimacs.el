@@ -44,7 +44,7 @@
 (defvar loga-word-cache nil "cache word used by loga-lookup")
 (defvar loga-current-command nil "get executed current command-name and symbol")
 (defvar loga-current-endpoint nil "store current endpoint symbol")
-(defvar loga-current-buffer nil)
+(defvar loga-base-buffer nil)
 (defvar loga-command-alist
   '((?a . :add)
     (?c . :config)
@@ -62,7 +62,7 @@
     ;(?f . :loga-fly-mode)
     ))
 
-(setq loga-buffer-or-popup-command-alist
+(defvar loga-buffer-or-popup-command-alist
   '((?b . :buffer)
     (?q . :quit)
     (?n . :next-line)
@@ -86,13 +86,13 @@
 (defun loga-buffer-or-popup-command ()
   (case (car loga-current-command)
     (:lookup
-      (read-event)
-      (case (assoc-default last-input-event loga-buffer-or-popup-command-alist)
-        (:next-line (next-line) (loga-buffer-or-popup-command))
-        (:previous-line (previous-line) (loga-buffer-or-popup-command))
-        (:buffer (loga-make-buffer (cdar loga-word-cache)))
-        (:quit  (kill-buffer "*logalimacs*") (keyboard-quit))
-        (:detail (loga-display-detail))))))
+     (read-event)
+     (case (assoc-default last-input-event loga-buffer-or-popup-command-alist)
+       (:next-line (scroll-other-window 1) (loga-buffer-or-popup-command))
+       (:previous-line (scroll-other-window-down 1)(loga-buffer-or-popup-command))
+       (:buffer (loga-make-buffer (cdar loga-word-cache)))
+       (:quit  (kill-buffer "*logalimacs*") (keyboard-quit))
+       (:detail (loga-display-detail))))))
 
 (defun loga-display-detail ()
   "If popup where endpoint, output to buffer. if buffer, quit buffer"
@@ -100,7 +100,7 @@
     (:buffer
       (kill-buffer "*logalimacs*"))
     (:popup
-      (loga-make-buffer (cdar loga-word-cache)))))
+     (loga-make-buffer (cdar loga-word-cache)))))
 
 ;; @todo apply ansi-color
 (defun loga-to-shell (cmd &optional arg help)
@@ -117,14 +117,15 @@
   (let* ((cmd "\\loga")
          (task (cdr loga-current-command))
          (symbol (car loga-current-command)))
+    (setq loga-base-buffer (current-buffer))
     (case symbol
       (:lookup
-        (loga-word-cache (cons arg (loga-to-shell cmd (concat task " " arg))))
-        (cdar loga-word-cache))
+       (loga-word-cache (cons arg (loga-to-shell cmd (concat task " " arg))))
+       (cdar loga-word-cache))
       ((or :add :update)
        (loga-to-shell cmd (concat task " " arg)))
       (:show
-        (loga-make-buffer (loga-to-shell cmd task)))
+       (loga-make-buffer (loga-to-shell cmd task)))
       ((or :config :delete :help :import :new :show)
        (loga-make-buffer (loga-to-shell cmd (concat task " " (loga-input)))))
       ((or :list :register :unregister :version)
@@ -215,17 +216,18 @@
 
 (defun loga-make-buffer(content)
   "create buffer for logalimacs"
-  ;; if Emacs24, no problem with-tmep-buffer only
-  ;; @todo refactor when resolve above problem
-      (setq loga-current-endpoint :buffer)
-      (save-current-buffer
-        (save-selected-window
-          (with-current-buffer
-              (switch-to-buffer-other-window (get-buffer-create "*logalimacs*"))
-            (erase-buffer) ;;initialize
-            (insert content)
-            (beginning-of-buffer))))
-      (loga-buffer-or-popup-command))
+  (setq loga-current-endpoint :buffer)
+  (setq other-window-scroll-buffer "*logalimacs*")
+  (with-temp-buffer
+    (switch-to-buffer (get-buffer-create "*logalimacs*"))
+    (erase-buffer) ;;initialize
+    (insert content)
+    (beginning-of-buffer))
+  (switch-to-buffer loga-base-buffer)
+  (popwin:popup-buffer
+   (get-buffer-create "*logalimacs*")
+   :noselect t :stick t :height 10 :position :top)
+  (loga-buffer-or-popup-command))
 
 (defun loga-make-popup (content)
   (setq loga-current-endpoint :popup)
