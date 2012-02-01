@@ -234,8 +234,9 @@
   (cond
    ((not (require 'popup nil t))
     (message "Can't lookup, it is require popup.el."))
-   ((equal "" content) (message "Not found"))
-   (t (popup-tip content :scroll-bar t :margin loga-popup-margin))))
+   ((equal "" content)
+    (message (concat "'" (caar loga-word-cache) "' is not found")))
+   (t (popup-tip content :margin loga-popup-margin))))
 
 ;;;###autoload
 (defun loga-fly-mode ()
