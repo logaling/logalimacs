@@ -242,7 +242,7 @@
 (defun loga-fly-mode ()
   "toggle loga-fly-mode-on and loga-fly-mode-off"
   (interactive)
-  (if (symbol-value 'loga-fly-mode)
+  (if loga-fly-mode
       (loga-fly-mode-off)
     (loga-fly-mode-on)))
 
