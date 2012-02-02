@@ -34,6 +34,9 @@
 ;;for word-at-point
 (require 'thingatpt)
 
+;;for ansi-color
+(require 'ansi-color)
+
 (defvar loga-fly-mode nil)
 (defvar loga-log-output nil "if nonnil, output log for developer.")
 (defvar loga-fly-mode-interval 1
