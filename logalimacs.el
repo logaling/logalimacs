@@ -199,7 +199,7 @@
   (loga-lookup nil :manual))
 
 ;;;###autoload
-(defun loga-lookup-for-popup ()
+(defun loga-lookup-popup-dwim ()
   "Display the output of loga-lookup at tooltip, note require popup.el"
   (interactive)
   (loga-lookup :popup nil)
