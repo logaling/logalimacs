@@ -199,7 +199,7 @@
   (loga-lookup nil :manual))
 
 ;;;###autoload
-(defun loga-lookup-popup-dwim ()
+(defun loga-lookup-in-popup ()
   "Display the output of loga-lookup at tooltip, note require popup.el"
   (interactive)
   (loga-lookup :popup nil)
@@ -215,7 +215,12 @@
               (backward-word)
               (word-at-point)))
       (if loga-log-output (print match-word)) ;;log
-      match-word)))
+      (if (string-match "[上-黑]" match-word)
+          (loga-reject-hiragana match-word)
+        match-word))))
+
+(defun loga-reject-hiragana (str)
+  (replace-regexp-in-string "[ぁ-ん]" "" str))
 
 (defun loga-make-buffer(content)
   "create buffer for logalimacs"
