@@ -94,7 +94,9 @@
        (:next-line (scroll-other-window 1) (loga-buffer-or-popup-command))
        (:previous-line (scroll-other-window-down 1)(loga-buffer-or-popup-command))
        (:buffer (loga-make-buffer (cdar loga-word-cache)))
-       (:quit  (kill-buffer "*logalimacs*") (keyboard-quit))
+       (:quit (if (eq loga-current-endpoint :popup)
+                  (kill-buffer "*logalimacs*"))
+              (keyboard-quit))
        (:detail (loga-display-detail))))))
 
 (defun loga-display-detail ()
