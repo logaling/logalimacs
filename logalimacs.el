@@ -193,7 +193,7 @@
     (mapconcat 'identity (reverse store) " ")))
 
 ;;;###autoload
-(defun loga-lookup-region-or-manually ()
+(defun loga-lookup-at-manually ()
   "search word from logaling. if not mark region, search word type on manual. otherwise passed character inside region."
   (interactive)
   (loga-lookup nil :manual))
@@ -202,7 +202,17 @@
 (defun loga-lookup-in-popup ()
   "Display the output of loga-lookup at tooltip, note require popup.el"
   (interactive)
-  (loga-lookup :popup nil)
+  (if current-prefix-arg
+      (loga-lookup :popup :manual)
+    (loga-lookup :popup nil))
+  (loga-buffer-or-popup-command))
+
+;;;###autoload
+(defun loga-lookup-in-buffer ()
+  (interactive)
+  (if current-prefix-arg
+      (loga-lookup nil :manual)
+    (loga-lookup nil nil))
   (loga-buffer-or-popup-command))
 
 (defun loga-return-word-on-cursor ()
