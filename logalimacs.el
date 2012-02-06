@@ -34,6 +34,9 @@
 ;;for word-at-point
 (require 'thingatpt)
 
+;;json
+(require 'json)
+
 ;;for ansi-color
 (require 'ansi-color)
 
@@ -72,6 +75,31 @@
     (?p . :previous-line)
     (?d . :detail)))
 
+(defun loga-check-state ()
+  (interactive)
+  (let* ((ruby '(lambda (arg)
+                  (shell-command-to-string (concat "ruby -e " arg))))
+         (version (funcall ruby "'print RUBY_VERSION'"))
+         (installed-p
+          (not (string-match "no such file to load"
+                             (funcall ruby "'require \"logaling\"'"))))
+         (rvm-p (eq 0 (shell-command "which rvm"))))
+    (if (string-match
+         "version [0-9].[1-9].[2-9]" (loga-to-shell "\\loga version"))
+        (defvar loga-possible-json-p t)
+      (defvar loga-possible-json-p nil))
+    (cond
+     ((or installed-p version)
+      (print "logaling-command is already installed, check OK!") t)
+     ((not (string-match "1.9.[0-9]\\|[2-9].[0-9].[0-9]" version))
+      (print "Ruby version errer, require Ruby 1.9.x"))
+     (rvm-p
+      (if (require 'rvm nil t)
+          (print "require 'gem install logaling-command'")
+        (print
+         "if use rvm, require rvm.el and sets the config to your dot emacs.")))
+     (print "require 'sudo gem install logaling-command'"))))
+
 ;;;###autoload
 (defun loga-interactive-command ()
   "interactive-command for logaling-command, types following mini-buffer."
@@ -103,7 +131,7 @@
   "If popup where endpoint, output to buffer. if buffer, quit buffer"
   (case loga-current-endpoint
     (:buffer
-      (kill-buffer "*logalimacs*"))
+     (kill-buffer "*logalimacs*"))
     (:popup
      (loga-make-buffer (cdar loga-word-cache)))))
 
@@ -121,12 +149,13 @@
 (defun loga-command (&optional arg)
   (let* ((cmd "\\loga")
          (task (cdr loga-current-command))
-         (symbol (car loga-current-command)))
+         (symbol (car loga-current-command))
+         (word (loga-lookup-attach-option arg)))
     (setq loga-base-buffer (current-buffer))
     (case symbol
       (:lookup
-       (loga-word-cache (cons arg (loga-to-shell cmd (concat task " " arg))))
-       (cdar loga-word-cache))
+        (loga-word-cache (cons arg (loga-to-shell cmd (concat task " " word))))
+        (cdar loga-word-cache))
       ((or :add :update)
        (loga-to-shell cmd (concat task " " arg)))
       (:show
@@ -135,6 +164,24 @@
        (loga-make-buffer (loga-to-shell cmd (concat task " " (loga-input)))))
       ((or :list :register :unregister :version)
        (minibuffer-message (loga-to-shell cmd task))))))
+
+(defun loga-lookup-attach-option (arg)
+  (let* ((word arg))
+    (if (and loga-possible-json-p (eq loga-current-endpoint :popup))
+        (setq word (concat arg " --output=json")))
+    word))
+
+(defun loga-convert-from-json-to-list (content)
+  (let* ((json (json-read-from-string content))
+         source target note words-list)
+    (loop for record across json do
+          (loop for pair in record do
+                (case (car pair)
+                  ('source (setq source (cdr pair)))
+                  ('target (setq target (cdr pair)))
+                  ('note   (setq note   (cdr pair)))))
+          (push (cons (concat source " " target) note) words-list))
+    (reverse words-list)))
 
 (defun loga-word-cache (word)
   (cond ((<= loga-word-cache-limit (length loga-word-cache))
@@ -158,7 +205,7 @@
   (loga-command (loga-input)))
 
 (defun loga-lookup (&optional endpoint manual?)
-  (let* (word)
+  (let* (word content)
     (loga-current-command :lookup)
     (setq word
           (if mark-active
@@ -166,9 +213,13 @@
             (case manual?
               (:manual (loga-input))
               (t (loga-return-word-on-cursor)))))
+    (setq content (loga-command word))
     (case endpoint
-      (:popup (loga-make-popup (loga-command word)))
-      (t (loga-make-buffer (loga-command word))))))
+      (:popup
+        (if loga-possible-json-p
+            (setq content (loga-convert-from-json-to-list content)))
+        (loga-make-popup content))
+      (t (loga-make-buffer content)))))
 
 (defun loga-query (&optional message)
   (let* ((input (read-string (or message "types here:"))))
@@ -198,12 +249,14 @@
 (defun loga-lookup-at-manually ()
   "search word from logaling. if not mark region, search word type on manual. otherwise passed character inside region."
   (interactive)
+  (setq loga-current-endpoint :buffer)
   (loga-lookup nil :manual))
 
 ;;;###autoload
 (defun loga-lookup-in-popup ()
   "Display the output of loga-lookup at tooltip, note require popup.el"
   (interactive)
+  (setq loga-current-endpoint :popup)
   (if current-prefix-arg
       (loga-lookup :popup :manual)
     (loga-lookup :popup nil))
@@ -256,6 +309,7 @@
     (message "Can't lookup, it is require popup.el."))
    ((equal "" content)
     (message (concat "'" (caar loga-word-cache) "' is not found")))
+   ((listp content) (popup-menu content))
    (t (popup-tip content :margin loga-popup-margin))))
 
 ;;;###autoload
@@ -300,6 +354,8 @@
                                                  line-err-info-list))))
           (loga-make-buffer (format "[%s] %s" line text))))
       (setq count (1- count)))))
+
+(loga-check-state)
 
 (provide 'logalimacs)
 
