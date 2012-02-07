@@ -309,7 +309,7 @@
     (message "Can't lookup, it is require popup.el."))
    ((equal "" content)
     (message (concat "'" (caar loga-word-cache) "' is not found")))
-   ((listp content) (popup-menu content))
+   ((listp content) (popup-cascade-menu content))
    (t (popup-tip content :margin loga-popup-margin))))
 
 ;;;###autoload
