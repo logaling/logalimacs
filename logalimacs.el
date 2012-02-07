@@ -85,7 +85,7 @@
                              (funcall ruby "'require \"logaling\"'"))))
          (rvm-p (eq 0 (shell-command "which rvm"))))
     (if (string-match
-         "version [0-9].[1-9].[2-9]" (loga-to-shell "\\loga version"))
+         "version [0-9].[1-9].[3-9]" (loga-to-shell "\\loga version"))
         (defvar loga-possible-json-p t)
       (defvar loga-possible-json-p nil))
     (cond
