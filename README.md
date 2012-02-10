@@ -13,14 +13,15 @@ If possible Emacs24, types M-x list-packages, and it can install from items.
 If it is only be as where global-set-key~ to be autoloaded.
 
 ## Requirements
-Logalimacs is require logaling-command.
+Logalimacs requires logaling-command.
 To install, see below.(gene95:English-Japanese,edict:Japanese-English)
 
     % gem install logaling-command
     % loga import gene95
     % loga import edict
 
-put your ~/.logaling/config, if translate from English to Japanese.
+Put below configuration into your ~/.logaling/config,
+If you translate from English to Japanese.
 
     --glossary your-glossary-name
     --source-language en
