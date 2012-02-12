@@ -198,12 +198,14 @@
       (setq word (concat word " -S=en -T=ja"))))
     ;; ---------------------------
     (setq content (loga-command word))
-    (case endpoint
-      (:popup
-       (if loga-possible-json-p
-           (setq content (loga-convert-from-json-to-list content)))
-       (loga-make-popup content))
-      (t (loga-make-buffer content)))))
+    (if (equal "" content)
+        (message (concat "'" (caar loga-word-cache) content "' is not found"))
+      (case endpoint
+        (:popup
+         (if loga-possible-json-p
+             (setq content (loga-convert-from-json-to-list content)))
+         (loga-make-popup content))
+        (t (loga-make-buffer content))))))
 
 (defun loga-convert-from-json-to-list (content)
   (let* ((json (json-read-from-string content))
@@ -226,7 +228,8 @@
                    (> loga-width-limit-source (length source))
                    (> (max width-limit (cdr size)) (length target)))
               (if note
-                  (push (list (loga-append-margin source target size) note) record)
+                  (push (list (loga-append-margin source target size)
+                              (concat "\n" note)) record)
                 (push (list (loga-append-margin source target size)) record))))
     record))
 
@@ -332,13 +335,13 @@
 
 (defun loga-make-popup (content)
   (setq loga-current-endpoint :popup)
+  (setq hoge content)
   (cond
    ((not (require 'popup nil t))
     (message "Can't lookup, it is require popup.el."))
-   ((equal "" content)
-    (message (concat "'" (caar loga-word-cache) "' is not found")))
    ((listp content) (popup-cascade-menu content :point (loga-decide-point)
-                                        :width (loga-length-sum)))
+                                        :width (loga-length-sum)
+                                        :keymap loga-popup-menu-keymap))
    (t (popup-tip content :margin loga-popup-margin))))
 
 (defun loga-decide-point ()
@@ -406,6 +409,26 @@
 (defun loga-return-version-num (version-string)
   (string-match "[0-9].[0-9].[0-9]" version-string)
   (match-string 0 version-string))
+
+(defvar loga-popup-menu-keymap
+  (let ((map (make-sparse-keymap)))
+    (define-key map "\r"        'popup-select)
+    (define-key map "\C-f"      'popup-open)
+    (define-key map [right]     'popup-open)
+    (define-key map "\C-b"      'popup-close)
+    (define-key map [left]      'popup-close)
+    (define-key map "\C-n" 'popup-next)
+    (define-key map [down]      'popup-next)
+    (define-key map "\C-p"      'popup-previous)
+    (define-key map [up]        'popup-previous)
+    (define-key map [f1]        'popup-help)
+    (define-key map (kbd "\C-?") 'popup-help)
+    (define-key map "\C-s"      'popup-isearch)
+    ;;logalimacs original
+    (define-key map (kbd "q") 'keyboard-quit)
+    (define-key map (kbd "d") 'loga-lookup-in-buffer)
+    ;;-------------------
+    map))
 
 (loga-check-state)
 
