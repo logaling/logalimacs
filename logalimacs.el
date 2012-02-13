@@ -400,10 +400,28 @@
 
 (defun loga-check-state ()
   (interactive)
-  (let* ((logaling-version (loga-return-version-num (loga-to-shell "\\loga version"))))
-    (if (version< "0.1.2" logaling-version)
-        ;; @todo sets true when resolved problem
-        (setq loga-possible-json-p nil))))
+  (let* ((ruby '(lambda (arg)
+                  (shell-command-to-string (concat "ruby -e " arg))))
+         (version (funcall ruby "'print RUBY_VERSION'"))
+         (installed-p (not (string-match "no such file to load"
+                                         (funcall ruby "'require \"logaling\"'"))))
+         (rvm-p (eq 0 (shell-command "which rvm")))
+         logaling-version)
+    (cond
+     ((and installed-p version)
+      (message "Check OK: logaling-command already installed")
+      (setq logaling-version
+            (loga-return-version-num (loga-to-shell "\\loga version")))
+      (if (version< "0.1.2" logaling-version)
+          ;; @todo sets true when resolved problem
+          (setq loga-possible-json-p nil)) t)
+     ((not (string-match "1.9.[0-9]\\|[2-9].[0-9].[0-9]" version))
+      (message "Note: Ruby version errer, require Ruby 1.9.x"))
+     (rvm-p
+      (if (require 'rvm nil t)
+          (message "Note: require 'gem install logaling-command'")
+        (message "Note: if use rvm, require rvm.el and sets the config to your dot emacs.")))
+     (t message "Note: require 'sudo gem install logaling-command'"))))
 
 (defun loga-return-version-num (version-string)
   (string-match "[0-9].[0-9].[0-9]" version-string)
