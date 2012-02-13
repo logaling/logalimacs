@@ -335,7 +335,6 @@
 
 (defun loga-make-popup (content)
   (setq loga-current-endpoint :popup)
-  (setq hoge content)
   (cond
    ((not (require 'popup nil t))
     (message "Can't lookup, it is require popup.el."))
