@@ -411,23 +411,9 @@
   (match-string 0 version-string))
 
 (defvar loga-popup-menu-keymap
-  (let ((map (make-sparse-keymap)))
-    (define-key map "\r"        'popup-select)
-    (define-key map "\C-f"      'popup-open)
-    (define-key map [right]     'popup-open)
-    (define-key map "\C-b"      'popup-close)
-    (define-key map [left]      'popup-close)
-    (define-key map "\C-n" 'popup-next)
-    (define-key map [down]      'popup-next)
-    (define-key map "\C-p"      'popup-previous)
-    (define-key map [up]        'popup-previous)
-    (define-key map [f1]        'popup-help)
-    (define-key map (kbd "\C-?") 'popup-help)
-    (define-key map "\C-s"      'popup-isearch)
-    ;;logalimacs original
+  (let ((map (copy-keymap popup-menu-keymap)))
     (define-key map (kbd "q") 'keyboard-quit)
     (define-key map (kbd "d") 'loga-lookup-in-buffer)
-    ;;-------------------
     map))
 
 (loga-check-state)
