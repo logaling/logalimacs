@@ -202,8 +202,8 @@
         (message (concat "'" (caar loga-word-cache) content "' is not found"))
       (case endpoint
         (:popup
-         (if loga-possible-json-p
-             (setq content (loga-convert-from-json-to-list content)))
+         (cond (loga-possible-json-p
+                (setq content (loga-convert-from-json-to-list content))))
          (loga-make-popup content))
         (t (loga-make-buffer content))))))
 
@@ -217,38 +217,49 @@
                   ('target (setq target var))
                   ('note   (setq note   var))))
           (push (list source target note) words-list))
-    (loga-max-size words-list)
+    (loga-max-length words-list)
     (loga-decide-format words-list loga-current-max-length)))
 
 (defun loga-decide-format (words size)
-  (let* ((width-limit (- (/ (window-width) 2) 0))
+  (let* ((half (- (/ (window-width) 2) 2))
          record)
     (loop for (source target note) in words do
-          (if (and (> width-limit (max (length source) (length target)))
+          (if (and (> half (max (length source) (length target)))
                    (> loga-width-limit-source (length source))
-                   (> (max width-limit (cdr size)) (length target)))
+                   (> (max half (cdr size)) (length target)))
               (if note
                   (push (list (loga-append-margin source target size)
                               (concat "\n" note)) record)
                 (push (list (loga-append-margin source target size)) record))))
     record))
 
-(defun loga-max-size (words)
-  (let* ((max-source-length (or loga-width-limit-source 0))
-         (max-target-length (or loga-width-limit-target 0)))
-    (loop for (source target) in words
-          if (< max-source-length (min loga-width-limit-source (length source)))
-          collect (setq max-source-length (length source))
-          if (< max-target-length (length target))
-          collect (setq max-target-length (length target)))
-    (setq max-target-length (min max-target-length (- (window-width) max-source-length)))
-    (setq loga-current-max-length (cons max-source-length max-target-length))))
+(defun loga-max-length (words)
+  (let* ((max-source-length 0)
+         (max-target-length 0)
+         source-length target-length)
+    (loop for (source target) in words do
+          (setq source-length (loga-decide-length source)
+                target-length (loga-decide-length target))
+          if (and (< max-source-length (min loga-width-limit-source source-length))
+                  (< source-length (/ (window-width) 2)))
+          collect (setq max-source-length source-length)
+          if (< max-target-length target-length)
+          collect (setq max-target-length target-length))
+    (setq max-target-length (min max-target-length (- (window-width) max-source-length))
+          loga-current-max-length (cons max-source-length max-target-length))))
+
+(defun loga-decide-length (sentence)
+  (loop with sum = 0
+        for token in (string-to-list (split-string sentence ""))
+        if (multibyte-string-p token) do (setq sum (+ sum 2))
+        else if (not (null token)) do (setq sum (+ sum 1))
+        finally return sum))
 
 (defun loga-append-margin (source target size)
-  (let* ((max-src-length (car size))
-         (source-len (length source))
-         (margin (spaces-string (- max-src-length source-len)))
-         (column (concat source margin ":" target)))
+  (let* ((max-source-length (car size))
+         (margin (- max-source-length (length source)))
+         (column (concat source (spaces-string margin) ":" target)))
+    (setq loga-current-margin margin)
     column))
 
 (defun loga-query (&optional message)
@@ -338,22 +349,28 @@
   (cond
    ((not (require 'popup nil t))
     (message "Can't lookup, it is require popup.el."))
-   ((listp content) (popup-cascade-menu content :point (loga-decide-point)
-                                        :width (loga-length-sum)
-                                        :keymap loga-popup-menu-keymap))
-   (t (popup-tip content :margin loga-popup-margin))))
+   ((and (listp content) (not (null content)))
+    (popup-cascade-menu content
+                        :point (loga-decide-point)
+                        :width (loga-popup-width)
+                        :keymap loga-popup-menu-keymap))
+   ((stringp content) (popup-tip content :margin loga-popup-margin))))
 
 (defun loga-decide-point ()
-  (if (< (/ (window-width) 2) (loga-length-sum))
-      (point-at-bol)
-    (point)))
+  (let* ((half (/ (window-width) 2))
+         (quarter (/ half 2))
+         (cursor (- (point) (point-at-bol))))
+    (cond ((< half (loga-popup-width))
+           (point-at-bol))
+          ((< half cursor)
+           (+ (point-at-bol) quarter))
+          (t (point)))))
 
-(defun loga-length-sum ()
-  (let* ((hide-margin (- (point) (point-at-bol))))
-    (loop for (x . y) in (list loga-current-max-length)
-          with sum = 0
-          collect (+ x y) into sum
-          finally return (+ (car sum) hide-margin))))
+(defun loga-popup-width ()
+  (loop for (src-len . tgt-len) in (list loga-current-max-length)
+        with sum = 0
+        collect (+ src-len  tgt-len) into sum
+        finally return (min (car sum) (window-width))))
 
 ;;;###autoload
 (defun loga-fly-mode ()
@@ -431,6 +448,10 @@
   (let ((map (copy-keymap popup-menu-keymap)))
     (define-key map (kbd "q") 'keyboard-quit)
     (define-key map (kbd "d") 'loga-lookup-in-buffer)
+    (define-key map (kbd "n") 'popup-next)
+    (define-key map (kbd "p") 'popup-previous)
+    (define-key map (kbd "f") 'popup-open)
+    (define-key map (kbd "b") 'popup-close)
     map))
 
 (loga-check-state)
