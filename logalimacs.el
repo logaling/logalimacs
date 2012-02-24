@@ -352,7 +352,7 @@
   (setq loga-current-endpoint :popup)
   (cond
    ((not (require 'popup nil t))
-    (message "Can't lookup, it is require popup.el."))
+    (message "Can't lookup, it require popup.el."))
    ((and (listp content) (not (null content)))
     (popup-cascade-menu content
                         :point (loga-decide-point)
