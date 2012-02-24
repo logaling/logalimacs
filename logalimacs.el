@@ -221,32 +221,36 @@
     (loga-decide-format words-list loga-current-max-length)))
 
 (defun loga-decide-format (words size)
-  (let* ((half (- (/ (window-width) 2) 2))
-         record)
+  (let* (record source-length target-length)
     (loop for (source target note) in words do
-          (if (and (> half (max (length source) (length target)))
-                   (> loga-width-limit-source (length source))
-                   (> (max half (cdr size)) (length target)))
-              (if note
-                  (push (list (loga-append-margin source target size)
-                              (concat "\n" note)) record)
-                (push (list (loga-append-margin source target size)) record))))
+          (setq source-length (loga-decide-length source)
+                target-length (loga-decide-length target))
+          (if (and (loga-less-than-half-p source-length target-length)
+                   (> loga-width-limit-source source-length))
+              (push (loga-append-margin source target note size) record)))
     record))
 
 (defun loga-max-length (words)
-  (let* ((max-source-length 0)
-         (max-target-length 0)
-         source-length target-length)
-    (loop for (source target) in words do
-          (setq source-length (loga-decide-length source)
-                target-length (loga-decide-length target))
-          if (and (< max-source-length (min loga-width-limit-source source-length))
-                  (< source-length (/ (window-width) 2)))
-          collect (setq max-source-length source-length)
-          if (< max-target-length target-length)
-          collect (setq max-target-length target-length))
-    (setq max-target-length (min max-target-length (- (window-width) max-source-length))
-          loga-current-max-length (cons max-source-length max-target-length))))
+  (loop
+   with max-source-length = 0
+   with max-target-length = 0
+   with source-length
+   with target-length
+   for (source target) in words do
+   (setq source-length (loga-decide-length source)
+         target-length (loga-decide-length target))
+   if (and (< max-source-length source-length)
+           (< source-length loga-width-limit-source)
+           (loga-less-than-half-p source-length target-length))
+   collect (setq max-source-length source-length
+                 max-target-length (max max-target-length target-length))
+   finally (setq loga-current-max-length (cons max-source-length max-target-length))))
+
+(defun loga-less-than-half-p (source-length target-length)
+  (let* ((half (- (/ (window-width) 2) 2)))
+    (if (> half (max source-length target-length))
+        t
+      nil)))
 
 (defun loga-decide-length (sentence)
   (loop with sum = 0
@@ -255,12 +259,12 @@
         else if (not (null token)) do (setq sum (+ sum 1))
         finally return sum))
 
-(defun loga-append-margin (source target size)
-  (let* ((max-source-length (car size))
-         (margin (- max-source-length (length source)))
+(defun loga-append-margin (source target note max-length)
+  (let* ((margin (- (car max-length) (loga-decide-length source)))
          (column (concat source (spaces-string margin) ":" target)))
     (setq loga-current-margin margin)
-    column))
+    (if note (setq column (list column (concat "\n" note)))
+      (list column))))
 
 (defun loga-query (&optional message)
   (let* ((input (read-string (or message "types here:"))))
