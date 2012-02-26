@@ -58,6 +58,7 @@
 (defvar loga-base-buffer nil)
 (defvar loga-width-limit-source 30)
 (defvar loga-width-limit-target 0)
+(defvar loga-use-dictionary-option nil "If nonnil, use --dictionary for lookup option, It can use at more than logaling version 0.1.3")
 
 (defvar loga-command-alist
   '((?a . :add)
@@ -153,11 +154,13 @@
       ((or :list :register :unregister :version)
        (minibuffer-message (loga-to-shell cmd task))))))
 
-(defun loga-lookup-attach-option (arg)
-  (let* ((word arg))
+(defun loga-lookup-attach-option (find-word)
+  (let* ((options (list)))
+    (if loga-use-dictionary-option
+        (push " --dictionary" options))
     (if (and loga-possible-json-p (eq loga-current-endpoint :popup))
-        (setq word (concat arg " --output=json")))
-    word))
+        (push " --output=json" options))
+    (concat find-word (mapconcat 'identity options " "))))
 
 (defun loga-word-cache (word)
   (cond ((<= loga-word-cache-limit (length loga-word-cache))
@@ -190,8 +193,9 @@
               (:manual (loga-input))
               (t (loga-return-word-on-cursor)))))
     (setq word (concat "\"" word "\""))
-    ;; @todo implement at logaling
+    ;; @todo delete at more than logaling version 0.1.3
     (cond
+     (loga-use-dictionary-option t)
      ((string-match "[ぁ-んァ-ン上-黑]" word)
       (setq word (concat word " -S=ja -T=en")))
      ((string-match "[a-zA-Z]" word)
