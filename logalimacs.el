@@ -233,20 +233,18 @@
     record))
 
 (defun loga-max-length (words)
-  (loop
-   with max-source-length = 0
-   with max-target-length = 0
-   with source-length
-   with target-length
-   for (source target) in words do
-   (setq source-length (loga-decide-length source)
-         target-length (loga-decide-length target))
-   if (and (< max-source-length source-length)
-           (< source-length loga-width-limit-source)
-           (loga-less-than-half-p source-length target-length))
-   collect (setq max-source-length source-length
-                 max-target-length (max max-target-length target-length))
-   finally (setq loga-current-max-length (cons max-source-length max-target-length))))
+  (let* ((max-source-length 0)
+         (max-target-length 0)
+         source-length target-length)
+    (loop for (source target) in words do
+          (setq source-length (loga-decide-length source)
+                target-length (loga-decide-length target))
+          if (and (< max-source-length source-length)
+                  (< source-length loga-width-limit-source)
+                  (loga-less-than-half-p source-length target-length))
+          collect (setq max-source-length source-length
+                        max-target-length (max max-target-length target-length))
+          finally (setq loga-current-max-length (cons max-source-length max-target-length)))))
 
 (defun loga-less-than-half-p (source-length target-length)
   (let* ((half (- (/ (window-width) 2) 2)))
