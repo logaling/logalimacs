@@ -73,9 +73,7 @@
     (?U . :unregister)
     (?u . :update)
     (?s . :show)
-    (?v . :version)
-    ;(?f . :loga-fly-mode)
-    ))
+    (?v . :version)))
 
 (defvar loga-buffer-or-popup-command-alist
   '((?b . :buffer)
@@ -108,7 +106,7 @@
           (scroll-other-window 1) (loga-buffer-or-popup-command)))
        (:previous-line
         (unless (eq loga-current-endpoint :popup)
-          (scroll-other-window-down 1)(loga-buffer-or-popup-command)))
+          (scroll-other-window-down 1) (loga-buffer-or-popup-command)))
        (:buffer (loga-make-buffer (cdar loga-word-cache)))
        (:quit
         (if (eq loga-current-endpoint :buffer)
@@ -392,10 +390,10 @@
   (setq loga-fly-mode t
         loga-fly-timer
         (run-with-idle-timer loga-fly-mode-interval t
-            (lambda()
-              (let* ((fly-word (loga-return-word-on-cursor)))
-                (if fly-word
-                    (loga-lookup-at-manually fly-word))))))
+                             (lambda()
+                               (let* ((fly-word (loga-return-word-on-cursor)))
+                                 (if fly-word
+                                     (loga-lookup-at-manually fly-word))))))
   (message "loga-fly-mode enable"))
 
 (defun loga-fly-mode-off ()
@@ -437,7 +435,7 @@
       (message "Check OK: logaling-command already installed")
       (if (version< "0.1.2" (loga-version-number))
           ;; @todo sets true when resolved problem
-              (setq loga-possible-json-p nil)) t)
+          (setq loga-possible-json-p nil)) t)
      ((not (string-match "1.9.[0-9]\\|[2-9].[0-9].[0-9]" version))
       (message "Note: Ruby version errer, require Ruby 1.9.x"))
      (rvm-p
