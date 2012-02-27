@@ -153,7 +153,7 @@
        (minibuffer-message (loga-to-shell cmd task))))))
 
 (defun loga-lookup-attach-option (find-word)
-  (let* ((options (list)))
+  (let* ((options '()))
     (if loga-use-dictionary-option
         (push "--dictionary" options))
     (if (and loga-possible-json-p (eq loga-current-endpoint :popup))
