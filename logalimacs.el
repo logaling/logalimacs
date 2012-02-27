@@ -254,10 +254,21 @@
 
 (defun loga-decide-length (sentence)
   (loop with sum = 0
-        for token in (string-to-list (split-string sentence ""))
-        if (multibyte-string-p token) do (setq sum (+ sum 2))
-        else if (not (null token)) do (setq sum (+ sum 1))
+        for token in (string-to-list (split-string sentence "")) do
+        (cond
+         ((equal "" token) t)
+         ((and (multibyte-string-p token)
+               (loga-correct-character-p token))
+          (setq sum (+ sum 2)))
+         (t (setq sum (+ sum 1))))
         finally return sum))
+
+(defun loga-correct-character-p (token)
+  "If mixed Japanese language, wrong count at specific character. because it escape character"
+  (if (not (string-match
+            "[\\ -/:->{-~\\?^]\\|\\[\\|\\]" token))
+      t
+    nil))
 
 (defun loga-append-margin (source target note max-length)
   (let* ((margin (- (car max-length) (loga-decide-length source)))
