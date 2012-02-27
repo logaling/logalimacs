@@ -155,10 +155,10 @@
 (defun loga-lookup-attach-option (find-word)
   (let* ((options (list)))
     (if loga-use-dictionary-option
-        (push " --dictionary" options))
+        (push "--dictionary" options))
     (if (and loga-possible-json-p (eq loga-current-endpoint :popup))
-        (push " --output=json" options))
-    (concat find-word (mapconcat 'identity options " "))))
+        (push "--output=json" options))
+    (concat find-word " " (mapconcat 'identity options " "))))
 
 (defun loga-word-cache (word)
   (cond ((<= loga-word-cache-limit (length loga-word-cache))
