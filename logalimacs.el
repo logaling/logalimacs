@@ -385,7 +385,7 @@
   (loop for (src-len . tgt-len) in (list loga-current-max-length)
         with sum = 0
         collect (+ src-len  tgt-len) into sum
-        finally return (min (car sum) (window-width))))
+        finally return (min (+ (car sum) 1) (window-width))))
 
 ;;;###autoload
 (defun loga-fly-mode ()
