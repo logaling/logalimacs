@@ -375,11 +375,10 @@
   (let* ((half (/ (window-width) 2))
          (quarter (/ half 2))
          (cursor (- (point) (point-at-bol))))
-    (cond ((< half (loga-popup-width))
-           (point-at-bol))
-          ((< half cursor)
-           (+ (point-at-bol) quarter))
-          (t (point)))))
+    (cond
+     ((< half cursor)
+      (+ (point-at-bol) quarter))
+     (t (point)))))
 
 (defun loga-popup-width ()
   (loop for (src-len . tgt-len) in (list loga-current-max-length)
