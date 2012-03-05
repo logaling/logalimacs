@@ -300,7 +300,7 @@
       (t (setq messages (list messages))))
     (loop for msg in messages do
           (push (loga-query msg) record))
-    (setq record (mapconcat 'identity (reverse record) " "))))
+    (mapconcat 'identity (reverse record) " ")))
 
 ;;;###autoload
 (defun loga-lookup-at-manually ()
