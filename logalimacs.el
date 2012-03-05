@@ -239,10 +239,11 @@
     (loop for (source target) in words do
           (setq source-length (loga-decide-length source)
                 target-length (loga-decide-length target))
-          if (and (< max-source-length source-length)
+          if (and (or (< max-source-length source-length)
+                      (< max-target-length target-length))
                   (< source-length loga-width-limit-source)
                   (loga-less-than-half-p source-length target-length))
-          collect (setq max-source-length source-length
+          collect (setq max-source-length (max max-source-length source-length)
                         max-target-length (max max-target-length target-length))
           finally (setq loga-current-max-length (cons max-source-length max-target-length)))))
 
