@@ -468,7 +468,9 @@
     (define-key map (kbd "b") 'popup-close)
     map))
 
-(loga-check-state)
+;;; @todo fix below bug
+;; Comment out to display odd shelloutput abnormally at PC of part(My company PC)
+;; (loga-check-state)
 
 (provide 'logalimacs)
 
