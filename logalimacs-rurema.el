@@ -26,18 +26,25 @@
 ;;; when update database
 ;; % rurema --update
 
+(eval-when-compile
+  (require 'cl))
 
-;;;###autoload (autoload 'loga-lookup-for-rurema "logalimacs")
-
+(defvar loga-rurema-cache '())
 
 ;; todo support multiple word
+(defun loga-rurema (word &optional no-ask)
+  (loga-to-shell "\\rurema" (concat word (if no-ask " --no-ask"))))
+
 ;;;###autoload
-(defun loga-lookup-for-rurema (&optional word-for-fly-mode)
-  ""
+(defun loga-lookup-for-rurema ()
   (interactive)
-  (let* ((word (or word-for-fly-mode
-                   (loga-point-or-read-string "Search word here: "))))
-    (save-current-buffer
-      (loga-prompt-command "\\rurema" (concat word " --no-ask") nil t))))
+  (let* ((word (loga-query "rurema: "))
+         (search-list (loga-rurema word t)))
+    (loga-current-command :lookup)
+    (setq loga-current-endpoint :buffer
+          loga-base-buffer (current-buffer)
+          loga-rurema-cache (split-string search-list " "))
+    (loga-make-buffer (loga-rurema (car loga-rurema-cache) t))))
 
 (provide 'logalimacs-rurema)
+
