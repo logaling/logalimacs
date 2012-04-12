@@ -190,8 +190,7 @@
             (case manual?
               (:manual (loga-input))
               (t (loga-return-word-on-cursor)))))
-    (setq word (concat "\"" word "\""))
-    (setq content (loga-command word))
+    (setq content (loga-command (concat "\"" word "\"")))
     (if (equal "" content)
         (message (concat "'" (caar loga-word-cache) content "' is not found"))
       (case endpoint
