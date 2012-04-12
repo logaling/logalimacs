@@ -217,7 +217,7 @@
                   ('target (setq target var))
                   ('note   (setq note   var))))
           (push (list source target note) words-list))
-    (loga-max-length words-list)
+    (setq loga-current-max-length (loga-max-length words-list))
     (loga-decide-format words-list loga-current-max-length)))
 
 (defun loga-decide-format (words size)
@@ -243,7 +243,7 @@
                   (loga-less-than-half-p source-length target-length))
           collect (setq max-source-length (max max-source-length source-length)
                         max-target-length (max max-target-length target-length))
-          finally (setq loga-current-max-length (cons max-source-length max-target-length)))))
+          finally return (cons max-source-length max-target-length))))
 
 (defun loga-less-than-half-p (source-length target-length)
   (let* ((half (- (/ (window-width) 2) 2)))
