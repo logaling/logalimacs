@@ -161,11 +161,10 @@
     (concat find-word " " (mapconcat 'identity options " "))))
 
 (defun loga-word-cache (word)
-  (cond ((<= loga-word-cache-limit (length loga-word-cache))
-         (setq loga-word-cache (reverse loga-word-cache)
-               loga-word-cache (cdr loga-word-cache)
-               loga-word-cache (reverse loga-word-cache))))
-  (push word loga-word-cache))
+  (let* ((len (length loga-word-cache)))
+    (cond ((<= loga-word-cache-limit len)
+           (setq loga-word-cache (nthcar (- len 1) loga-word-cache))))
+    (push word loga-word-cache)))
 
 ;;;###autoload
 (defun loga-add ()
