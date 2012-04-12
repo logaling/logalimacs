@@ -195,8 +195,6 @@
         (message (concat "'" (caar loga-word-cache) content "' is not found"))
       (case endpoint
         (:popup
-         (cond (loga-possible-json-p
-                (setq content (loga-convert-from-json-to-list content))))
          (loga-make-popup content))
         (t (loga-make-buffer content))))))
 
@@ -363,8 +361,8 @@
   (cond
    ((not (require 'popup nil t))
     (message "Can't lookup, it requires popup.el."))
-   ((and (listp content) (not (null content)))
-    (popup-cascade-menu content
+   ((and loga-possible-json-p (not (null content)))
+    (popup-cascade-menu (loga-convert-from-json-to-list content)
                         :point (loga-decide-point)
                         :width (loga-popup-width)
                         :keymap loga-popup-menu-keymap))
