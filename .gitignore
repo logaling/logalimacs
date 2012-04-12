@@ -1,7 +1,7 @@
 !.gitignore
 
 # byte compile file
-*.elc$
+*.elc
 
 # yard output
 /doc
