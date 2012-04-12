@@ -191,14 +191,6 @@
               (:manual (loga-input))
               (t (loga-return-word-on-cursor)))))
     (setq word (concat "\"" word "\""))
-    ;; @todo delete at more than logaling version 0.1.3
-    (cond
-     (loga-use-dictionary-option t)
-     ((string-match "[ぁ-んァ-ン上-黑]" word)
-      (setq word (concat word " -S=ja -T=en")))
-     ((string-match "[a-zA-Z]" word)
-      (setq word (concat word " -S=en -T=ja"))))
-    ;; ---------------------------
     (setq content (loga-command word))
     (if (equal "" content)
         (message (concat "'" (caar loga-word-cache) content "' is not found"))
@@ -208,6 +200,13 @@
                 (setq content (loga-convert-from-json-to-list content))))
          (loga-make-popup content))
         (t (loga-make-buffer content))))))
+
+(defun loga-attach-lang-option-for-ja/en (word)
+  (cond
+   ((string-match "[ぁ-んァ-ン上-黑]" word)
+    (return (concat word " -S=ja -T=en")))
+   ((string-match "[a-zA-Z]" word)
+    (return (concat word " -S=en -T=ja")))))
 
 (defun loga-convert-from-json-to-list (content)
   (let* ((json (json-read-from-string content))
