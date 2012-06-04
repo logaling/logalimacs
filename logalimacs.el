@@ -81,7 +81,7 @@
 (defvar loga-base-buffer nil)
 
 (defcustom loga-width-limit-source 30
-  "limit of width of source"
+  "limit of width of source word"
   :group 'logalimacs
   :type 'integer)
 
