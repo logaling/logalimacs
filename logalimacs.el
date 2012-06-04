@@ -51,8 +51,10 @@
 (defvar loga-fly-mode nil
   "if nonnil, logalimacs use loga-fly-mode")
 
-(defvar loga-fly-mode-interval 1
-  "timer-valiable for loga-fly-mode, credit par sec.")
+(defcustom loga-fly-mode-interval 1
+  "timer-valiable for loga-fly-mode, credit par sec."
+  :group 'logalimacs
+  :type 'integer)
 
 (defvar loga-fly-timer nil
   "timer object for loga-fly-mode")
