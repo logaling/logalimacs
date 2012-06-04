@@ -85,7 +85,11 @@
   :group 'logalimacs
   :type 'integer)
 
-(defvar loga-width-limit-target 0)
+(defvar loga-width-limit-target 0
+  "limit of width of target word"
+  :group 'logalimacs
+  :type 'integer)
+
 (defvar loga-use-dictionary-option nil "If nonnil, use --dictionary for lookup option, It can use at more than logaling version 0.1.3")
 
 (defvar loga-command-alist
