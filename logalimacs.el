@@ -48,9 +48,6 @@
   :group 'logalimacs
   :type 'boolean)
 
-(defvar loga-fly-mode nil
-  "if nonnil, logalimacs use loga-fly-mode")
-
 (defcustom loga-fly-mode-interval 1
   "timer-valiable for loga-fly-mode, credit par sec."
   :group 'logalimacs
@@ -74,12 +71,6 @@
   :group 'logalimacs
   :type 'integer)
 
-(defvar loga-word-cache nil "cache word used by loga-lookup")
-(defvar loga-current-command nil "get executed current command-name and symbol")
-(defvar loga-current-endpoint nil "store current endpoint symbol")
-(defvar loga-current-max-length nil)
-(defvar loga-base-buffer nil)
-
 (defcustom loga-width-limit-source 30
   "limit of width of source word"
   :group 'logalimacs
@@ -94,6 +85,13 @@
   "If nonnil, use --dictionary for lookup option, It can use at more than logaling version 0.1.3"
   :group 'logalimacs
   :type 'boolean)
+
+(defvar loga-fly-mode nil "if nonnil, logalimacs use loga-fly-mode")
+(defvar loga-word-cache nil "cache word used by loga-lookup")
+(defvar loga-current-command nil "get executed current command-name and symbol")
+(defvar loga-current-endpoint nil "store current endpoint symbol")
+(defvar loga-current-max-length nil)
+(defvar loga-base-buffer nil)
 
 (defvar loga-command-alist
   '((?a . :add)
