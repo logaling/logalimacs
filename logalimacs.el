@@ -53,7 +53,9 @@
 
 (defvar loga-fly-mode-interval 1
   "timer-valiable for loga-fly-mode, credit par sec.")
-(defvar loga-fly-timer nil)
+
+(defvar loga-fly-timer nil
+  "timer object for loga-fly-mode")
 
 (defcustom loga-possible-json-p nil
   "whether the popup correspond to json type"
