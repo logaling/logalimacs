@@ -90,7 +90,10 @@
   :group 'logalimacs
   :type 'integer)
 
-(defvar loga-use-dictionary-option nil "If nonnil, use --dictionary for lookup option, It can use at more than logaling version 0.1.3")
+(defcustom loga-use-dictionary-option nil
+  "If nonnil, use --dictionary for lookup option, It can use at more than logaling version 0.1.3"
+  :group 'logalimacs
+  :type 'boolean)
 
 (defvar loga-command-alist
   '((?a . :add)
