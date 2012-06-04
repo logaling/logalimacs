@@ -43,7 +43,11 @@
 ;;for ansi-color
 (require 'ansi-color)
 
-(defvar loga-log-output nil "if nonnil, output log for developer.")
+(defcustom loga-log-output nil
+  "if nonnil, output log for developer."
+  :group 'logalimacs
+  :type 'boolean)
+
 (defvar loga-fly-mode nil)
 (defvar loga-fly-mode-interval 1
   "timer-valiable for loga-fly-mode, credit par sec.")
