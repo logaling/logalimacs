@@ -69,7 +69,11 @@
   :group 'logalimacs
   :type 'integer)
 
-(defvar loga-word-cache-limit 10)
+(defcustom loga-word-cache-limit 10
+  "number of cached words"
+  :group 'logalimacs
+  :type 'integer)
+
 (defvar loga-word-cache nil "cache word used by loga-lookup")
 (defvar loga-current-command nil "get executed current command-name and symbol")
 (defvar loga-current-endpoint nil "store current endpoint symbol")
