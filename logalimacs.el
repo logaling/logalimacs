@@ -381,7 +381,8 @@
     (switch-to-buffer (get-buffer-create "*logalimacs*"))
     (erase-buffer) ;;initialize
     (insert content)
-    (beginning-of-buffer))
+    (beginning-of-buffer)
+    (loga-apply-read-only))
   (switch-to-buffer loga-base-buffer)
   (popwin:popup-buffer
    (get-buffer-create "*logalimacs*")
@@ -414,6 +415,10 @@
         with sum = 0
         collect (+ src-len  tgt-len) into sum
         finally return (min (+ (car sum) 1) (window-width))))
+
+(defun loga-apply-read-only ()
+  (unless buffer-read-only
+    (toggle-read-only)))
 
 ;;;###autoload
 (defun loga-fly-mode ()
