@@ -395,7 +395,7 @@
   (cond
    ((not (require 'popup nil t))
     (message "Can't lookup, it requires popup.el."))
-   ((and loga-possible-json-p (not (null content)))
+   ((and loga-possible-json-p content)
     (popup-cascade-menu (loga-convert-from-json-to-list content)
                         :point (loga-decide-point)
                         :width (loga-popup-width)
