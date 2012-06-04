@@ -79,7 +79,12 @@
 (defvar loga-current-endpoint nil "store current endpoint symbol")
 (defvar loga-current-max-length nil)
 (defvar loga-base-buffer nil)
-(defvar loga-width-limit-source 30)
+
+(defcustom loga-width-limit-source 30
+  "limit of width of source"
+  :group 'logalimacs
+  :type 'integer)
+
 (defvar loga-width-limit-target 0)
 (defvar loga-use-dictionary-option nil "If nonnil, use --dictionary for lookup option, It can use at more than logaling version 0.1.3")
 
