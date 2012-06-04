@@ -85,7 +85,7 @@
   :group 'logalimacs
   :type 'integer)
 
-(defvar loga-width-limit-target 0
+(defcustom loga-width-limit-target 0
   "limit of width of target word"
   :group 'logalimacs
   :type 'integer)
