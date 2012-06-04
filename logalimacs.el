@@ -64,7 +64,11 @@
   :group 'logalimacs
   :type 'boolean)
 
-(defvar loga-popup-margin 0)
+(defcustom loga-popup-margin 0
+  "margin variable for popup-tip"
+  :group 'logalimacs
+  :type 'integer)
+
 (defvar loga-word-cache-limit 10)
 (defvar loga-word-cache nil "cache word used by loga-lookup")
 (defvar loga-current-command nil "get executed current command-name and symbol")
