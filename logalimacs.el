@@ -386,8 +386,8 @@
           (loga-reject-hiragana match-word)
         match-word))))
 
-(defun loga-reject-hiragana (str)
-  (replace-regexp-in-string "[ぁ-ん]" "" str))
+(defun loga-reject-hiragana (string)
+  (replace-regexp-in-string "[ぁ-ん]" "" string))
 
 (defun loga-make-buffer(content)
   "create buffer for logalimacs"
