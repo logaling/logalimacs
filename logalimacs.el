@@ -43,6 +43,8 @@
 ;;for ansi-color
 (require 'ansi-color)
 
+(defvar loga-popup-output-type :default)
+
 (defcustom loga-log-output nil
   "if nonnil, output log for developer."
   :group 'logalimacs
@@ -92,6 +94,8 @@
 (defvar loga-current-endpoint nil "store current endpoint symbol")
 (defvar loga-current-max-length nil)
 (defvar loga-base-buffer nil)
+(defvar loga-popup-point 0)
+(defvar loga-popup-width 0)
 
 (defvar loga-command-alist
   '((?a . :add)
@@ -404,17 +408,18 @@
 (defun loga-make-popup (content)
   (let* ((converted-content (loga-convert-from-json content)))
     (setq loga-current-endpoint :popup)
+    (loga-setup-point-and-width)
     (typecase converted-content
       (list
        (popup-cascade-menu converted-content
-                           :point (loga-decide-point)
-                           :width (loga-popup-width)
+                           :point loga-popup-point
+                           :width loga-popup-width
                            :keymap loga-popup-menu-keymap))
       (string
        (popup-tip converted-content
                   :margin loga-popup-margin
-                  :point (loga-decide-point)
-                  :width (loga-popup-width))))))
+                  :point loga-popup-point
+                  :width loga-popup-width)))))
 
 (defun loga-decide-point ()
   (let* ((half (/ (window-width) 2))
@@ -424,6 +429,11 @@
      ((< half cursor)
       (+ (point-at-bol) quarter))
      (t (point)))))
+
+(defun loga-setup-point-and-width ()
+  (case loga-popup-output-type
+    (:default (setq loga-popup-width (loga-popup-width)
+                    loga-popup-point (loga-decide-point)))))
 
 (defun loga-popup-width ()
   (loop for (src-len . tgt-len) in (list loga-current-max-length)
