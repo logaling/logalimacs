@@ -61,11 +61,6 @@
 (defvar loga-fly-timer nil
   "timer object for loga-fly-mode")
 
-(defcustom loga-possible-json-p nil
-  "whether the popup correspond to json type"
-  :group 'logalimacs
-  :type 'boolean)
-
 (defcustom loga-popup-margin 0
   "margin variable for popup-tip"
   :group 'logalimacs
@@ -194,7 +189,7 @@
   (let* ((options '()))
     (if loga-use-dictionary-option
         (push "--dictionary" options))
-    (if (and loga-possible-json-p (eq loga-current-endpoint :popup))
+    (if (eq loga-current-endpoint :popup)
         (push "--output=json" options))
     (concat find-word " " (mapconcat 'identity options " "))))
 
@@ -489,9 +484,7 @@
     (cond
      ((and installed-p version)
       (message "Check OK: logaling-command already installed")
-      (if (version< "0.1.2" (loga-version-number))
-          ;; @todo sets true when resolved problem
-          (setq loga-possible-json-p nil)) t)
+      t)
      ((not (string-match "1.9.[0-9]\\|[2-9].[0-9].[0-9]" version))
       (message "Note: Ruby version errer, require Ruby 1.9.x"))
      (rvm-p
