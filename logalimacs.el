@@ -432,12 +432,12 @@
 
 (defun loga-setup-point-and-width ()
   (case loga-popup-output-type
-    (:default (setq loga-popup-width (loga-popup-width)
+    (:default (setq loga-popup-width (loga-decide-width)
                     loga-popup-point (loga-decide-point)))
     (:width (setq loga-popup-width (window-width)
                   loga-popup-point (point-at-bol)))))
 
-(defun loga-popup-width ()
+(defun loga-decide-width ()
   (loop for (src-len . tgt-len) in (list loga-current-max-length)
         with sum = 0
         collect (+ src-len  tgt-len) into sum
