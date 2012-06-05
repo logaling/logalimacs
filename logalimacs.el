@@ -113,6 +113,8 @@
     (?q . :quit)
     (?n . :next-line)
     (?p . :previous-line)
+    (?j . :next-line)
+    (?k . :previous-line)
     (?d . :detail)))
 
 ;;;###autoload
