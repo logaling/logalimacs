@@ -155,7 +155,7 @@
     (:buffer
      (kill-buffer "*logalimacs*"))
     (:popup
-     (loga-make-buffer (cdar loga-word-cache)))))
+     (loga-lookup-in-buffer))))
 
 ;; @todo apply ansi-color
 (defun loga-to-shell (cmd &optional arg help)
