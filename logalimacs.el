@@ -412,7 +412,9 @@
                           :keymap loga-popup-menu-keymap))
      ((stringp converted-content)
       (popup-tip converted-content
-                 :margin loga-popup-margin)))))
+                 :margin loga-popup-margin
+                 :point (loga-decide-point)
+                 :width (loga-popup-width))))))
 
 (defun loga-decide-point ()
   (let* ((half (/ (window-width) 2))
