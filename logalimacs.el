@@ -404,17 +404,17 @@
 (defun loga-make-popup (content)
   (let* ((converted-content (loga-convert-from-json content)))
     (setq loga-current-endpoint :popup)
-    (cond
-     ((listp converted-content)
-      (popup-cascade-menu converted-content
-                          :point (loga-decide-point)
-                          :width (loga-popup-width)
-                          :keymap loga-popup-menu-keymap))
-     ((stringp converted-content)
-      (popup-tip converted-content
-                 :margin loga-popup-margin
-                 :point (loga-decide-point)
-                 :width (loga-popup-width))))))
+    (typecase converted-content
+      (list
+       (popup-cascade-menu converted-content
+                           :point (loga-decide-point)
+                           :width (loga-popup-width)
+                           :keymap loga-popup-menu-keymap))
+      (string
+       (popup-tip converted-content
+                  :margin loga-popup-margin
+                  :point (loga-decide-point)
+                  :width (loga-popup-width))))))
 
 (defun loga-decide-point ()
   (let* ((half (/ (window-width) 2))
