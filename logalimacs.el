@@ -48,6 +48,11 @@
   :group 'logalimacs
   :type 'boolean)
 
+(defcustom loga-cascade-output t
+  "if nonnil, output by cascade popup"
+  :group 'logalimacs
+  :type 'boolean)
+
 (defcustom loga-fly-mode-interval 1
   "timer-valiable for loga-fly-mode, credit par sec."
   :group 'logalimacs
@@ -237,9 +242,10 @@
    ((string-match "[a-zA-Z]" word)
     (return (concat word " -S=en -T=ja")))))
 
-(defun loga-convert-from-json-to-list (content)
+(defun loga-convert-from-json (content)
   (let* ((json (json-read-from-string content))
-         source target note words-list)
+         source target note words-list
+         content-of-list)
     (loop for record across json do
           (loop for (key . var) in record do
                 (case key
@@ -247,8 +253,16 @@
                   ('target (setq target var))
                   ('note   (setq note   var))))
           (push (list source target note) words-list))
-    (setq loga-current-max-length (loga-max-length words-list))
-    (loga-decide-format words-list loga-current-max-length)))
+    (setq loga-current-max-length (loga-max-length words-list)
+          content-of-list (loga-decide-format words-list loga-current-max-length))
+    (if loga-cascade-output
+        content-of-list
+      (loga-decide-format-for-string content-of-list))))
+
+(defun loga-decide-format-for-string (content-of-list)
+  (let* ((striped-list (loop for (word) in content-of-list
+                             collect word)))
+    (mapconcat 'identity striped-list "\n")))
 
 (defun loga-decide-format (words size)
   (let* (record source-length target-length)
@@ -391,16 +405,19 @@
   (loga-buffer-or-popup-command))
 
 (defun loga-make-popup (content)
-  (setq loga-current-endpoint :popup)
-  (cond
-   ((not (require 'popup nil t))
-    (message "Can't lookup, it requires popup.el."))
-   ((and loga-possible-json-p content)
-    (popup-cascade-menu (loga-convert-from-json-to-list content)
-                        :point (loga-decide-point)
-                        :width (loga-popup-width)
-                        :keymap loga-popup-menu-keymap))
-   ((stringp content) (popup-tip content :margin loga-popup-margin))))
+  (let* ((converted-content (loga-convert-from-json content)))
+    (setq loga-current-endpoint :popup)
+    (cond
+     ((not (require 'popup nil t))
+      (message "Can't lookup, it requires popup.el."))
+     ((listp converted-content)
+      (popup-cascade-menu converted-content
+                          :point (loga-decide-point)
+                          :width (loga-popup-width)
+                          :keymap loga-popup-menu-keymap))
+     ((stringp converted-content)
+      (popup-tip converted-content
+                 :margin loga-popup-margin)))))
 
 (defun loga-decide-point ()
   (let* ((half (/ (window-width) 2))
