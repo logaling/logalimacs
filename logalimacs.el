@@ -405,8 +405,6 @@
   (let* ((converted-content (loga-convert-from-json content)))
     (setq loga-current-endpoint :popup)
     (cond
-     ((not (require 'popup nil t))
-      (message "Can't lookup, it requires popup.el."))
      ((listp converted-content)
       (popup-cascade-menu converted-content
                           :point (loga-decide-point)
