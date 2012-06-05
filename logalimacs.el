@@ -233,6 +233,7 @@
         (message (concat "'" (caar loga-word-cache) content "' is not found"))
       (case endpoint
         (:popup
+         (loga-setup-point-and-width)
          (loga-make-popup content))
         (t (loga-make-buffer content))))))
 
@@ -408,7 +409,6 @@
 (defun loga-make-popup (content)
   (let* ((converted-content (loga-convert-from-json content)))
     (setq loga-current-endpoint :popup)
-    (loga-setup-point-and-width)
     (typecase converted-content
       (list
        (popup-cascade-menu converted-content
