@@ -438,9 +438,9 @@
                   loga-popup-point (point-at-bol)))))
 
 (defun loga-decide-width ()
-  (loop for (source-length . tgt-len) in (list loga-current-max-length)
+  (loop for (source-length . target-length) in (list loga-current-max-length)
         with sum = 0
-        collect (+ source-length  tgt-len) into sum
+        collect (+ source-length  target-length) into sum
         finally return (min (+ (car sum) 1) (window-width))))
 
 ;;;###autoload
