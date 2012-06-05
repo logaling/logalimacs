@@ -74,7 +74,7 @@
   :type 'integer)
 
 (defcustom loga-width-limit-source 30
-  "limit of width of source word"
+  "limit width of source word"
   :group 'logalimacs
   :type 'integer)
 
