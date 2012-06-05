@@ -397,7 +397,7 @@
     (erase-buffer) ;;initialize
     (insert content)
     (beginning-of-buffer)
-    (toggle-read-only t))
+    (toggle-read-only 1))
   (switch-to-buffer loga-base-buffer)
   (popwin:popup-buffer
    (get-buffer-create "*logalimacs*")
