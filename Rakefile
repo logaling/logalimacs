@@ -5,7 +5,7 @@
 
 # Input your configuration
 PACKAGE_NAME = "logalimacs"
-PACKAGE_VERSION = "0.9.0"
+PACKAGE_VERSION = "1.0.0"
 REQUIREMENTS = ["logalimacs.el"]
 DESCRIPTION = "Front-end of logaling-command for Ruby gem"
 
