@@ -518,6 +518,8 @@
     (define-key map (kbd "d") 'loga-lookup-in-buffer)
     (define-key map (kbd "n") 'popup-next)
     (define-key map (kbd "p") 'popup-previous)
+    (define-key map (kbd "j") 'popup-next)
+    (define-key map (kbd "k") 'popup-previous)
     (define-key map (kbd "f") 'popup-open)
     (define-key map (kbd "b") 'popup-close)
     map))
