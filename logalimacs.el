@@ -434,8 +434,8 @@
   (case loga-popup-output-type
     (:auto (setq loga-popup-width (loga-compute-width)
                     loga-popup-point (loga-compute-point)))
-    (:width (setq loga-popup-width (window-width)
-                  loga-popup-point (point-at-bol)))))
+    (:max (setq loga-popup-width (window-width)
+                loga-popup-point (point-at-bol)))))
 
 (defun loga-compute-width ()
   (loop for (source-length . target-length) in (list loga-current-max-length)
