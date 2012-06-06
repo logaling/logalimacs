@@ -43,7 +43,7 @@
 ;;for ansi-color
 (require 'ansi-color)
 
-(defvar loga-popup-output-type :default)
+(defvar loga-popup-output-type :auto)
 
 (defcustom loga-log-output nil
   "if nonnil, output log for developer."
@@ -432,7 +432,7 @@
 
 (defun loga-setup-point-and-width ()
   (case loga-popup-output-type
-    (:default (setq loga-popup-width (loga-compute-width)
+    (:auto (setq loga-popup-width (loga-compute-width)
                     loga-popup-point (loga-compute-point)))
     (:width (setq loga-popup-width (window-width)
                   loga-popup-point (point-at-bol)))))
