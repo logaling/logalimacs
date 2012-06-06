@@ -1,0 +1,22 @@
+Marmaladeへのアップロード方法
+
+パッケージの修正を終えてMarmaladeへアップロードできる準備が整ったら
+Rakefileの8行目の以下の項目をそのバージョンにあったものに修正します
+(logalimacs以外のパッケージをアップロードにRakefaleを利用する場合は
+PACKAGE_NAME, PACKAGE_VERSION, REQUIREMENTS, DESCRIPTION, DEPENDENCIES
+を設定してください)
+
+例:
+PACKAGE_VERSION = "0.9.0" -> PACKAGE_VERSION = "1.0.0"
+
+Rakefileのあるディレクトリでrakeコマンドを実行します。
+
+logalimacs + -x.x.xのバージョン番号が付加されたディレクトリと
+.tarファイルが作成されます。
+
+作成された.tarファイルをMarmaladeに貼り付けます。
+
+1. Marmaladeにログインします
+2. add packageをクリックします
+3. Package Fileに作成した.tarファイルを選択します
+4. Uploadボタンをクリックします
