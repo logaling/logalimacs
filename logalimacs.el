@@ -255,21 +255,21 @@
                   ('note   (setq note   var))))
           (push (list source target note) words-list))
     (setq loga-current-max-length (loga-max-length words-list)
-          content-of-list (loga-decide-format words-list loga-current-max-length))
+          content-of-list (loga-compute-format words-list loga-current-max-length))
     (if loga-cascade-output
         content-of-list
-      (loga-decide-format-for-string content-of-list))))
+      (loga-compute-format-for-string content-of-list))))
 
-(defun loga-decide-format-for-string (content-of-list)
+(defun loga-compute-format-for-string (content-of-list)
   (let* ((striped-list (loop for (word) in content-of-list
                              collect word)))
     (mapconcat 'identity striped-list "\n")))
 
-(defun loga-decide-format (words size)
+(defun loga-compute-format (words size)
   (let* (record source-length target-length)
     (loop for (source target note) in words do
-          (setq source-length (loga-decide-length source)
-                target-length (loga-decide-length target))
+          (setq source-length (loga-compute-length source)
+                target-length (loga-compute-length target))
           (if (and (loga-less-than-half-p source-length target-length)
                    (> loga-width-limit-source source-length))
               (push (loga-append-margin source target note size) record)))
@@ -280,8 +280,8 @@
          (max-target-length 0)
          source-length target-length)
     (loop for (source target) in words do
-          (setq source-length (loga-decide-length source)
-                target-length (loga-decide-length target))
+          (setq source-length (loga-compute-length source)
+                target-length (loga-compute-length target))
           if (and (or (< max-source-length source-length)
                       (< max-target-length target-length))
                   (< source-length loga-width-limit-source)
@@ -296,7 +296,7 @@
         t
       nil)))
 
-(defun loga-decide-length (sentence)
+(defun loga-compute-length (sentence)
   (loop with sum = 0
         for token in (string-to-list (split-string sentence "")) do
         (cond
@@ -315,7 +315,7 @@
     nil))
 
 (defun loga-append-margin (source target note max-length)
-  (let* ((margin (- (car max-length) (loga-decide-length source)))
+  (let* ((margin (- (car max-length) (loga-compute-length source)))
          (column (concat source (spaces-string margin) ":" target)))
     (setq loga-current-margin margin)
     (if note (setq column (list column (concat "\n" note)))
@@ -421,7 +421,7 @@
                   :point loga-popup-point
                   :width loga-popup-width)))))
 
-(defun loga-decide-point ()
+(defun loga-compute-point ()
   (let* ((half (/ (window-width) 2))
          (quarter (/ half 2))
          (cursor (- (point) (point-at-bol))))
@@ -432,12 +432,12 @@
 
 (defun loga-setup-point-and-width ()
   (case loga-popup-output-type
-    (:default (setq loga-popup-width (loga-decide-width)
-                    loga-popup-point (loga-decide-point)))
+    (:default (setq loga-popup-width (loga-compute-width)
+                    loga-popup-point (loga-compute-point)))
     (:width (setq loga-popup-width (window-width)
                   loga-popup-point (point-at-bol)))))
 
-(defun loga-decide-width ()
+(defun loga-compute-width ()
   (loop for (source-length . target-length) in (list loga-current-max-length)
         with sum = 0
         collect (+ source-length  target-length) into sum
