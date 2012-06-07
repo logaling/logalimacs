@@ -348,8 +348,8 @@
       (:update (setq messages '("source: " "target(old): " "target(new): " "note(optional): ")))
       (:lookup (setq messages '("search: ")))
       (t (setq messages (list messages))))
-    (loop for msg in messages do
-          (push (loga-query msg) record))
+    (loop for message in messages do
+          (push (loga-query message) record))
     (mapconcat 'identity (reverse record) " ")))
 
 ;;;###autoload
