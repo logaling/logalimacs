@@ -287,13 +287,19 @@
         for (source target) in words
         for source-length = (loga-compute-length source)
         for target-length = (loga-compute-length target)
-        if (and (or (< max-source-length source-length)
-                    (< max-target-length target-length))
-                (< source-length loga-width-limit-source)
-                (loga-less-than-half-p source-length target-length))
+        if (loga-clear-condition-p max-source-length max-target-length
+                                   source-length target-length)
         do (setq max-source-length (max max-source-length source-length)
                  max-target-length (max max-target-length target-length))
         finally return (cons max-source-length max-target-length)))
+
+(defun loga-clear-condition-p (&rest arguments)
+  (if (and (or (< max-source-length source-length)
+               (< max-target-length target-length))
+           (< source-length loga-width-limit-source)
+           (loga-less-than-half-p source-length target-length))
+      t
+    nil))
 
 (defun loga-less-than-half-p (source-length target-length)
   (let* ((half (- (/ (window-width) 2) 2)))
