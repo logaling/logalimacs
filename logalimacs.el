@@ -245,8 +245,8 @@
    ((string-match "[a-zA-Z]" word)
     (return (concat word " -S=en -T=ja")))))
 
-(defun loga-convert-from-json (content)
-  (let* ((json (json-read-from-string content))
+(defun loga-convert-from-json (raw-json-data)
+  (let* ((json (json-read-from-string raw-json-data))
          keywords converted-list)
     (setq keywords (loga-extract-keywords-from json)
           loga-current-max-length (loga-compute-max-length keywords)
