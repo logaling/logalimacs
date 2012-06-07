@@ -308,13 +308,12 @@
 (defun loga-compute-length (sentence)
   (loop with sum = 0
         with tokens = (string-to-list (split-string sentence ""))
-        for token in tokens do
-        (cond
-         ((equal "" token) t)
-         ((and (multibyte-string-p token)
-               (loga-correct-character-p token))
-          (setq sum (+ sum 2)))
-         (t (setq sum (+ sum 1))))
+        for token in tokens
+        if (and (null (equal "" token))
+                (multibyte-string-p token)
+                (loga-correct-character-p token))
+        do (setq sum (+ sum 2))
+        else do (setq sum (+ sum 1))
         finally return sum))
 
 (defun loga-correct-character-p (token)
