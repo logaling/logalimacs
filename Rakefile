@@ -70,7 +70,7 @@ task :upload => :package do
   login_url = URI.parse("#{marmalade_api_base_url}/v1/users/login")
   response = Net::HTTP.post_form(login_url,
                                  {"name" => user, "password" => password})
-  if response.status != 200
+  if response.code != "200"
     raise "failed to login (#{user}): #{response.body}"
   end
   login_info = JSON.parse(response.body)
