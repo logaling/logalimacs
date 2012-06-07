@@ -293,7 +293,7 @@
                  max-target-length (max max-target-length target-length))
         finally return (cons max-source-length max-target-length)))
 
-(defun loga-clear-condition-p (&rest arguments)
+(defun loga-clear-condition-p (&rest assigned-lengths)
   (let ((more-than-max-p (or (< max-source-length source-length)
                              (< max-target-length target-length)))
         (less-than-window-half-p
