@@ -258,11 +258,11 @@
 (defun loga-extract-keywords-from (all-data)
   (let* (keywords source target note)
     (loop for column across all-data do
-          (loop for (key . var) in column do
+          (loop for (key . value) in column do
                 (case key
-                  ('source (setq source var))
-                  ('target (setq target var))
-                  ('note   (setq note   var))))
+                  ('source (setq source value))
+                  ('target (setq target value))
+                  ('note   (setq note   value))))
           (push (list source target note) keywords)
           finally return keywords)))
 
