@@ -12,7 +12,7 @@ DESCRIPTION = "Front-end of logaling-command for Ruby gem"
 # Depending on other package
 # @example specify as bellow:
 #   [["package1", "version1"], ["package2", "virsion2"], ...]
-DEPENDENCIES = [["popwin", "0.4"], ["popup", "0.4"]]
+DEPENDENCIES = [["popwin", "0.4"], ["popup", "0.5"]]
 
 #--rakefile--
 
