@@ -247,24 +247,24 @@
 
 (defun loga-convert-from-json (content)
   (let* ((json (json-read-from-string content))
-         words-list content-of-list)
-    (setq words-list (loga-extract-words-list-from json)
-          loga-current-max-length (loga-compute-max-length words-list)
-          content-of-list (loga-format words-list loga-current-max-length))
+         keywords content-of-list)
+    (setq keywords (loga-extract-keywords-from json)
+          loga-current-max-length (loga-compute-max-length keywords)
+          content-of-list (loga-format keywords loga-current-max-length))
     (if loga-cascade-output
         content-of-list
       (loga-format-for-string content-of-list))))
 
-(defun loga-extract-words-list-from (json)
-  (let* (words-list source target note)
+(defun loga-extract-keywords-from (json)
+  (let* (keywords source target note)
     (loop for record across json do
           (loop for (key . var) in record do
                 (case key
                   ('source (setq source var))
                   ('target (setq target var))
                   ('note   (setq note   var))))
-          (push (list source target note) words-list)
-          finally return words-list)))
+          (push (list source target note) keywords)
+          finally return keywords)))
 
 (defun loga-format-for-string (content-of-list)
   (let* ((striped-list (loop for (word) in content-of-list
