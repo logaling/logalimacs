@@ -255,9 +255,9 @@
         converted-list
       (loga-format-to-string converted-list))))
 
-(defun loga-extract-keywords-from (json)
+(defun loga-extract-keywords-from (all-data)
   (let* (keywords source target note)
-    (loop for record across json do
+    (loop for record across all-data do
           (loop for (key . var) in record do
                 (case key
                   ('source (setq source var))
