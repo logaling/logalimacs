@@ -4,7 +4,7 @@
 
 ;; Author: Yuta Yamada <yamada@clear-code.com>
 ;; URL: https://github.com/logaling/logalimacs
-;; Version: 1.0.1
+;; Version: 1.0.0
 ;; Package-Requires:  ((popwin "0.4")(popup "0.5"))
 ;; Keywords: translation, lisp
 
