@@ -257,8 +257,8 @@
 
 (defun loga-extract-keywords-from (all-data)
   (let* (keywords source target note)
-    (loop for record across all-data do
-          (loop for (key . var) in record do
+    (loop for column across all-data do
+          (loop for (key . var) in column do
                 (case key
                   ('source (setq source var))
                   ('target (setq target var))
