@@ -2,7 +2,7 @@ Marmaladeへのアップロード方法
 
 パッケージの修正を終えてMarmaladeへアップロードできる準備が整ったら
 Rakefileの8行目の以下の項目をそのバージョンにあったものに修正します
-(logalimacs以外のパッケージをアップロードにRakefaleを利用する場合は
+(logalimacs以外のパッケージのアップロードにRakefaleを利用する場合は
 PACKAGE_NAME, PACKAGE_VERSION, REQUIREMENTS, DESCRIPTION, DEPENDENCIES
 を設定してください)
 
