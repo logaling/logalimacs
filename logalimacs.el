@@ -303,9 +303,7 @@
 
 (defun loga-less-than-window-half-p (source-length target-length)
   (let* ((half (- (/ (window-width) 2) 2)))
-    (if (> half (max source-length target-length))
-        t
-      nil)))
+    (> half (max source-length target-length))))
 
 (defun loga-compute-length (sentence)
   (loop with sum = 0
@@ -320,10 +318,7 @@
 
 (defun loga-correct-character-p (token)
   "If mixed Japanese language, wrong count at specific character. because it escape character"
-  (if (not (string-match
-            "[\\ -/:->{-~\\?^]\\|\\[\\|\\]" token))
-      t
-    nil))
+  (not (string-match "[\\ -/:->{-~\\?^]\\|\\[\\|\\]" token)))
 
 (defun loga-append-margin (source target note max-length)
   (let* ((margin (- (car max-length) (loga-compute-length source)))
