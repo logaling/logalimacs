@@ -253,7 +253,7 @@
           content-of-list (loga-compute-format words-list loga-current-max-length))
     (if loga-cascade-output
         content-of-list
-      (loga-compute-format-for-string content-of-list))))
+      (loga-format-for-string content-of-list))))
 
 (defun loga-extract-words-list-from (json)
   (let* (words-list source target note)
@@ -266,7 +266,7 @@
           (push (list source target note) words-list)
           finally return words-list)))
 
-(defun loga-compute-format-for-string (content-of-list)
+(defun loga-format-for-string (content-of-list)
   (let* ((striped-list (loop for (word) in content-of-list
                              collect word)))
     (mapconcat 'identity striped-list "\n")))
