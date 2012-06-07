@@ -79,6 +79,6 @@ task :upload => :package do
   sh("curl",
      "-F", "name=#{PACKAGE_NAME}",
      "-F", "token=#{token}",
-     "-F", "file=@#{MARMALADE_PACKAGE_NAME}.tar",
+     "-F", "package=@#{MARMALADE_PACKAGE_NAME}.tar",
      "#{marmalade_api_base_url}/v1/packages")
 end
