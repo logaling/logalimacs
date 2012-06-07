@@ -246,9 +246,9 @@
     (return (concat word " -S=en -T=ja")))))
 
 (defun loga-convert-from-json (raw-json-data)
-  (let* ((json (json-read-from-string raw-json-data))
+  (let* ((mixed-list (json-read-from-string raw-json-data))
          keywords converted-list)
-    (setq keywords (loga-extract-keywords-from json)
+    (setq keywords (loga-extract-keywords-from mixed-list)
           loga-current-max-length (loga-compute-max-length keywords)
           converted-list (loga-format keywords loga-current-max-length))
     (if loga-cascade-output
