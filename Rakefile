@@ -77,7 +77,7 @@ task :upload => :package do
   token = login_info["token"]
 
   sh("curl",
-     "-F", "name=#{PACKAGE_NAME}",
+     "-F", "name=#{user}",
      "-F", "token=#{token}",
      "-F", "package=@#{MARMALADE_PACKAGE_NAME}.tar",
      "#{marmalade_api_base_url}/v1/packages")
