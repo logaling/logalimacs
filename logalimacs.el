@@ -307,7 +307,8 @@
 
 (defun loga-compute-length (sentence)
   (loop with sum = 0
-        for token in (string-to-list (split-string sentence "")) do
+        with tokens = (string-to-list (split-string sentence ""))
+        for token in tokens do
         (cond
          ((equal "" token) t)
          ((and (multibyte-string-p token)
