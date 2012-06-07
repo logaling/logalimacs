@@ -283,11 +283,10 @@
 
 (defun loga-compute-max-length (words)
   (let* ((max-source-length 0)
-         (max-target-length 0)
-         source-length target-length)
-    (loop for (source target) in words do
-          (setq source-length (loga-compute-length source)
-                target-length (loga-compute-length target))
+         (max-target-length 0))
+    (loop for (source target) in words
+          for source-length = (loga-compute-length source)
+          for target-length = (loga-compute-length target)
           if (and (or (< max-source-length source-length)
                       (< max-target-length target-length))
                   (< source-length loga-width-limit-source)
