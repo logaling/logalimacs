@@ -4,7 +4,7 @@
 
 ;; Author: Yuta Yamada <yamada@clear-code.com>
 ;; URL: https://github.com/logaling/logalimacs
-;; Version: 1.0.0
+;; Version: 1.0.1
 
 ;;; Licence:
 ;; This program is free software: you can redistribute it and/or modify
