@@ -247,13 +247,13 @@
 
 (defun loga-convert-from-json (content)
   (let* ((json (json-read-from-string content))
-         keywords content-of-list)
+         keywords converted-list)
     (setq keywords (loga-extract-keywords-from json)
           loga-current-max-length (loga-compute-max-length keywords)
-          content-of-list (loga-format keywords loga-current-max-length))
+          converted-list (loga-format keywords loga-current-max-length))
     (if loga-cascade-output
-        content-of-list
-      (loga-format-for-string content-of-list))))
+        converted-list
+      (loga-format-for-string converted-list))))
 
 (defun loga-extract-keywords-from (json)
   (let* (keywords source target note)
