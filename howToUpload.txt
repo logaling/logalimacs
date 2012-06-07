@@ -14,9 +14,9 @@ Rakefileのあるディレクトリでrakeコマンドを実行します。
 logalimacs + -x.x.xのバージョン番号が付加されたディレクトリと
 .tarファイルが作成されます。
 
-作成された.tarファイルをMarmaladeに貼り付けます。
+作成されたlogalimacs-x.x.x.tarファイルをMarmaladeに貼り付けます。
 
 1. Marmaladeにログインします
 2. add packageをクリックします
-3. Package Fileに作成した.tarファイルを選択します
+3. Package Fileに作成したlogalimacs-x.x.x.tarファイルを選択します
 4. Uploadボタンをクリックします
