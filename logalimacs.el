@@ -253,7 +253,7 @@
           converted-list (loga-format keywords loga-current-max-length))
     (if loga-cascade-output
         converted-list
-      (loga-format-for-string converted-list))))
+      (loga-format-to-string converted-list))))
 
 (defun loga-extract-keywords-from (json)
   (let* (keywords source target note)
@@ -266,7 +266,7 @@
           (push (list source target note) keywords)
           finally return keywords)))
 
-(defun loga-format-for-string (content-of-list)
+(defun loga-format-to-string (content-of-list)
   (let* ((striped-list (loop for (word) in content-of-list
                              collect word)))
     (mapconcat 'identity striped-list "\n")))
