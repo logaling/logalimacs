@@ -440,7 +440,7 @@
 (defun loga-setup-point-and-width ()
   (case loga-popup-output-type
     (:auto (setq loga-popup-width (loga-compute-width)
-                    loga-popup-point (loga-compute-point)))
+                 loga-popup-point (loga-compute-point)))
     (:max (setq loga-popup-width (window-width)
                 loga-popup-point (point-at-bol)))))
 
