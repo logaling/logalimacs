@@ -276,7 +276,7 @@
     (loop for (source target note) in words do
           (setq source-length (loga-compute-length source)
                 target-length (loga-compute-length target))
-          (if (and (loga-less-than-half-p source-length target-length)
+          (if (and (loga-less-than-window-half-p source-length target-length)
                    (> loga-width-limit-source source-length))
               (push (loga-append-margin source target note size) record)))
     record))
@@ -296,11 +296,12 @@
 (defun loga-clear-condition-p (&rest arguments)
   (let ((more-than-max-p (or (< max-source-length source-length)
                              (< max-target-length target-length)))
-        (less-than-half-p (loga-less-than-half-p source-length target-length))
+        (less-than-window-half-p
+         (loga-less-than-window-half-p source-length target-length))
         (below-limit-p (< source-length loga-width-limit-source)))
-    (and more-than-max-p less-than-half-p below-limit-p)))
+    (and more-than-max-p less-than-window-half-p below-limit-p)))
 
-(defun loga-less-than-half-p (source-length target-length)
+(defun loga-less-than-window-half-p (source-length target-length)
   (let* ((half (- (/ (window-width) 2) 2)))
     (if (> half (max source-length target-length))
         t
