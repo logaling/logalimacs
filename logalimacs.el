@@ -249,7 +249,7 @@
   (let* ((json (json-read-from-string content))
          words-list content-of-list)
     (setq words-list (loga-extract-words-list-from json)
-          loga-current-max-length (loga-max-length words-list)
+          loga-current-max-length (loga-compute-max-length words-list)
           content-of-list (loga-compute-format words-list loga-current-max-length))
     (if loga-cascade-output
         content-of-list
@@ -281,7 +281,7 @@
               (push (loga-append-margin source target note size) record)))
     record))
 
-(defun loga-max-length (words)
+(defun loga-compute-max-length (words)
   (let* ((max-source-length 0)
          (max-target-length 0)
          source-length target-length)
