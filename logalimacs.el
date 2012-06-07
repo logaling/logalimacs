@@ -266,8 +266,8 @@
           (push (list source target note) keywords)
           finally return keywords)))
 
-(defun loga-format-to-string (content-of-list)
-  (let* ((striped-list (loop for (word) in content-of-list
+(defun loga-format-to-string (converted-list)
+  (let* ((striped-list (loop for (word) in converted-list
                              collect word)))
     (mapconcat 'identity striped-list "\n")))
 
