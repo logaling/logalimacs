@@ -15,6 +15,10 @@ DESCRIPTION = "Front-end of logaling-command for Ruby gem"
 DEPENDENCIES = [["popwin", "0.4"], ["popup", "0.4"]]
 
 #--rakefile--
+
+require "net/http"
+require "json"
+
 task :default => :package
 
 desc "Package #{PACKAGE_NAME}"
@@ -45,4 +49,36 @@ task :init => "Rakefile" do
   PKG_EL_CONTENT = <<-ELISP
 (define-package "#{PACKAGE_NAME}" "#{PACKAGE_VERSION}" "#{DESCRIPTION}" #{dependencies})
 ELISP
+end
+
+def read_password
+  print("Password: ")
+  system("stty -echo")
+  input = $stdin.gets.chomp
+  system("stty echo")
+  puts
+  input
+end
+
+desc "Uploads package"
+task :upload => :package do
+  print("User name: ")
+  user = $stdin.gets.chomp
+  password = read_password
+
+  marmalade_api_base_url = "http://marmalade-repo.org"
+  login_url = URI.parse("#{marmalade_api_base_url}/v1/users/login")
+  response = Net::HTTP.post_form(login_url,
+                                 {"name" => user, "password" => password})
+  if response.status != 200
+    raise "failed to login (#{user}): #{response.body}"
+  end
+  login_info = JSON.parse(response.body)
+  token = login_info["token"]
+
+  sh("curl",
+     "-F", "name=#{PACKAGE_NAME}",
+     "-F", "token=#{token}",
+     "-F", "file=@#{MARMALADE_PACKAGE_NAME}.tar",
+     "#{marmalade_api_base_url}/v1/packages")
 end
