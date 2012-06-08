@@ -22,6 +22,15 @@
     指定のディレクトリに作成されたか確認
 
 * ユーザーが準備する事
+** MELPAのリポジトリを登録する
+   以下の行を.emacsなどの設定ファイルに追加
+   ;;リポジトリにMELPAを追加
+   (add-to-list 'package-archives ("melpa" . "http://melpa.milkbox.net/packages/"))
+   お好み設定:
+   ;;インストールするディレクトリを指定
+   (setq package-user-dir "インストールされるディレクトリ")
+   ;;インストールしたパッケージにロードパスを通してロードする
+   (package-initialize)
 * 作成の注意点
 ** ファイルフォーマット
    (info "(elisp) Packaging")によって指定した様なpackage.elの書式に定める
