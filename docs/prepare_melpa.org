@@ -1,0 +1,17 @@
+* EmacsのリポジトリサイトMELPAへのアップロード準備
+** melpaをフォークする
+   [[git@github.com:yuutayamada/melpa.git][ここから]]
+** melpaをクローンする
+   $ git clone git@github.com:yuutayamada/melpa.git
+** レシピを作成する
+   ./melpa/recipes/の中に以下のlogalimacsファイルを作り以下の様に行を追加
+   (logalimacs :repo "logaling/logalimacs" :fetcher github)
+** ./buildpkgを実行する
+   package.elが入っている必要がある(emacs24)
+   実行すると以下のようなファイルが作成されるか確認する、
+   ./working/logalimacs以下にパッケージが作成されるのを確認
+   ./packages/logalimacs-20120608.tarなどのtarファイルが作成される
+** 問題なければレシピをcommit,pushする
+** MELPAの人(purecell)さんにpull requestする
+
+* ユーザーが準備する事
