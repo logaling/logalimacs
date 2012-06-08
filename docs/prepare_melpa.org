@@ -22,6 +22,19 @@
     指定のディレクトリに作成されたか確認
 
 * ユーザーが準備する事
+** Emacs23でpackage.elを利用する場合
+*** Emacs23用にpackage.elをダウンロード
+    $ cd your-download-directory
+    $ wget http://repo.or.cz/w/emacs.git/blob_plain/1a0a666f941c99882093d7bd08ced15033bc3f0c:/lisp/emacs-lisp/package.el
+
+*** Emacsにpackage.el用の設定を追加
+    ;; ~/.emacs.d/elisp/package.elがある場合の設定
+    (load "~/.emacs.d/elisp/package")
+
+    ;; または以下の様に~/.emacs.d/elisp/以下にロードパスを通して
+    (add-to-list 'load-path "~/.emacs.d/elisp")
+    ;; 後でrequire packageをする
+    (require 'package)
 ** MELPAのリポジトリを登録する
    以下の行を.emacsなどの設定ファイルに追加
    ;;リポジトリにMELPAを追加
