@@ -45,7 +45,10 @@
 ;;for ansi-color
 (require 'ansi-color)
 
-(defvar loga-popup-output-type :auto)
+(defcustom loga-popup-output-type 'auto
+  "assign 'auto or 'max, available modifying of popup width"
+  :group 'logalimacs
+  :type 'symbol)
 
 (defcustom loga-log-output nil
   "if nonnil, output log for developer."
@@ -438,10 +441,10 @@
 
 (defun loga-setup-point-and-width ()
   (case loga-popup-output-type
-    (:auto (setq loga-popup-width (loga-compute-width)
-                 loga-popup-point (loga-compute-point)))
-    (:max (setq loga-popup-width (window-width)
-                loga-popup-point (point-at-bol)))))
+    ((or 'auto :auto) (setq loga-popup-width (loga-compute-width)
+                            loga-popup-point (loga-compute-point)))
+    ((or 'max :max) (setq loga-popup-width (window-width)
+                          loga-popup-point (point-at-bol)))))
 
 (defun loga-compute-width ()
   (loop for (source-length . target-length) in (list loga-current-max-length)
