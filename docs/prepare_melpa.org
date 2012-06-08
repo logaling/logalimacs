@@ -1,4 +1,4 @@
-* EmacsのリポジトリサイトMELPAへのアップロード準備
+* EmacsのリポジトリサイトMELPAへのアップロード準備(開発者向け)
 ** melpaをフォークする
    [[git@github.com:yuutayamada/melpa.git][ここから]]
 ** melpaをクローンする
@@ -13,5 +13,23 @@
    ./packages/logalimacs-20120608.tarなどのtarファイルが作成される
 ** 問題なければレシピをcommit,pushする
 ** MELPAの人(purecell)さんにpull requestする
+** マージされたら行う事
+*** Emacs24でダウンロードできるか確認する
+    M-x list-package
+    logalimacsにカーソルを合わせて "i"
+    次に"x"を押すとインストールするか聞いてくるので
+    yesにしてインストール
+    指定のディレクトリに作成されたか確認
 
 * ユーザーが準備する事
+* 作成の注意点
+** ファイルフォーマット
+   (info "(elisp) Packaging")によって指定した様なpackage.elの書式に定める
+   詳細は[[http://marmalade-repo.org/doc-files/package.5.html][ここを]]参照(marmaledeの書式なのでそのままで良い?)
+** レシピは極力小さくしてほしい
+   パッケージに関連するファイルだけ指定する事によって
+   結果のレシピは極力小さくしてほしい,
+   パッケージファイルを指定する為の
+   更なる情報は[[https://github.com/milkypostman/melpa#package-format][パッケージフォーマットを参照]]
+** パッケージ名は提供された機能の名前にマッチしまければいけない
+   詳細はpackage関数を参照
