@@ -12,7 +12,7 @@
    ./working/logalimacs以下にパッケージが作成されるのを確認
    ./packages/logalimacs-20120608.tarなどのtarファイルが作成される
 ** 問題なければレシピをcommit,pushする
-** MELPAの人(purecell)さんにpull requestする
+** MELPAの人(purcell)さんにpull requestする
 ** マージされたら行う事
 *** Emacs24でダウンロードできるか確認する
     M-x list-package
@@ -21,13 +21,18 @@
     yesにしてインストール
     指定のディレクトリに作成されたか確認
 
-* ユーザーが準備する事
-** Emacs23でpackage.elを利用する場合
+* EmacsユーザーがMELPAを利用する場合の準備
+** Emacs23ユーザーはpackage.elが必要なので先に準備する(Emacs24は標準添付)
+   2012/6/8 パッケージをダウンロードできる事を確認(emacs-version: emacs23.2.1)
+   Emacs23用と24用があるので注意してください。
 *** Emacs23用にpackage.elをダウンロード
     $ cd your-download-directory
     $ wget http://repo.or.cz/w/emacs.git/blob_plain/1a0a666f941c99882093d7bd08ced15033bc3f0c:/lisp/emacs-lisp/package.el
 
 *** Emacsにpackage.el用の設定を追加
+
+    ~/.emacs.d/init.elなどに以下の設定を追加する
+------------------------------------------------------------------
     ;; ~/.emacs.d/elisp/package.elがある場合の設定
     (load "~/.emacs.d/elisp/package")
 
@@ -35,8 +40,15 @@
     (add-to-list 'load-path "~/.emacs.d/elisp")
     ;; 後でrequire packageをする
     (require 'package)
+------------------------------------------------------------------
+
+    これで M-x list-package でリポジトリに登録したサイトの
+    elispを表示できます。
+    そのあと"i"で入れたいpackageのマーク,"x"でインストールの実行になります
 ** MELPAのリポジトリを登録する
-   以下の行を.emacsなどの設定ファイルに追加
+
+   ~/.emacs.d/init.elなどに以下の設定を追加する
+------------------------------------------------------------------
    ;;リポジトリにMELPAを追加
    (add-to-list 'package-archives ("melpa" . "http://melpa.milkbox.net/packages/"))
    お好み設定:
@@ -44,6 +56,8 @@
    (setq package-user-dir "インストールされるディレクトリ")
    ;;インストールしたパッケージにロードパスを通してロードする
    (package-initialize)
+------------------------------------------------------------------
+
 * 作成の注意点
 ** ファイルフォーマット
    (info "(elisp) Packaging")によって指定した様なpackage.elの書式に定める
