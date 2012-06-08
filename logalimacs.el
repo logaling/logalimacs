@@ -45,7 +45,7 @@
 ;;for ansi-color
 (require 'ansi-color)
 
-(defcustom loga-popup-output-type 'auto
+(defcustom loga-popup-output-type :auto
   "assign 'auto or 'max, available modifying of popup width"
   :group 'logalimacs
   :type 'symbol)
