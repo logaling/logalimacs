@@ -439,12 +439,18 @@
       (+ (point-at-bol) quarter))
      (t (point)))))
 
+(defun loga-popup-output-type ()
+  (let ((type (symbol-name loga-popup-output-type)))
+    (if (string-match ":" type)
+        loga-popup-output-type
+      (make-symbol (concat ":" type)))))
+
 (defun loga-setup-point-and-width ()
-  (case loga-popup-output-type
-    ((or 'auto :auto) (setq loga-popup-width (loga-compute-width)
-                            loga-popup-point (loga-compute-point)))
-    ((or 'max :max) (setq loga-popup-width (window-width)
-                          loga-popup-point (point-at-bol)))))
+  (case (loga-popup-output-type)
+    (:auto (setq loga-popup-width (loga-compute-width)
+                 loga-popup-point (loga-compute-point)))
+    (:max (setq loga-popup-width (window-width)
+                loga-popup-point (point-at-bol)))))
 
 (defun loga-compute-width ()
   (loop for (source-length . target-length) in (list loga-current-max-length)
