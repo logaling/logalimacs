@@ -1,10 +1,10 @@
 ;;; popup.el --- Visual Popup User Interface
 
-;; Copyright (C) 2009, 2010, 2011  Tomohiro Matsuyama
+;; Copyright (C) 2009, 2010, 2011, 2012  Tomohiro Matsuyama
 
 ;; Author: Tomohiro Matsuyama <tomo@cx4a.org>
 ;; Keywords: lisp
-;; Version: 0.4
+;; Version: 0.5
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -28,8 +28,7 @@
 
 ;;; Code:
 
-(eval-when-compile
-  (require 'cl))
+(require 'cl)
 
 
 
@@ -39,12 +38,17 @@
   "Use the optimized column computation routine.
 If there is a problem, please set it nil.")
 
-(defmacro popup-aif (test-form then-form &rest else-forms)
-  "Anaphoric if. Temporary variable `it' is the result of
-TEST-FORM."
+(defmacro popup-aif (test then &rest else)
+  "Anaphoric if."
   (declare (indent 2))
-  `(let ((it ,test-form))
-     (if it ,then-form ,@else-forms)))
+  `(let ((it ,test))
+     (if it ,then ,@else)))
+
+(defmacro popup-awhen (test &rest body)
+  "Anaphoric when."
+  (declare (indent 1))
+  `(let ((it ,test))
+     (when it ,@body)))
 
 (defun popup-x-to-string (x)
   "Convert any object to string effeciently.
@@ -231,11 +235,11 @@ buffer."
   "Background character for scroll-bar.")
 
 (defstruct popup
-  point row column width height min-height direction overlays
+  point row column width height min-height direction overlays keymap
   parent depth
-  face selection-face
+  face mouse-face selection-face
   margin-left margin-right margin-left-cancel scroll-bar symbol
-  cursor offset scroll-top current-height list newlines
+  cursor offset scroll-top current-height list padding
   pattern original-list)
 
 (defun popup-item-propertize (item &rest properties)
@@ -257,7 +261,8 @@ ITEM is not string."
 (defun* popup-make-item (name
                          &key
                          value
-                         popup-face
+                         face
+                         mouse-face
                          selection-face
                          sublist
                          document
@@ -267,7 +272,8 @@ ITEM is not string."
 `popup-item-propertize'."
   (popup-item-propertize name
                          'value value
-                         'popup-face popup-face
+                         'popup-face face
+                         'popup-mouse-face mouse-face
                          'selection-face selection-face
                          'document document
                          'symbol symbol
@@ -276,7 +282,8 @@ ITEM is not string."
 
 (defsubst popup-item-value (item)               (popup-item-property item 'value))
 (defsubst popup-item-value-or-self (item)       (or (popup-item-value item) item))
-(defsubst popup-item-popup-face (item)          (popup-item-property item 'popup-face))
+(defsubst popup-item-face (item)                (popup-item-property item 'popup-face))
+(defsubst popup-item-mouse-face (item)          (popup-item-property item 'popup-mouse-face))
 (defsubst popup-item-selection-face (item)      (popup-item-property item 'selection-face))
 (defsubst popup-item-document (item)            (popup-item-property item 'document))
 (defsubst popup-item-summary (item)             (popup-item-property item 'summary))
@@ -360,7 +367,7 @@ usual."
     (and (eq (overlay-get overlay 'display) nil)
          (eq (overlay-get overlay 'after-string) nil))))
 
-(defun* popup-set-line-item (popup line &key item face margin-left margin-right scroll-bar-char symbol summary)
+(defun* popup-set-line-item (popup line &key item face mouse-face margin-left margin-right scroll-bar-char symbol summary keymap)
   (let* ((overlay (popup-line-overlay popup line))
          (content (popup-create-line-string popup (popup-x-to-string item)
                                             :margin-left margin-left
@@ -371,18 +378,22 @@ usual."
          (prefix (overlay-get overlay 'prefix))
          (postfix (overlay-get overlay 'postfix))
          end)
+    (put-text-property 0 (length content) 'popup-item item content)
+    (put-text-property 0 (length content) 'keymap keymap content)
     ;; Overlap face properties
-    (if (get-text-property start 'face content)
-        (setq start (next-single-property-change start 'face content)))
+    (when (get-text-property start 'face content)
+      (setq start (next-single-property-change start 'face content)))
     (while (and start (setq end (next-single-property-change start 'face content)))
       (put-text-property start end 'face face content)
       (setq start (next-single-property-change end 'face content)))
-    (if start
-        (put-text-property start (length content) 'face face content))
+    (when start
+      (put-text-property start (length content) 'face face content))
+    (when mouse-face
+      (put-text-property 0 (length content) 'mouse-face mouse-face content))
     (unless (overlay-get overlay 'dangle)
       (overlay-put overlay 'display (concat prefix (substring content 0 1)))
       (setq prefix nil
-            content (concat (substring content 1))))
+            content (substring content 1)))
     (overlay-put overlay
                  'after-string
                  (concat prefix
@@ -440,13 +451,15 @@ number at the point."
                       min-height
                       around
                       (face 'popup-face)
+                      mouse-face
                       (selection-face face)
                       scroll-bar
                       margin-left
                       margin-right
                       symbol
                       parent
-                      parent-offset)
+                      parent-offset
+                      keymap)
   "Create a popup instance at POINT with WIDTH and HEIGHT.
 
 MIN-HEIGHT is a minimal height of the popup. The default value is
@@ -474,7 +487,9 @@ SYMBOL is a single character which indicates a kind of the item.
 PARENT is a parent popup instance. If PARENT is omitted, the
 popup will be a root instance.
 
-PARENT-OFFSET is a row offset from the parent popup."
+PARENT-OFFSET is a row offset from the parent popup.
+
+KEYMAP is a keymap that will be put on the popup contents."
   (or margin-left (setq margin-left 0))
   (or margin-right (setq margin-right 0))
   (unless point
@@ -508,13 +523,15 @@ PARENT-OFFSET is a row offset from the parent popup."
                        ;; Calculate direction
                        (popup-calculate-direction height row)))
            (depth (if parent (1+ (popup-depth parent)) 0))
-           (newlines (max 0 (+ (- height (count-lines point (point-max))) (if around 1 0))))
+           padding
            current-column)
-      ;; Case: no newlines at the end of the buffer
-      (when (> newlines 0)
+      ;; Case: no room to put overlays
+      (when (eobp)
         (popup-save-buffer-state
-          (goto-char (point-max))
-          (insert (make-string newlines ?\n))))
+          (let ((begin (point)))
+            (insert " ")
+            (setq padding (make-overlay begin (point)))
+            (overlay-put padding 'evaporate t))))
       
       ;; Case: the popup overflows
       (if overflow
@@ -539,11 +556,11 @@ PARENT-OFFSET is a row offset from the parent popup."
         (setq margin-left-cancel t))
       
       (dotimes (i height)
-        (let (overlay begin w (dangle t) (prefix "") (postfix ""))
+        (let (overlay begin w bottom (dangle t) (prefix "") (postfix ""))
           (when around
-            (popup-vertical-motion column direction))
-	  (setq around t
-                current-column (popup-current-physical-column))
+            (setq bottom (zerop (popup-vertical-motion column direction))))
+	  (setq around t)
+          (setq current-column (if bottom 0 (popup-current-physical-column)))
 
           (when (> current-column column)
             (backward-char)
@@ -551,7 +568,8 @@ PARENT-OFFSET is a row offset from the parent popup."
           (when (< current-column column)
             ;; Extend short buffer lines by popup prefix (line of spaces)
             (setq prefix (make-string
-                          (+ (if (= current-column 0)
+                          (+ (if (and (not bottom)
+                                      (= current-column 0))
                                  (- window-hscroll (current-column))
                                0)
                              (- column current-column))
@@ -559,12 +577,15 @@ PARENT-OFFSET is a row offset from the parent popup."
 
           (setq begin (point))
           (setq w (+ popup-width (length prefix)))
+          (when bottom
+            (setq prefix (concat "\n" prefix)))
           (while (and (not (eolp)) (> w 0))
             (setq dangle nil)
             (decf w (char-width (char-after)))
             (forward-char))
           (if (< w 0)
               (setq postfix (make-string (- w) ? )))
+
 
           (setq overlay (make-overlay begin (point)))
           (overlay-put overlay 'window window)
@@ -588,6 +609,7 @@ PARENT-OFFSET is a row offset from the parent popup."
                             :parent parent
                             :depth depth
                             :face face
+                            :mouse-face mouse-face
                             :selection-face selection-face
                             :margin-left margin-left
                             :margin-right margin-right
@@ -599,8 +621,9 @@ PARENT-OFFSET is a row offset from the parent popup."
                             :scroll-top 0
                             :current-height 0
                             :list nil
-                            :newlines newlines
-                            :overlays overlays)))
+                            :padding padding
+                            :overlays overlays
+                            :keymap keymap)))
         (push it popup-instances)
         it))))
 
@@ -611,14 +634,10 @@ PARENT-OFFSET is a row offset from the parent popup."
     (mapc 'delete-overlay (popup-overlays popup))
     (setf (popup-overlays popup) nil)
     (setq popup-instances (delq popup popup-instances))
-    ;; Restore newlines state
-    (let ((newlines (popup-newlines popup)))
-      (when (> newlines 0)
+    (let ((padding (popup-padding popup)))
+      (when (overlayp padding)
         (popup-save-buffer-state
-          (goto-char (point-max))
-          (dotimes (i newlines)
-            (if (= (char-before) ?\n)
-                (delete-char -1)))))))
+          (delete-region (overlay-start padding) (overlay-end padding))))))
   nil)
 
 (defun popup-draw (popup)
@@ -626,6 +645,7 @@ PARENT-OFFSET is a row offset from the parent popup."
   (loop with height = (popup-height popup)
         with min-height = (popup-min-height popup)
         with popup-face = (popup-face popup)
+        with mouse-face = (popup-mouse-face popup)
         with selection-face = (popup-selection-face popup)
         with list = (popup-list popup)
         with length = (length list)
@@ -638,6 +658,7 @@ PARENT-OFFSET is a row offset from the parent popup."
         with cursor = (popup-cursor popup)
         with scroll-top = (popup-scroll-top popup)
         with offset = (popup-offset popup)
+        with keymap = (popup-keymap popup)
         for o from offset
         for i from scroll-top
         while (< o height)
@@ -645,11 +666,12 @@ PARENT-OFFSET is a row offset from the parent popup."
         for page-index = (* thum-size (/ o thum-size))
         for face = (if (= i cursor)
                        (or (popup-item-selection-face item) selection-face)
-                     (or (popup-item-popup-face item) popup-face))
+                     (or (popup-item-face item) popup-face))
         for empty-char = (propertize " " 'face face)
         for scroll-bar-char = (if scroll-bar
                                   (cond
-                                   ((<= page-size 1)
+                                   ((and (not (eq scroll-bar :always))
+                                         (<= page-size 1))
                                     empty-char)
                                    ((and (> page-size 1)
                                          (>= cursor (* page-index page-size))
@@ -668,11 +690,13 @@ PARENT-OFFSET is a row offset from the parent popup."
         (popup-set-line-item popup o
                              :item item
                              :face face
+                             :mouse-face mouse-face
                              :margin-left margin-left
                              :margin-right margin-right
                              :scroll-bar-char scroll-bar-char
                              :symbol sym
-                             :summary summary)
+                             :summary summary
+                             :keymap keymap)
         
         finally
         ;; Remember current height
@@ -989,6 +1013,11 @@ PROMPT is a prompt string when reading events during event loop."
   "Face for popup menu."
   :group 'popup)
 
+(defface popup-menu-mouse-face
+  '((t (:background "blue" :foreground "white")))
+  "Face for popup menu."
+  :group 'popup)
+
 (defface popup-menu-selection-face
   '((t (:background "steelblue" :foreground "white")))
   "Face for popup menu selection."
@@ -1029,6 +1058,14 @@ PROMPT is a prompt string when reading events during event loop."
                :parent menu
                :parent-offset parent-offset
                args)))))
+
+(defun popup-menu-item-of-mouse-event (event)
+  (when (and (consp event)
+             (memq (first event) '(mouse-1 mouse-2 mouse-3 mouse-4 mouse-5)))
+    (let* ((position (second event))
+           (object (elt position 4)))
+      (when (consp object)
+        (get-text-property (cdr object) 'popup-item (car object))))))
 
 (defun popup-menu-read-key-sequence (keymap &optional prompt timeout)
   (catch 'timeout
@@ -1080,46 +1117,52 @@ PROMPT is a prompt string when reading events during event loop."
                           :help-delay help-delay)
            (keyboard-quit))
       (setq key (popup-menu-read-key-sequence keymap prompt help-delay))
-      (if (null key)
-          (unless (funcall popup-menu-show-quick-help-function menu nil :prompt prompt)
-            (clear-this-command-keys)
-            (push (read-event prompt) unread-command-events))
-        (if (eq (lookup-key (current-global-map) key) 'keyboard-quit)
-            (keyboard-quit))
-        (setq binding (lookup-key keymap key))
-        (cond
-         ((eq binding 'popup-close)
-          (if (popup-parent menu)
-              (return)))
-         ((memq binding '(popup-select popup-open))
-          (let* ((item (popup-selected-item menu))
-                 (sublist (popup-item-sublist item)))
-            (if sublist
-                (popup-aif (popup-cascade-menu sublist
+      (setq binding (lookup-key keymap key))
+      (cond
+       ((or (null key) (zerop (length key)))
+        (unless (funcall popup-menu-show-quick-help-function menu nil :prompt prompt)
+          (clear-this-command-keys)
+          (push (read-event prompt) unread-command-events)))
+       ((eq (lookup-key (current-global-map) key) 'keyboard-quit)
+        (keyboard-quit)
+        (return))
+       ((eq binding 'popup-close)
+        (if (popup-parent menu)
+            (return)))
+       ((memq binding '(popup-select popup-open))
+        (let* ((item (or (popup-menu-item-of-mouse-event (elt key 0))
+                         (popup-selected-item menu)))
+               (index (position item (popup-list menu)))
+               (sublist (popup-item-sublist item)))
+          (unless index (return))
+          (if sublist
+              (popup-aif (let (popup-use-optimized-column-computation)
+                           (popup-cascade-menu sublist
                                                :around nil
-                                               :parent menu
                                                :margin-left (popup-margin-left menu)
                                                :margin-right (popup-margin-right menu)
-                                               :scroll-bar (popup-scroll-bar menu))
-                    (and it (return it)))
-              (if (eq binding 'popup-select)
-                  (return (popup-item-value-or-self item))))))
-         ((eq binding 'popup-next)
-          (popup-next menu))
-         ((eq binding 'popup-previous)
-          (popup-previous menu))
-         ((eq binding 'popup-help)
-          (popup-menu-show-help menu))
-         ((eq binding 'popup-isearch)
-          (popup-isearch menu
-                         :cursor-color isearch-cursor-color
-                         :keymap isearch-keymap
-                         :callback isearch-callback
-                         :help-delay help-delay))
-         ((commandp binding)
-          (call-interactively binding))
-         (t
-          (funcall fallback key (key-binding key))))))))
+                                               :scroll-bar (popup-scroll-bar menu)
+                                               :parent menu
+                                               :parent-offset index))
+                  (and it (return it)))
+            (if (eq binding 'popup-select)
+                (return (popup-item-value-or-self item))))))
+       ((eq binding 'popup-next)
+        (popup-next menu))
+       ((eq binding 'popup-previous)
+        (popup-previous menu))
+       ((eq binding 'popup-help)
+        (popup-menu-show-help menu))
+       ((eq binding 'popup-isearch)
+        (popup-isearch menu
+                       :cursor-color isearch-cursor-color
+                       :keymap isearch-keymap
+                       :callback isearch-callback
+                       :help-delay help-delay))
+       ((commandp binding)
+        (call-interactively binding))
+       (t
+        (funcall fallback key (key-binding key)))))))
 
 (defun* popup-menu* (list
                      &key
@@ -1188,12 +1231,14 @@ isearch canceled. The arguments is whole filtered list of items."
   (setq menu (popup-create point width height
                            :around around
                            :face 'popup-menu-face
+                           :mouse-face 'popup-menu-mouse-face
                            :selection-face 'popup-menu-selection-face
                            :margin-left margin-left
                            :margin-right margin-right
                            :scroll-bar scroll-bar
                            :symbol symbol
-                           :parent parent))
+                           :parent parent
+                           :parent-offset parent-offset))
   (unwind-protect
       (progn
         (popup-set-list menu list)
@@ -1243,6 +1288,10 @@ the sub menu."
     (define-key map (kbd "\C-?") 'popup-help)
 
     (define-key map "\C-s"      'popup-isearch)
+
+    (define-key map [mouse-1]   'popup-select)
+    (define-key map [mouse-4]   'popup-previous)
+    (define-key map [mouse-5]   'popup-next)
     map))
 
 (provide 'popup)
