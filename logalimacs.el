@@ -311,7 +311,7 @@
         (below-limit-p (< source-length loga-width-limit-source)))
     (and more-than-max-p less-than-window-half-p below-limit-p)))
 
-(defun loga-less-than-window-half-p (source-length target-length)
+(defun loga-less-than-window-half-p (&rest assigned-lengths)
   (let* ((half (- (/ (window-width) 2) 2)))
     (> half (max source-length target-length))))
 
