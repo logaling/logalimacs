@@ -232,12 +232,7 @@
 (defun loga-lookup (&optional endpoint manual?)
   (let* (word content)
     (loga-current-command :lookup)
-    (setq word
-          (if mark-active
-              (buffer-substring-no-properties (region-beginning) (region-end))
-            (case manual?
-              (:manual (loga-input))
-              (t (loga-return-word-on-cursor)))))
+    (setq word (loga-decide-source-word manual?))
     (setq content (loga-command (concat "\"" word "\"")))
     (if (equal "" content)
         (if loga-use-fallback
@@ -247,6 +242,13 @@
         (:popup
          (loga-make-popup content))
         (t (loga-make-buffer content))))))
+
+(defun loga-decide-source-word (&optional manual?)
+  (if mark-active
+      (buffer-substring-no-properties (region-beginning) (region-end))
+    (case manual?
+      (:manual (loga-input))
+      (t (loga-return-word-on-cursor)))))
 
 (defun loga-attach-lang-option-for-ja/en (word)
   (cond
