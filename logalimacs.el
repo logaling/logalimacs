@@ -406,8 +406,8 @@
 
 (defun loga-make-buffer(content)
   "create buffer for logalimacs"
-  (setq loga-current-endpoint :buffer)
-  (setq other-window-scroll-buffer "*logalimacs*")
+  (setq loga-current-endpoint :buffer
+        other-window-scroll-buffer "*logalimacs*")
   (with-temp-buffer
     (switch-to-buffer (get-buffer-create "*logalimacs*"))
     (toggle-read-only 0)
