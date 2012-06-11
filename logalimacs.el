@@ -321,12 +321,12 @@
         for token in tokens
         if (and (null (equal "" token))
                 (multibyte-string-p token)
-                (loga-correct-character-p token))
+                (loga-ignore-character-p token))
         do (setq sum (+ sum 2))
         else do (setq sum (+ sum 1))
         finally return sum))
 
-(defun loga-correct-character-p (token)
+(defun loga-ignore-character-p (token)
   "If mixed Japanese language, wrong count at specific character. because it escape character"
   (not (string-match "[\\ -/:->{-~\\?^]\\|\\[\\|\\]" token)))
 
