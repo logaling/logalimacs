@@ -33,16 +33,16 @@
 (require 'popwin)
 (require 'popup)
 
-;;for word-at-point
+;; for word-at-point
 (require 'thingatpt)
 
-;;for spaces-string
+;; for spaces-string
 (require 'rect)
 
-;;json
+;; json
 (require 'json)
 
-;;for ansi-color
+;; for ansi-color
 (require 'ansi-color)
 
 (defcustom loga-popup-output-type :auto
