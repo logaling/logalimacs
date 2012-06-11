@@ -65,6 +65,11 @@
   :group 'logalimacs
   :type 'integer)
 
+(defcustom loga-use-fallback nil
+  "if assign :text-translator, can be fallback."
+  :group 'logalimacs
+  :type 'symbol)
+
 (defvar loga-fly-timer nil
   "timer object for loga-fly-mode")
 
@@ -235,7 +240,9 @@
               (t (loga-return-word-on-cursor)))))
     (setq content (loga-command (concat "\"" word "\"")))
     (if (equal "" content)
-        (message (concat "'" (caar loga-word-cache) content "' is not found"))
+        (if loga-use-fallback
+            (text-translator/logalimacs-fallback-func)
+          (message (concat "'" (caar loga-word-cache) content "' is not found")))
       (case endpoint
         (:popup
          (loga-make-popup content))
@@ -526,6 +533,14 @@
   (let* ((version-string (loga-to-shell "\\loga version")))
     (string-match "[0-9].[0-9].[0-9]" version-string)
     (match-string 0 version-string)))
+
+(when (and (functionp 'text-translator-all)
+           (eq loga-use-fallback :text-translator))
+  (defun text-translator/logalimacs-fallback-func ()
+    (let* ((search-word (caar loga-word-cache)))
+      (text-translator-all (point)
+                           (substring (funcall text-translator-auto-selection-func "" search-word) 1)
+                           search-word))))
 
 (defvar loga-popup-menu-keymap
   (let ((map (copy-keymap popup-menu-keymap)))
