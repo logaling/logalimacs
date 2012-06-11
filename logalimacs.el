@@ -230,8 +230,8 @@
   (loga-command (loga-input)))
 
 (defun loga-lookup (&optional endpoint manual?)
-  (let* ((word (loga-decide-source-word manual?))
-         (content (loga-command (concat "\"" word "\""))))
+  (let* ((source-word (loga-decide-source-word manual?))
+         (content (loga-command (concat "\"" source-word "\""))))
     (loga-current-command :lookup)
     (if (equal "" content)
         (if loga-use-fallback
