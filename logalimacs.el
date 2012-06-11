@@ -6,7 +6,7 @@
 ;; URL: https://github.com/logaling/logalimacs
 ;; Version: 1.0.0
 ;; Package-Requires: ((popwin "20120529") (popup "20120331"))
-;; Keywords: translation, lisp
+;; Keywords: translation, logaling-command
 
 ;;; License:
 ;; This program is free software: you can redistribute it and/or modify
