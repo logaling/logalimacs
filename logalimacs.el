@@ -137,16 +137,15 @@
   (interactive)
   (let* (task)
     (read-event "types prefix of feature that want you :\n a)dd,c)onfig,d)elete,h)elp,i)mport,l)ookup,n)ew,r)egister,U)nregister,u)pdate,v)ersion")
-    (setq task (assoc-default last-input-event loga-command-alist))
-    (loga-current-command task)
-    (case task
+    (setq loga-current-command (assoc-default last-input-event loga-command-alist))
+    (case loga-current-command
       (:add (loga-add))
       (:lookup (loga-lookup-at-manually))
       (:update (loga-update))
       (t (loga-command)))))
 
 (defun loga-buffer-or-popup-command ()
-  (case (car loga-current-command)
+  (case loga-current-command
     (:lookup
      (read-event)
      (case (assoc-default last-input-event loga-buffer-or-popup-command-alist)
@@ -175,17 +174,13 @@
 (defun loga-to-shell (cmd &optional arg help)
   (ansi-color-apply (shell-command-to-string (concat cmd " " arg " &"))))
 
-(defun loga-current-command (symbol)
-  (setq loga-current-command
-        (cons symbol (loga-from-symbol-to-string symbol))))
-
 (defun loga-from-symbol-to-string (symbol)
   (replace-regexp-in-string ":" "" (symbol-name symbol)))
 
 (defun loga-command (&optional arg)
   (let* ((cmd "\\loga")
-         (task (cdr loga-current-command))
-         (symbol (car loga-current-command))
+         (task (loga-from-symbol-to-string loga-current-command))
+         (symbol loga-current-command)
          (word (loga-lookup-attach-option arg)))
     (setq loga-base-buffer (current-buffer))
     (case symbol
@@ -219,20 +214,20 @@
 (defun loga-add ()
   "this is command to adding word, first source word, second target word."
   (interactive)
-  (loga-current-command :add)
+  (setq loga-current-command :add)
   (loga-command (loga-input)))
 
 ;;;###autoload
 (defun loga-update ()
   "update to registered word"
   (interactive)
-  (loga-current-command :update)
+  (setq loga-current-command :update)
   (loga-command (loga-input)))
 
 (defun loga-lookup (&optional endpoint manual?)
   (let* ((source-word (loga-decide-source-word manual?))
          (content (loga-command (concat "\"" source-word "\""))))
-    (loga-current-command :lookup)
+    (setq loga-current-command :lookup)
     (if (equal "" content)
         (if loga-use-fallback
             (text-translator/logalimacs-fallback-func)
@@ -340,13 +335,13 @@
 
 (defun loga-query (&optional message)
   (let* ((input (read-string (or message "types here:"))))
-    (case (car loga-current-command)
+    (case loga-current-command
       ((or :add :update) (concat "\"" input "\""))
       (t input))))
 
 (defun loga-input ()
-  (let* ((query (cdr loga-current-command))
-         (task (car loga-current-command))
+  (let* ((query (loga-from-symbol-to-string loga-current-command))
+         (task loga-current-command)
          (messages (concat query ": "))
          record)
     (case task
