@@ -131,13 +131,16 @@
     (?k . :previous-line)
     (?d . :detail)))
 
+(defun loga-input-event (command-alist)
+  (assoc-default last-input-event command-alist))
+
 ;;;###autoload
 (defun loga-interactive-command ()
   "interactive-command for logaling-command, types following mini-buffer."
   (interactive)
   (let* (task)
     (read-event "types prefix of feature that want you :\n a)dd,c)onfig,d)elete,h)elp,i)mport,l)ookup,n)ew,r)egister,U)nregister,u)pdate,v)ersion")
-    (setq loga-current-command (assoc-default last-input-event loga-command-alist))
+    (setq loga-current-command (loga-input-event loga-command-alist))
     (case loga-current-command
       (:add (loga-add))
       (:lookup (loga-lookup-at-manually))
@@ -148,7 +151,7 @@
   (case loga-current-command
     (:lookup
      (read-event)
-     (case (assoc-default last-input-event loga-buffer-or-popup-command-alist)
+     (case (loga-input-event loga-buffer-or-popup-command-alist)
        (:next-line
         (unless (eq loga-current-endpoint :popup)
           (scroll-other-window 1) (loga-buffer-or-popup-command)))
