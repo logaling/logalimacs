@@ -149,7 +149,7 @@
 (defun loga-buffer-or-popup-command ()
   (case loga-current-command
     (:lookup
-     (read-event)
+     (read-event "")
      (case (loga-input-event loga-buffer-or-popup-command-alist)
        (:next-line
         (unless (eq loga-current-endpoint :popup)
