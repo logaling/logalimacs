@@ -230,10 +230,9 @@
   (loga-command (loga-input)))
 
 (defun loga-lookup (&optional endpoint manual?)
-  (let* (word content)
+  (let* ((word (loga-decide-source-word manual?))
+         (content (loga-command (concat "\"" word "\""))))
     (loga-current-command :lookup)
-    (setq word (loga-decide-source-word manual?))
-    (setq content (loga-command (concat "\"" word "\"")))
     (if (equal "" content)
         (if loga-use-fallback
             (text-translator/logalimacs-fallback-func)
