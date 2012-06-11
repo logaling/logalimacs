@@ -274,7 +274,7 @@
                   ('source (setq source value))
                   ('target (setq target value))
                   ('note   (setq note   value))))
-          (push (list source target note) keywords)
+          (push `(,source ,target ,note) keywords)
           finally return keywords)))
 
 (defun loga-format-to-string (converted-list)
