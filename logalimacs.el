@@ -138,14 +138,13 @@
 (defun loga-interactive-command ()
   "interactive-command for logaling-command, types following mini-buffer."
   (interactive)
-  (let* (task)
-    (read-event "types prefix of feature that want you :\n a)dd,c)onfig,d)elete,h)elp,i)mport,l)ookup,n)ew,r)egister,U)nregister,u)pdate,v)ersion")
-    (setq loga-current-command (loga-input-event loga-command-alist))
-    (case loga-current-command
-      (:add (loga-add))
-      (:lookup (loga-lookup-at-manually))
-      (:update (loga-update))
-      (t (loga-command)))))
+  (read-event "types prefix of feature that want you :\n a)dd,c)onfig,d)elete,h)elp,i)mport,l)ookup,n)ew,r)egister,U)nregister,u)pdate,v)ersion")
+  (setq loga-current-command (loga-input-event loga-command-alist))
+  (case loga-current-command
+    (:add (loga-add))
+    (:lookup (loga-lookup-at-manually))
+    (:update (loga-update))
+    (t (loga-command))))
 
 (defun loga-buffer-or-popup-command ()
   (case loga-current-command
