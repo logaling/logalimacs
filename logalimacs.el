@@ -280,14 +280,14 @@
     (mapconcat 'identity striped-list "\n")))
 
 (defun loga-format (words size)
-  (let* (record source-length target-length)
-    (loop for (source target note) in words do
-          (setq source-length (loga-compute-length source)
-                target-length (loga-compute-length target))
-          (if (and (loga-less-than-window-half-p source-length target-length)
-                   (> loga-width-limit-source source-length))
-              (push (loga-append-margin source target note size) record)))
-    record))
+  (loop with record = '()
+        for (source target note) in words
+        for source-length = (loga-compute-length source)
+        for target-length = (loga-compute-length target)
+        if (and (loga-less-than-window-half-p source-length target-length)
+                (> loga-width-limit-source source-length))
+        do (push (loga-append-margin source target note size) record)
+        finally return record))
 
 (defun loga-compute-max-length (words)
   (loop with max-source-length = 0
