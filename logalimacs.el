@@ -190,7 +190,7 @@
        (loga-word-cache (cons arg (loga-to-shell cmd (concat task " " word))))
        (cdar loga-word-cache))
       ((or :add :update)
-       (loga-to-shell cmd (concat task " " arg)))
+       (message (loga-to-shell cmd (concat task " " arg))))
       (:show
        (loga-make-buffer (loga-to-shell cmd task)))
       ((or :config :delete :help :import :new :show)
