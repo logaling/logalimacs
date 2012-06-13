@@ -182,10 +182,9 @@
 (defun loga-command (&optional arg)
   (let* ((cmd "\\loga")
          (task (loga-from-symbol-to-string loga-current-command))
-         (symbol loga-current-command)
          (word (loga-lookup-attach-option arg)))
     (setq loga-base-buffer (current-buffer))
-    (case symbol
+    (case loga-current-command
       (:lookup
        (loga-word-cache (cons arg (loga-to-shell cmd (concat task " " word))))
        (cdar loga-word-cache))
