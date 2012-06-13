@@ -206,9 +206,10 @@
     (concat find-word " " (mapconcat 'identity options " "))))
 
 (defun loga-word-cache (word)
-  (let* ((len (length loga-word-cache)))
-    (cond ((<= loga-word-cache-limit len)
-           (setq loga-word-cache (nthcar (- len 1) loga-word-cache))))
+  (let* ((cached-list-length (length loga-word-cache)))
+    (cond ((<= loga-word-cache-limit cached-list-length)
+           (setq loga-word-cache (nthcar (- cached-list-length 1)
+                                         loga-word-cache))))
     (push word loga-word-cache)))
 
 ;;;###autoload
