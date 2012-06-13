@@ -205,12 +205,12 @@
         (push "--output=json" options))
     (concat find-word " " (mapconcat 'identity options " "))))
 
-(defun loga-word-cache (word)
+(defun loga-word-cache (current-search-words)
   (let* ((cached-list-length (length loga-word-cache)))
     (cond ((<= loga-word-cache-limit cached-list-length)
            (setq loga-word-cache (nthcar (- cached-list-length 1)
                                          loga-word-cache))))
-    (push word loga-word-cache)))
+    (push current-search-words loga-word-cache)))
 
 ;;;###autoload
 (defun loga-add ()
