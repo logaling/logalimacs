@@ -193,7 +193,7 @@
        (message (loga-to-shell cmd (concat task " " arg))))
       (:show
        (loga-make-buffer (loga-to-shell cmd task)))
-      ((or :config :delete :help :import :new :show)
+      ((or :config :delete :help :import :new)
        (loga-make-buffer (loga-to-shell cmd (concat task " " (loga-input)))))
       ((or :list :register :unregister :version)
        (minibuffer-message (loga-to-shell cmd task))))))
