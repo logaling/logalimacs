@@ -262,7 +262,7 @@
          keywords converted-list)
     (setq keywords (loga-extract-keywords-from mixed-list)
           loga-current-max-length (loga-compute-max-length keywords)
-          converted-list (loga-format keywords loga-current-max-length))
+          converted-list (loga-format keywords))
     (if loga-cascade-output
         converted-list
       (loga-format-to-string converted-list))))
@@ -283,8 +283,9 @@
                              collect word)))
     (mapconcat 'identity striped-list "\n")))
 
-(defun loga-format (words size)
+(defun loga-format (words)
   (loop with formated-words = '()
+        with size = loga-current-max-length
         for (source target note) in words
         for source-length = (loga-compute-length source)
         for target-length = (loga-compute-length target)
