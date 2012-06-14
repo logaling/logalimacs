@@ -355,8 +355,8 @@
       (:lookup (setq messages '("search: ")))
       (t (setq messages (list messages))))
     (loop with record
-          for message in messages do
-          (push (loga-query message) record)
+          for message in messages
+          collect (loga-query message) into record
           finally return (mapconcat 'identity (reverse record) " "))))
 
 
