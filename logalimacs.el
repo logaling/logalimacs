@@ -233,12 +233,15 @@
     (if (string= "" content)
         (if loga-use-fallback
             (text-translator/logalimacs-fallback-func)
-          (minibuffer-message
-           (concat (caar loga-word-cache) " is not found")))
+          (loga-not-found))
       (case endpoint
         (:popup
          (loga-make-popup content))
         (t (loga-make-buffer content))))))
+
+(defun loga-not-found ()
+  (minibuffer-message
+   (concat (caar loga-word-cache) " is not found")))
 
 (defun loga-decide-source-word (&optional manual?)
   (if mark-active
