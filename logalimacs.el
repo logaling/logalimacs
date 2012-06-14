@@ -230,7 +230,7 @@
   (let* ((source-word (loga-decide-source-word manual?))
          (content (loga-command (concat "\"" source-word "\""))))
     (setq loga-current-command :lookup)
-    (if (equal "" content)
+    (if (string= "" content)
         (if loga-use-fallback
             (text-translator/logalimacs-fallback-func)
           (minibuffer-message
