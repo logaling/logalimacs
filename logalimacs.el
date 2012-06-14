@@ -354,10 +354,10 @@
       (:update (setq messages '("source: " "target(old): " "target(new): " "note(optional): ")))
       (:lookup (setq messages '("search: ")))
       (t (setq messages (list messages))))
-    (loop with record
+    (loop with response
           for message in messages
-          collect (loga-query message) into record
-          finally return (mapconcat 'identity (reverse record) " "))))
+          collect (loga-query message) into response
+          finally return (mapconcat 'identity (reverse response) " "))))
 
 
 ;;;###autoload
