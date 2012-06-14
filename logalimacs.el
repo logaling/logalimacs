@@ -230,14 +230,14 @@
   (let* ((source-word (loga-decide-source-word manual?))
          (content (loga-command (concat "\"" source-word "\""))))
     (setq loga-current-command :lookup)
-    (if (string= "" content)
-        (if loga-use-fallback
-            (text-translator/logalimacs-fallback-func)
-          (loga-not-found))
-      (case endpoint
-        (:popup
-         (loga-make-popup content))
-        (t (loga-make-buffer content))))))
+    (if (string< "" content)
+        (case endpoint
+          (:popup
+           (loga-make-popup content))
+          (t (loga-make-buffer content)))
+      (if loga-use-fallback
+          (text-translator/logalimacs-fallback-func)
+        (loga-not-found)))))
 
 (defun loga-not-found ()
   (minibuffer-message
