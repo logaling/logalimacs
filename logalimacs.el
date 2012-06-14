@@ -188,13 +188,13 @@
       (:lookup
        (loga-word-cache (cons arg (loga-to-shell cmd (concat task " " word))))
        (cdar loga-word-cache))
-      ((or :add :update)
+      ((:add :update)
        (message (loga-to-shell cmd (concat task " " arg))))
       (:show
        (loga-make-buffer (loga-to-shell cmd task)))
-      ((or :config :delete :help :import :new)
+      ((:config :delete :help :import :new)
        (loga-make-buffer (loga-to-shell cmd (concat task " " (loga-input)))))
-      ((or :list :register :unregister :version)
+      ((:list :register :unregister :version)
        (minibuffer-message (loga-to-shell cmd task))))))
 
 (defun loga-lookup-attach-option (search-word)
@@ -343,7 +343,7 @@
 (defun loga-query (&optional message)
   (let* ((input (read-string (or message "types here:"))))
     (case loga-current-command
-      ((or :add :update) (concat "\"" input "\""))
+      ((:add :update) (concat "\"" input "\""))
       (t input))))
 
 (defun loga-input ()
@@ -351,8 +351,8 @@
          (task loga-current-command)
          (messages (concat query ": ")))
     (case task
-      ((or :add :update :config :delete :help :import :new
-           :list :register :unregister)
+      ((:add :update :config :delete :help :import :new
+             :list :register :unregister)
        (loga-make-buffer (loga-to-shell "\\loga help" query))))
     (case task
       (:add (setq messages '("source: " "target: " "note(optional): ")))
