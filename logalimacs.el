@@ -344,8 +344,7 @@
 (defun loga-input ()
   (let* ((query (loga-from-symbol-to-string loga-current-command))
          (task loga-current-command)
-         (messages (concat query ": "))
-         record)
+         (messages (concat query ": ")))
     (case task
       ((or :add :update :config :delete :help :import :new
            :list :register :unregister)
@@ -355,9 +354,11 @@
       (:update (setq messages '("source: " "target(old): " "target(new): " "note(optional): ")))
       (:lookup (setq messages '("search: ")))
       (t (setq messages (list messages))))
-    (loop for message in messages do
-          (push (loga-query message) record))
-    (mapconcat 'identity (reverse record) " ")))
+    (loop with record
+          for message in messages do
+          (push (loga-query message) record)
+          finally return (mapconcat 'identity (reverse record) " "))))
+
 
 ;;;###autoload
 (defun loga-lookup-at-manually ()
