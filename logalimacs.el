@@ -403,7 +403,6 @@
   (replace-regexp-in-string "[ぁ-ん]" "" string))
 
 (defun loga-make-buffer(content)
-  "create buffer for logalimacs"
   (setq loga-current-endpoint :buffer
         other-window-scroll-buffer "*logalimacs*")
   (with-temp-buffer
