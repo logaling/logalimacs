@@ -147,22 +147,20 @@
     (t (loga-command))))
 
 (defun loga-buffer-or-popup-command ()
-  (case loga-current-command
-    (:lookup
-     (read-event "")
-     (case (loga-response-of-event loga-buffer-or-popup-command-alist)
-       (:next-line
-        (unless (eq loga-current-endpoint :popup)
-          (scroll-other-window 1) (loga-buffer-or-popup-command)))
-       (:previous-line
-        (unless (eq loga-current-endpoint :popup)
-          (scroll-other-window-down 1) (loga-buffer-or-popup-command)))
-       (:buffer (loga-make-buffer (cdar loga-word-cache)))
-       (:quit
-        (if (eq loga-current-endpoint :buffer)
-            (kill-buffer "*logalimacs*"))
-        (keyboard-quit))
-       (:detail (loga-display-detail))))))
+  (read-event "")
+  (case (loga-response-of-event loga-buffer-or-popup-command-alist)
+    (:next-line
+     (unless (eq loga-current-endpoint :popup)
+       (scroll-other-window 1) (loga-buffer-or-popup-command)))
+    (:previous-line
+     (unless (eq loga-current-endpoint :popup)
+       (scroll-other-window-down 1) (loga-buffer-or-popup-command)))
+    (:buffer (loga-make-buffer (cdar loga-word-cache)))
+    (:quit
+     (if (eq loga-current-endpoint :buffer)
+         (kill-buffer "*logalimacs*"))
+     (keyboard-quit))
+    (:detail (loga-display-detail))))
 
 (defun loga-display-detail ()
   "If popup where current endpoint, output to buffer. if buffer, quit buffer"
