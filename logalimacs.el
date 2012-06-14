@@ -197,13 +197,13 @@
       ((or :list :register :unregister :version)
        (minibuffer-message (loga-to-shell cmd task))))))
 
-(defun loga-lookup-attach-option (find-word)
+(defun loga-lookup-attach-option (search-word)
   (let* ((options '()))
     (if loga-use-dictionary-option
         (push "--dictionary" options))
     (if (eq loga-current-endpoint :popup)
         (push "--output=json" options))
-    (concat find-word " " (mapconcat 'identity options " "))))
+    (concat search-word " " (mapconcat 'identity options " "))))
 
 (defun loga-word-cache (current-search-words)
   (let* ((cached-list-length (length loga-word-cache)))
