@@ -233,7 +233,8 @@
     (if (equal "" content)
         (if loga-use-fallback
             (text-translator/logalimacs-fallback-func)
-          (minibuffer-message (concat "'" (caar loga-word-cache) content "' is not found")))
+          (minibuffer-message
+           (concat "'" (caar loga-word-cache) content "' is not found")))
       (case endpoint
         (:popup
          (loga-make-popup content))
