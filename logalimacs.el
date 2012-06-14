@@ -351,7 +351,8 @@
        (loga-make-buffer (loga-to-shell "\\loga help" query))))
     (case task
       (:add (setq messages '("source: " "target: " "note(optional): ")))
-      (:update (setq messages '("source: " "target(old): " "target(new): " "note(optional): ")))
+      (:update (setq messages '("source: " "target(old): "
+                                "target(new): " "note(optional): ")))
       (:lookup (setq messages '("search: ")))
       (t (setq messages (list messages))))
     (loop with response
