@@ -242,7 +242,7 @@
 
 (defun loga-not-found ()
   (minibuffer-message
-   (concat (caar loga-word-cache) " is not found")))
+   (format "%s is not found" (caar loga-word-cache))))
 
 (defun loga-decide-source-word ()
   (if mark-active
