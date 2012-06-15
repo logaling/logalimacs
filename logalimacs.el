@@ -226,10 +226,10 @@
   (setq loga-current-command :update)
   (loga-command (loga-input)))
 
-(defun loga-lookup (&optional endpoint manual?)
-  (let* ((source-word (loga-decide-source-word manual?))
+(defun loga-lookup (endpoint)
   (setq loga-current-command :lookup
         loga-current-endpoint endpoint)
+  (let* ((source-word (loga-decide-source-word))
          (terminal-output (loga-command (concat "\"" source-word "\""))))
     (if (string< "" terminal-output)
         (case endpoint
@@ -244,12 +244,12 @@
   (minibuffer-message
    (concat (caar loga-word-cache) " is not found")))
 
-(defun loga-decide-source-word (&optional manual?)
+(defun loga-decide-source-word ()
   (if mark-active
       (buffer-substring-no-properties (region-beginning) (region-end))
-    (case manual?
-      (:manual (loga-input))
-      (t (loga-return-word-on-cursor)))))
+    (if current-prefix-arg
+        (loga-input)
+      (loga-return-word-on-cursor))))
 
 (defun loga-attach-lang-option-for-ja/en (word)
   (cond
@@ -371,23 +371,20 @@
 (defun loga-lookup-at-manually ()
   "Search word from logaling. if not mark region, search word type on manual. otherwise passed character inside region."
   (interactive)
-  (loga-lookup nil :manual))
+  (setq current-prefix-arg 4)
+  (loga-lookup :buffer))
 
 ;;;###autoload
 (defun loga-lookup-in-popup ()
   "Display the output of loga-lookup at tooltip, note require popup.el"
   (interactive)
-  (if current-prefix-arg
-      (loga-lookup :popup :manual)
-    (loga-lookup :popup nil))
+  (loga-lookup :popup)
   (loga-buffer-or-popup-command))
 
 ;;;###autoload
 (defun loga-lookup-in-buffer ()
   (interactive)
-  (if current-prefix-arg
-      (loga-lookup nil :manual)
-    (loga-lookup :buffer nil))
+  (loga-lookup :buffer)
   (loga-buffer-or-popup-command))
 
 (defun loga-return-word-on-cursor ()
