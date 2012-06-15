@@ -228,8 +228,9 @@
 
 (defun loga-lookup (&optional endpoint manual?)
   (let* ((source-word (loga-decide-source-word manual?))
+  (setq loga-current-command :lookup
+        loga-current-endpoint endpoint)
          (terminal-output (loga-command (concat "\"" source-word "\""))))
-    (setq loga-current-command :lookup)
     (if (string< "" terminal-output)
         (case endpoint
           (:popup
@@ -370,14 +371,12 @@
 (defun loga-lookup-at-manually ()
   "Search word from logaling. if not mark region, search word type on manual. otherwise passed character inside region."
   (interactive)
-  (setq loga-current-endpoint :buffer)
   (loga-lookup nil :manual))
 
 ;;;###autoload
 (defun loga-lookup-in-popup ()
   "Display the output of loga-lookup at tooltip, note require popup.el"
   (interactive)
-  (setq loga-current-endpoint :popup)
   (if current-prefix-arg
       (loga-lookup :popup :manual)
     (loga-lookup :popup nil))
@@ -386,7 +385,6 @@
 ;;;###autoload
 (defun loga-lookup-in-buffer ()
   (interactive)
-  (setq loga-current-endpoint :buffer)
   (if current-prefix-arg
       (loga-lookup nil :manual)
     (loga-lookup :buffer nil))
