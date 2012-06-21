@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2011, 2012 by Yuta Yamada
 
-;; Author: Yuta Yamada <yamada@clear-code.com>
+;; Author: Yuta Yamada <cokesboy"at"gmail.com>
 ;; URL: https://github.com/logaling/logalimacs
 ;; Version: 1.0.1
 ;; Package-Requires: ((popwin "20120529") (popup "20120331"))
