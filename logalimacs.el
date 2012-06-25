@@ -201,7 +201,8 @@
     (setq loga-base-buffer (current-buffer))
     (case loga-current-command
       (:lookup
-       (loga-register-output (cons arg (loga-to-shell loga (concat task " " word))))
+       (loga-register-output
+        (cons arg (loga-to-shell loga (concat task " " word))))
        (cdar loga-word-cache))
       ((:add :update)
        (minibuffer-message (loga-to-shell loga (concat task " " arg))))
