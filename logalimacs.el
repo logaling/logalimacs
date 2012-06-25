@@ -372,7 +372,7 @@
          (loga-base-buffer (current-buffer)))
     (case task
       ((:add :update :config :delete :help :import :new
-             :list :register :unregister)
+             :register :unregister)
        (loga-make-buffer (loga-to-shell "\\loga help" query))))
     (case task
       (:add (setq messages '("source: " "target: " "note(optional): ")))
