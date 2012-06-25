@@ -269,15 +269,15 @@
       (loga-format-to-string converted-list))))
 
 (defun loga-extract-keywords-from (all-data)
-  (let* (keywords source target note)
-    (loop for pair across all-data do
-          (loop for (key . value) in pair do
-                (case key
-                  ('source (setq source value))
-                  ('target (setq target value))
-                  ('note   (setq note   value))))
-          (push `(,source ,target ,note) keywords)
-          finally return keywords)))
+  (loop with keywords and source and target and note
+        for pair across all-data do
+        (loop for (key . value) in pair do
+              (case key
+                ('source (setq source value))
+                ('target (setq target value))
+                ('note   (setq note   value))))
+        (push `(,source ,target ,note) keywords)
+        finally return keywords))
 
 (defun loga-format-to-string (converted-list)
   (let* ((striped-list (loop for (word) in converted-list
