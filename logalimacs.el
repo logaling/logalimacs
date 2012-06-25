@@ -367,7 +367,8 @@
 (defun loga-input ()
   (let* ((query (loga-from-symbol-to-string loga-current-command))
          (task loga-current-command)
-         (messages (concat query ": ")))
+         (messages (concat query ": "))
+         (loga-base-buffer (current-buffer)))
     (case task
       ((:add :update :config :delete :help :import :new
              :list :register :unregister)
