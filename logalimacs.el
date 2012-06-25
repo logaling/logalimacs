@@ -46,6 +46,9 @@
 ;; for ansi-color
 (require 'ansi-color)
 
+;; for flymake-err-info
+(require 'flymake)
+
 (defcustom loga-popup-output-type :auto
   "assign 'auto or 'max, available modifying of popup width"
   :group 'logalimacs
