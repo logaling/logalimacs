@@ -205,9 +205,9 @@
        (cdar loga-word-cache))
       ((:add :update)
        (message (loga-to-shell cmd (concat task " " arg))))
-      (:show
+      ((:show :list)
        (loga-make-buffer (loga-to-shell cmd task)))
-      ((:config :delete :help :import :new :list)
+      ((:config :delete :help :import :new)
        (loga-make-buffer (loga-to-shell cmd (concat task " " (loga-input)))))
       ((:register :unregister :version)
        (minibuffer-message (loga-to-shell cmd task))))))
