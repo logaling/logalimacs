@@ -195,22 +195,22 @@
   (replace-regexp-in-string ":" "" (symbol-name symbol)))
 
 (defun loga-command (&optional arg)
-  (let* ((cmd "\\loga")
+  (let* ((loga "\\loga")
          (task (loga-from-symbol-to-string loga-current-command))
          (word (loga-lookup-attach-option arg)))
     (setq loga-base-buffer (current-buffer))
     (case loga-current-command
       (:lookup
-       (loga-word-cache (cons arg (loga-to-shell cmd (concat task " " word))))
+       (loga-word-cache (cons arg (loga-to-shell loga (concat task " " word))))
        (cdar loga-word-cache))
       ((:add :update)
-       (minibuffer-message (loga-to-shell cmd (concat task " " arg))))
+       (minibuffer-message (loga-to-shell loga (concat task " " arg))))
       ((:show :list)
-       (loga-make-buffer (loga-to-shell cmd task)))
+       (loga-make-buffer (loga-to-shell loga task)))
       ((:config :delete :help :import :new)
-       (loga-make-buffer (loga-to-shell cmd (concat task " " (loga-input)))))
+       (loga-make-buffer (loga-to-shell loga (concat task " " (loga-input)))))
       ((:register :unregister :version)
-       (minibuffer-message (loga-to-shell cmd task))))))
+       (minibuffer-message (loga-to-shell loga task))))))
 
 (defun loga-lookup-attach-option (search-word)
   (let* ((options '()))
