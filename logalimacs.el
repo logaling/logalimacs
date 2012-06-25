@@ -381,7 +381,6 @@
           collect (loga-query message) into response
           finally return (mapconcat 'identity (reverse response) " "))))
 
-
 ;;;###autoload
 (defun loga-lookup-at-manually ()
   "Search word from logaling. if not mark region, search word type on manual. otherwise passed character inside region."
