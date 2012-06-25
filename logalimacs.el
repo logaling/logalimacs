@@ -157,9 +157,8 @@
   (read-event "types prefix of feature that want you :\n a)dd,c)onfig,d)elete,h)elp,i)mport,l)ookup,n)ew,r)egister,U)nregister,u)pdate,v)ersion")
   (setq loga-current-command (loga-response-of-event loga-command-alist))
   (case loga-current-command
-    (:add (loga-add))
+    ((:add :update) (loga-command (loga-input)))
     (:lookup (loga-lookup-at-manually))
-    (:update (loga-update))
     (t (loga-command))))
 
 (defun loga-buffer-or-popup-command ()
