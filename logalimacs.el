@@ -540,7 +540,7 @@
       (if (require 'rvm nil t)
           (message "Note: require 'gem install logaling-command'")
         (message "Note: if use rvm, require rvm.el and sets the config to your dot emacs.")))
-     (t message "Note: require 'sudo gem install logaling-command'"))))
+     (t (message "Note: require 'sudo gem install logaling-command'")))))
 
 (defun loga-version-number ()
   (let* ((version-string (loga-to-shell "\\loga version")))
