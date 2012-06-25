@@ -435,7 +435,9 @@
   (popwin:popup-buffer
    (get-buffer-create "*logalimacs*")
    :noselect t :stick t :height 10 :position :top)
-  (loga-buffer-or-popup-command))
+  (case loga-current-command
+    ((:lookup :show :list)
+     (loga-buffer-or-popup-command))))
 
 (defun loga-make-popup (content)
   (let* ((converted-content (loga-convert-from-json content)))
