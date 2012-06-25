@@ -423,11 +423,11 @@
         other-window-scroll-buffer "*logalimacs*")
   (with-temp-buffer
     (switch-to-buffer (get-buffer-create "*logalimacs*"))
-    (toggle-read-only 0)
+    (setq buffer-read-only nil)
     (erase-buffer) ;;initialize
     (insert content)
     (beginning-of-buffer)
-    (toggle-read-only 1))
+    (setq buffer-read-only t))
   (switch-to-buffer loga-base-buffer)
   (popwin:popup-buffer
    (get-buffer-create "*logalimacs*")
