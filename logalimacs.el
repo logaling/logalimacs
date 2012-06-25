@@ -208,9 +208,9 @@
        (message (loga-to-shell cmd (concat task " " arg))))
       (:show
        (loga-make-buffer (loga-to-shell cmd task)))
-      ((:config :delete :help :import :new)
+      ((:config :delete :help :import :new :list)
        (loga-make-buffer (loga-to-shell cmd (concat task " " (loga-input)))))
-      ((:list :register :unregister :version)
+      ((:register :unregister :version)
        (minibuffer-message (loga-to-shell cmd task))))))
 
 (defun loga-lookup-attach-option (search-word)
