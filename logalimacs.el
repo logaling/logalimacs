@@ -543,14 +543,14 @@
 
 (defvar loga-popup-menu-keymap
   (let ((map (copy-keymap popup-menu-keymap)))
-    (define-key map (kbd "q") 'keyboard-quit)
-    (define-key map (kbd "d") 'loga-lookup-in-buffer)
-    (define-key map (kbd "n") 'popup-next)
-    (define-key map (kbd "p") 'popup-previous)
-    (define-key map (kbd "j") 'popup-next)
-    (define-key map (kbd "k") 'popup-previous)
-    (define-key map (kbd "f") 'popup-open)
-    (define-key map (kbd "b") 'popup-close)
+    (define-key map "q" 'keyboard-quit)
+    (define-key map "d" 'loga-lookup-in-buffer)
+    (define-key map "n" 'popup-next)
+    (define-key map "p" 'popup-previous)
+    (define-key map "j" 'popup-next)
+    (define-key map "k" 'popup-previous)
+    (define-key map "f" 'popup-open)
+    (define-key map "b" 'popup-close)
     map))
 
 ;;; @todo fix below bug
