@@ -491,9 +491,7 @@
         loga-fly-timer
         (run-with-idle-timer loga-fly-mode-interval t
                              (lambda()
-                               (let* ((fly-word (loga-return-word-on-cursor)))
-                                 (if fly-word
-                                     (loga-lookup-at-manually fly-word))))))
+                               (loga-lookup-in-buffer))))
   (message "loga-fly-mode enable"))
 
 (defun loga-fly-mode-off ()
