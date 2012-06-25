@@ -131,6 +131,18 @@
     (?k . :previous-line)
     (?d . :detail)))
 
+(defvar loga-popup-menu-keymap
+  (let ((map (copy-keymap popup-menu-keymap)))
+    (define-key map "q" 'keyboard-quit)
+    (define-key map "d" 'loga-lookup-in-buffer)
+    (define-key map "n" 'popup-next)
+    (define-key map "p" 'popup-previous)
+    (define-key map "j" 'popup-next)
+    (define-key map "k" 'popup-previous)
+    (define-key map "f" 'popup-open)
+    (define-key map "b" 'popup-close)
+    map))
+
 (defun loga-response-of-event (command-alist)
   (assoc-default last-input-event command-alist))
 
@@ -540,18 +552,6 @@
       (text-translator-all (point)
                            (substring (funcall text-translator-auto-selection-func "" search-word) 1)
                            search-word))))
-
-(defvar loga-popup-menu-keymap
-  (let ((map (copy-keymap popup-menu-keymap)))
-    (define-key map "q" 'keyboard-quit)
-    (define-key map "d" 'loga-lookup-in-buffer)
-    (define-key map "n" 'popup-next)
-    (define-key map "p" 'popup-previous)
-    (define-key map "j" 'popup-next)
-    (define-key map "k" 'popup-previous)
-    (define-key map "f" 'popup-open)
-    (define-key map "b" 'popup-close)
-    map))
 
 ;;; @todo fix below bug
 ;; Comment out to display odd shelloutput abnormally at PC of part(My company PC)
