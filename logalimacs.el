@@ -154,7 +154,7 @@
 (defun loga-interactive-command ()
   "interactive-command for logaling-command, types following mini-buffer."
   (interactive)
-  (read-event "types prefix of feature that want you :\n a)dd,c)onfig,d)elete,h)elp,i)mport,l)ookup,n)ew,r)egister,U)nregister,u)pdate,v)ersion")
+  (read-event "types prefix of feature that want you :\n a)dd,c)onfig,d)elete,h)elp,i)mport,l)ookup,L)ist,n)ew,r)egister,U)nregister,u)pdate,v)ersion")
   (setq loga-current-command (loga-response-of-event loga-command-alist))
   (case loga-current-command
     ((:add :update) (loga-command (loga-input)))
