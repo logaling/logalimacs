@@ -555,10 +555,6 @@
                            (substring (funcall text-translator-auto-selection-func "" search-word) 1)
                            search-word))))
 
-;;; @todo fix below bug
-;; Comment out to display odd shelloutput abnormally at PC of part(My company PC)
-;; (loga-check-state)
-
 (provide 'logalimacs)
 
 ;;; logalimacs.el ends here
