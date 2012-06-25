@@ -186,7 +186,7 @@
      (loga-lookup-in-buffer))))
 
 ;; @todo apply ansi-color
-(defun loga-to-shell (cmd &optional arg help)
+(defun loga-to-shell (cmd &optional arg)
   (ansi-color-apply (shell-command-to-string (concat cmd " " arg " &"))))
 
 (defun loga-from-symbol-to-string (symbol)
