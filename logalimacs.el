@@ -426,7 +426,7 @@
     (setq buffer-read-only nil)
     (erase-buffer) ;;initialize
     (insert content)
-    (beginning-of-buffer)
+    (goto-char 0)
     (setq buffer-read-only t))
   (switch-to-buffer loga-base-buffer)
   (popwin:popup-buffer
