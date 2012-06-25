@@ -204,7 +204,7 @@
        (loga-word-cache (cons arg (loga-to-shell cmd (concat task " " word))))
        (cdar loga-word-cache))
       ((:add :update)
-       (message (loga-to-shell cmd (concat task " " arg))))
+       (minibuffer-message (loga-to-shell cmd (concat task " " arg))))
       ((:show :list)
        (loga-make-buffer (loga-to-shell cmd task)))
       ((:config :delete :help :import :new)
