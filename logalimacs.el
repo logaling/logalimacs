@@ -201,7 +201,7 @@
     (setq loga-base-buffer (current-buffer))
     (case loga-current-command
       (:lookup
-       (loga-word-cache (cons arg (loga-to-shell loga (concat task " " word))))
+       (loga-register-output (cons arg (loga-to-shell loga (concat task " " word))))
        (cdar loga-word-cache))
       ((:add :update)
        (minibuffer-message (loga-to-shell loga (concat task " " arg))))
@@ -220,7 +220,7 @@
         (push "--output=json" options))
     (concat search-word " " (mapconcat 'identity options " "))))
 
-(defun loga-word-cache (current-search-words)
+(defun loga-register-output (current-search-words)
   (let* ((cached-list-length (length loga-word-cache)))
     (cond ((<= loga-word-cache-limit cached-list-length)
            (setq loga-word-cache (nthcar (- cached-list-length 1)
