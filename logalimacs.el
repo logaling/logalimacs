@@ -1,3 +1,4 @@
+;;; -*- coding: utf-8; lexical-binding: t -*-
 ;;; logalimacs.el --- Front-end to logaling-command for Ruby gems
 
 ;; Copyright (C) 2011, 2012 by Yuta Yamada
