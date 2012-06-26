@@ -382,7 +382,7 @@
     (loop with response
           for message in messages
           collect (loga-query message) into response
-          finally return (mapconcat 'identity (reverse response) " "))))
+          finally return (mapconcat 'identity response " "))))
 
 ;;;###autoload
 (defun loga-lookup-at-manually ()
