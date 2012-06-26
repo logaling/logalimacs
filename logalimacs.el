@@ -214,7 +214,8 @@
 
 (defun loga-add/update (task)
   (let* ((input (loga-input)))
-    (loga-to-shell "\\loga" (concat task " " input))))
+    (loga-to-shell "\\loga" (concat task " " input))
+    (kill-buffer "*logalimacs*")))
 (defun loga-lookup-attach-option (search-word)
   (let* ((options '()))
     (if loga-use-dictionary-option
