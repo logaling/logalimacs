@@ -204,7 +204,7 @@
         (cons search-word (loga-to-shell loga (concat task " " word-and-options))))
        (cdar loga-word-cache))
       ((:add :update)
-       (minibuffer-message (loga-to-shell loga (concat task " " (loga-input))))
+       (loga-add/update task))
       ((:show :list)
        (loga-make-buffer (loga-to-shell loga task)))
       ((:config :delete :help :import :new)
@@ -212,6 +212,9 @@
       ((:register :unregister :version)
        (minibuffer-message (loga-to-shell loga task))))))
 
+(defun loga-add/update (task)
+  (let* ((input (loga-input)))
+    (loga-to-shell "\\loga" (concat task " " input))))
 (defun loga-lookup-attach-option (search-word)
   (let* ((options '()))
     (if loga-use-dictionary-option
