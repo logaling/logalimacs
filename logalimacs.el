@@ -157,7 +157,6 @@
   (read-event "types prefix of feature that want you :\n a)dd,c)onfig,d)elete,h)elp,i)mport,l)ookup,L)ist,n)ew,r)egister,U)nregister,u)pdate,v)ersion")
   (setq loga-current-command (loga-response-of-event loga-command-alist))
   (case loga-current-command
-    ((:add :update) (loga-command (loga-input)))
     (:lookup (loga-lookup-at-manually))
     (t (loga-command))))
 
@@ -205,7 +204,7 @@
         (cons arg (loga-to-shell loga (concat task " " word))))
        (cdar loga-word-cache))
       ((:add :update)
-       (minibuffer-message (loga-to-shell loga (concat task " " arg))))
+       (minibuffer-message (loga-to-shell loga (concat task " " (loga-input))))
       ((:show :list)
        (loga-make-buffer (loga-to-shell loga task)))
       ((:config :delete :help :import :new)
@@ -233,14 +232,14 @@
   "this is command to adding word, first source word, second target word."
   (interactive)
   (setq loga-current-command :add)
-  (loga-command (loga-input)))
+  (loga-command))
 
 ;;;###autoload
 (defun loga-update ()
   "update to registered word"
   (interactive)
   (setq loga-current-command :update)
-  (loga-command (loga-input)))
+  (loga-command))
 
 (defun loga-lookup (endpoint)
   (setq loga-current-command :lookup
