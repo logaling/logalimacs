@@ -196,12 +196,12 @@
 (defun loga-command (&optional search-word)
   (let* ((loga "\\loga")
          (task (loga-from-symbol-to-string loga-current-command))
-         (word (loga-lookup-attach-option search-word)))
+         (word-and-options (loga-lookup-attach-option search-word)))
     (setq loga-base-buffer (current-buffer))
     (case loga-current-command
       (:lookup
        (loga-register-output
-        (cons search-word (loga-to-shell loga (concat task " " word))))
+        (cons search-word (loga-to-shell loga (concat task " " word-and-options))))
        (cdar loga-word-cache))
       ((:add :update)
        (minibuffer-message (loga-to-shell loga (concat task " " (loga-input))))
