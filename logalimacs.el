@@ -213,9 +213,15 @@
        (minibuffer-message (loga-to-shell loga task))))))
 
 (defun loga-add/update (task)
-  (let* ((input (loga-input)))
-    (loga-to-shell "\\loga" (concat task " " input))
-    (kill-buffer "*logalimacs*")))
+  (let* ((input (loga-input))
+         (spew-message (loga-to-shell "\\loga" (concat task " " input))))
+    (if (and (string-match "^term '.+' already exists in '.+'" spew-message)
+             (yes-or-no-p
+              (format "%sAre you sure you want to 'update' followed by?"
+                      spew-message)))
+        (loga-update)
+      (kill-buffer "*logalimacs*"))))
+
 (defun loga-lookup-attach-option (search-word)
   (let* ((options '()))
     (if loga-use-dictionary-option
