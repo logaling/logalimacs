@@ -312,9 +312,7 @@
         finally return `(,source ,target ,note ,source-length ,target-length)))
 
 (defun loga-format-to-string (converted-list)
-  (let* ((striped-list (loop for (word) in converted-list
-                             collect word)))
-    (mapconcat 'identity striped-list "\n")))
+  `(mapconcat 'identity ,@converted-list "\n"))
 
 (defun loga-format (words)
   (loop with formated-words = '()
