@@ -294,15 +294,22 @@
       (loga-format-to-string converted-list))))
 
 (defun loga-extract-keywords-from (all-data)
-  (loop with keywords and source and target and note
-        for pair across all-data do
-        (loop for (key . value) in pair do
-              (case key
-                ('source (setq source value))
-                ('target (setq target value))
-                ('note   (setq note   value))))
-        (push `(,source ,target ,note) keywords)
+  (loop with keywords
+        for pair across all-data
+        collect (loga-trim-and-compute-length pair) into keywords
         finally return keywords))
+
+(defun loga-trim-and-compute-length (translation-group)
+  (loop with source and target and note
+        with source-length and target-length
+        for (key . value) in translation-group do
+        (case key
+          ('source (setq source value
+                         source-length (loga-compute-length source)))
+          ('target (setq target value
+                         target-length (loga-compute-length target)))
+          ('note   (setq note value)))
+        finally return `(,source ,target ,note ,source-length ,target-length)))
 
 (defun loga-format-to-string (converted-list)
   (let* ((striped-list (loop for (word) in converted-list
@@ -312,9 +319,7 @@
 (defun loga-format (words)
   (loop with formated-words = '()
         with size = loga-current-max-length
-        for (source target note) in words
-        for source-length = (loga-compute-length source)
-        for target-length = (loga-compute-length target)
+        for (source target note source-length target-length) in words
         if (and (loga-less-than-window-half-p source-length target-length)
                 (> loga-width-limit-source source-length))
         do (push (loga-append-margin source target note size) formated-words)
@@ -323,9 +328,7 @@
 (defun loga-compute-max-length (words)
   (loop with max-source-length = 0
         with max-target-length = 0
-        for (source target) in words
-        for source-length = (loga-compute-length source)
-        for target-length = (loga-compute-length target)
+        for (source target note source-length target-length) in words
         if (loga-clear-condition-p max-source-length max-target-length
                                    source-length target-length)
         do (setq max-source-length (max max-source-length source-length)
