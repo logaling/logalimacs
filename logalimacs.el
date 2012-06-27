@@ -406,14 +406,12 @@
 (defun loga-lookup-in-popup ()
   "Display the output of loga-lookup at tooltip, note require popup.el"
   (interactive)
-  (loga-lookup :popup)
-  (loga-buffer-or-popup-command))
+  (loga-lookup :popup))
 
 ;;;###autoload
 (defun loga-lookup-in-buffer ()
   (interactive)
-  (loga-lookup :buffer)
-  (loga-buffer-or-popup-command))
+  (loga-lookup :buffer))
 
 (defun loga-return-word-on-cursor ()
   "return word where point on cursor"
