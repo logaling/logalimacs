@@ -322,7 +322,7 @@
         for (source target note source-length target-length) in words
         if (and (loga-less-than-window-half-p source-length target-length)
                 (> loga-width-limit-source source-length))
-        do (push (loga-append-margin source target note size) formated-words)
+        collect (loga-append-margin source target note size) into formated-words
         finally return formated-words))
 
 (defun loga-compute-max-length (words)
