@@ -174,7 +174,7 @@
       (:buffer (loga-make-buffer (cdar loga-word-cache)))
       (:quit
        (if (eq loga-current-endpoint :buffer)
-           (kill-buffer "*logalimacs*"))
+           (loga-quit-window))
        (keyboard-quit))
       (:detail (loga-display-detail)))))
 
@@ -182,7 +182,7 @@
   "If popup where current endpoint, output to buffer. if buffer, quit buffer"
   (case loga-current-endpoint
     (:buffer
-     (kill-buffer "*logalimacs*"))
+     (loga-quit-window)
     (:popup
      (loga-lookup-in-buffer))))
 
@@ -220,7 +220,7 @@
               (format "%sAre you sure you want to 'update' followed by?"
                       spew-message)))
         (loga-update)
-      (kill-buffer "*logalimacs*"))))
+      (loga-quit-window))))
 
 (defun loga-lookup-attach-option (search-word)
   (let* ((options '()))
@@ -533,6 +533,11 @@
                                                  line-err-info-list))))
           (loga-make-buffer (format "[%s] %s" line text))))
       (setq count (1- count)))))
+
+(defun loga-quit-window ()
+  (switch-to-buffer "*logalimacs*")
+  (quit-window)
+  (switch-to-buffer loga-base-buffer))
 
 (defun loga-check-state ()
   (interactive)
