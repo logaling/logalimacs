@@ -295,8 +295,8 @@
 
 (defun loga-extract-keywords-from (all-data)
   (loop with keywords
-        for pair across all-data
-        collect (loga-trim-and-compute-length pair) into keywords
+        for translation-group across all-data
+        collect (loga-trim-and-compute-length translation-group) into keywords
         finally return keywords))
 
 (defun loga-trim-and-compute-length (translation-group)
