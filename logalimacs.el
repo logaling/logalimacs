@@ -302,13 +302,13 @@
 (defun loga-trim-and-compute-length (translation-group)
   (loop with source and target and note
         with source-length and target-length
-        for (key . value) in translation-group do
+        for (key . statement) in translation-group do
         (case key
-          ('source (setq source value
+          ('source (setq source statement
                          source-length (loga-compute-length source)))
-          ('target (setq target value
+          ('target (setq target statement
                          target-length (loga-compute-length target)))
-          ('note   (setq note value)))
+          ('note   (setq note statement)))
         finally return `(,source ,target ,note ,source-length ,target-length)))
 
 (defun loga-format-to-string (converted-list)
