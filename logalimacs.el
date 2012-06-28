@@ -180,7 +180,7 @@
   "If popup where current endpoint, output to buffer. if buffer, quit buffer"
   (case loga-current-endpoint
     (:buffer
-     (loga-quit-window)
+     (loga-quit-window))
     (:popup
      (loga-lookup-in-buffer))))
 
