@@ -285,10 +285,8 @@
 
 (defun loga-convert-from-json (raw-json-data)
   (let* ((mixed-list (json-read-from-string raw-json-data))
-         keywords converted-list)
-    (setq keywords (loga-extract-keywords-from mixed-list)
-          loga-current-max-length (loga-compute-max-length keywords)
-          converted-list (loga-format keywords))
+         (keywords (loga-extract-keywords-from mixed-list))
+         (converted-list (loga-format keywords)))
     (if loga-cascade-output
         converted-list
       (loga-format-to-string converted-list))))
@@ -315,6 +313,7 @@
   `(mapconcat 'identity ,@converted-list "\n"))
 
 (defun loga-format (words)
+  (setq loga-current-max-length (loga-compute-max-length words))
   (loop with formated-words = '()
         with size = loga-current-max-length
         for (source target note source-length target-length) in words
