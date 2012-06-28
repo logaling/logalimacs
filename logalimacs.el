@@ -306,7 +306,7 @@
         (case key
           ('source (setq source statement
                          source-length (loga-compute-length source)))
-          ('target (setq target statement
+          ('target (setq target (loga-chop-target statement)
                          target-length (loga-compute-length target)))
           ('note   (setq note statement)))
         finally return `(,source ,target ,note ,source-length ,target-length)))
@@ -318,10 +318,17 @@
   (loop with formated-words = '()
         with size = loga-current-max-length
         for (source target note source-length target-length) in words
-        if (and (loga-less-than-window-half-p source-length target-length)
+        if (and (loga-less-than-window-half-p source-length)
                 (> loga-width-limit-source source-length))
         collect (loga-append-margin source target note size) into formated-words
         finally return formated-words))
+
+(defun loga-chop-target (raw-target)
+  (let ((tmp-target-length (loga-compute-length raw-target))
+        (window-half (/ (window-width) 2)))
+    (if (< window-half tmp-target-length)
+        (nth 1 (popup-fill-string raw-target window-half))
+      raw-target)))
 
 (defun loga-compute-max-length (words)
   (loop with max-source-length = 0
@@ -340,13 +347,13 @@
   (let ((more-than-max-p (or (< max-source-length source-length)
                              (< max-target-length target-length)))
         (less-than-window-half-p
-         (loga-less-than-window-half-p source-length target-length))
+         (loga-less-than-window-half-p source-length))
         (below-limit-p (< source-length loga-width-limit-source)))
     (and more-than-max-p less-than-window-half-p below-limit-p)))
 
-(defun loga-less-than-window-half-p (source-length target-length)
+(defun loga-less-than-window-half-p (source-length)
   (let* ((half (- (/ (window-width) 2) 2)))
-    (> half (max source-length target-length))))
+    (> half source-length)))
 
 (defun loga-compute-length (sentence)
   (loop with sum = 0
