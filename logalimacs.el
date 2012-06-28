@@ -173,14 +173,14 @@
       (:previous-line (funcall scroll-logalimacs-buffer -1))
       (:buffer (loga-make-buffer (cdar loga-word-cache)))
       (:quit
-       (loga-quit-window))
+       (loga-quit))
       (:detail (loga-display-detail)))))
 
 (defun loga-display-detail ()
   "If popup where current endpoint, output to buffer. if buffer, quit buffer"
   (case loga-current-endpoint
     (:buffer
-     (loga-quit-window))
+     (loga-quit))
     (:popup
      (loga-lookup-in-buffer))))
 
@@ -218,7 +218,7 @@
               (format "%sAre you sure you want to 'update' followed by?"
                       spew-message)))
         (loga-update)
-      (loga-quit-window))))
+      (loga-quit))))
 
 (defun loga-lookup-attach-option (search-word)
   (let* ((options '()))
@@ -537,7 +537,7 @@
           (loga-make-buffer (format "[%s] %s" line text))))
       (setq count (1- count)))))
 
-(defun loga-quit-window ()
+(defun loga-quit ()
   (switch-to-buffer "*logalimacs*")
   (when (eq loga-current-endpoint :buffer)
     (quit-window)
