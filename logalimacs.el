@@ -252,9 +252,9 @@
   (loga-command))
 
 (defun loga-lookup (endpoint)
-  (setq loga-current-command :lookup
-        loga-current-endpoint endpoint)
-  (let* ((source-word (loga-decide-source-word))
+  (let* ((loga-current-command :lookup)
+         (loga-current-endpoint endpoint)
+         (source-word (loga-decide-source-word))
          (terminal-output (loga-command (concat "\"" source-word "\""))))
     (if (string< "" terminal-output)
         (case endpoint
