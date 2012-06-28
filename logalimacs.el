@@ -173,9 +173,7 @@
       (:previous-line (funcall scroll-logalimacs-buffer -1))
       (:buffer (loga-make-buffer (cdar loga-word-cache)))
       (:quit
-       (if (eq loga-current-endpoint :buffer)
-           (loga-quit-window))
-       (keyboard-quit))
+       (loga-quit-window))
       (:detail (loga-display-detail)))))
 
 (defun loga-display-detail ()
@@ -541,8 +539,10 @@
 
 (defun loga-quit-window ()
   (switch-to-buffer "*logalimacs*")
-  (quit-window)
-  (switch-to-buffer loga-base-buffer))
+  (when (eq loga-current-endpoint :buffer)
+    (quit-window)
+    (switch-to-buffer loga-base-buffer))
+  (keyboard-quit))
 
 (defun loga-check-state ()
   (interactive)
