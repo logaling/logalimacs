@@ -337,10 +337,8 @@
                  max-target-length (max max-target-length target-length))
         finally return (cons max-source-length max-target-length)))
 
-(defun loga-clear-condition-p (max-source-length
-                               max-target-length
-                               source-length
-                               target-length)
+(defun loga-clear-condition-p (max-source-length max-target-length
+                               source-length target-length)
   (let ((more-than-max-p (or (< max-source-length source-length)
                              (< max-target-length target-length)))
         (less-than-window-half-p
@@ -487,8 +485,8 @@
   (case (loga-popup-output-type)
     (:auto (setq loga-popup-width (loga-compute-width)
                  loga-popup-point (loga-compute-point)))
-    (:max (setq loga-popup-width (window-width)
-                loga-popup-point (point-at-bol)))))
+    (:max  (setq loga-popup-width (window-width)
+                 loga-popup-point (point-at-bol)))))
 
 (defun loga-compute-width ()
   (loop for (source-length . target-length) in (list loga-current-max-length)
