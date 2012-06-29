@@ -363,8 +363,8 @@
 (defun loga-append-margin (source target note max-length)
   (let* ((margin (- (car max-length) (loga-compute-length source)))
          (column (concat source (spaces-string margin) ":" target)))
-    (if note (setq column (list column (concat "\n" note)))
-      (list column))))
+    (if note (setq column `(,column ,(concat "\n" note)))
+      `(,column))))
 
 (defun loga-query (&optional message)
   (let* ((input (read-string (or message "types here:"))))
@@ -386,7 +386,7 @@
       (:update (setq messages '("source: " "target(old): "
                                 "target(new): " "note(optional): ")))
       (:lookup (setq messages '("search: ")))
-      (t       (setq messages (list messages))))
+      (t       (setq messages `(,messages))))
     (loop with response
           for message in messages
           collect (loga-query message) into response
@@ -484,7 +484,7 @@
                  loga-popup-point (point-at-bol)))))
 
 (defun loga-compute-width ()
-  (loop for (source-length . target-length) in (list loga-current-max-length)
+  (loop for (source-length . target-length) in `(,loga-current-max-length)
         with sum = 0
         collect (+ source-length  target-length) into sum
         finally return (min (+ (car sum) 1) (window-width))))
