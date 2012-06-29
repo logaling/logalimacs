@@ -169,11 +169,11 @@
              (scroll-other-window up-or-down)
              (loga-buffer-or-popup-command)))))
     (case event
-      (:next-line (funcall scroll-logalimacs-buffer 1))
+      (:next-line     (funcall scroll-logalimacs-buffer 1))
       (:previous-line (funcall scroll-logalimacs-buffer -1))
-      (:buffer (loga-make-buffer (cdar loga-word-cache)))
-      (:quit   (loga-quit))
-      (:detail (loga-display-detail)))))
+      (:buffer        (loga-make-buffer (cdar loga-word-cache)))
+      (:quit          (loga-quit))
+      (:detail        (loga-display-detail)))))
 
 (defun loga-display-detail ()
   "If popup where current endpoint, output to buffer. if buffer, quit buffer"
