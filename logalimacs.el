@@ -158,7 +158,7 @@
   (setq loga-current-command (loga-response-of-event loga-command-alist))
   (case loga-current-command
     (:lookup (loga-lookup-at-manually))
-    (t (loga-command))))
+    (t       (loga-command))))
 
 (defun loga-buffer-or-popup-command ()
   (read-event "")
@@ -172,8 +172,7 @@
       (:next-line (funcall scroll-logalimacs-buffer 1))
       (:previous-line (funcall scroll-logalimacs-buffer -1))
       (:buffer (loga-make-buffer (cdar loga-word-cache)))
-      (:quit
-       (loga-quit))
+      (:quit   (loga-quit))
       (:detail (loga-display-detail)))))
 
 (defun loga-display-detail ()
@@ -204,9 +203,9 @@
       ((:add :update)
        (loga-add/update task))
       ((:show :list)
-       (loga-make-buffer (loga-to-shell loga task)))
+       (loga-make-buffer   (loga-to-shell loga task)))
       ((:config :delete :help :import :new)
-       (loga-make-buffer (loga-to-shell loga (concat task " " (loga-input)))))
+       (loga-make-buffer   (loga-to-shell loga (concat task " " (loga-input)))))
       ((:register :unregister :version)
        (minibuffer-message (loga-to-shell loga task))))))
 
@@ -256,9 +255,8 @@
          (terminal-output (loga-command (concat "\"" source-word "\""))))
     (if (string< "" terminal-output)
         (case endpoint
-          (:popup
-           (loga-make-popup terminal-output))
-          (t (loga-make-buffer terminal-output)))
+          (:popup (loga-make-popup  terminal-output))
+          (t      (loga-make-buffer terminal-output)))
       (if loga-use-fallback
           (text-translator/logalimacs-fallback-func)
         (loga-not-found)))))
@@ -387,7 +385,7 @@
              :register :unregister)
        (loga-make-buffer (loga-to-shell "\\loga help" query))))
     (case task
-      (:add (setq messages '("source: " "target: " "note(optional): ")))
+      (:add    (setq messages '("source: " "target: " "note(optional): ")))
       (:update (setq messages '("source: " "target(old): "
                                 "target(new): " "note(optional): ")))
       (:lookup (setq messages '("search: ")))
