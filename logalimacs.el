@@ -363,7 +363,8 @@
 (defun loga-append-margin (source target note max-length)
   (let* ((margin (- (car max-length) (loga-compute-length source)))
          (column (concat source (spaces-string margin) ":" target)))
-    (if note (setq column `(,column ,(concat "\n" note)))
+    (if note
+        `(,column ,(concat "\n" note))
       `(,column))))
 
 (defun loga-query (&optional message)
