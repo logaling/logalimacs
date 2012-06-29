@@ -194,10 +194,7 @@
          (word-and-options (loga-lookup-attach-option search-word)))
     (setq loga-base-buffer (current-buffer))
     (case loga-current-command
-      (:lookup
-       (loga-register-output
-        (cons search-word (loga-to-shell loga (concat task " " word-and-options))))
-       (cdar loga-word-cache))
+      (:lookup             (loga-produce-contents search-word word-and-options))
       ((:add :update)      (loga-add/update task))
       ((:show :list)
        (loga-make-buffer   (loga-to-shell loga task)))
@@ -205,6 +202,12 @@
        (loga-make-buffer   (loga-to-shell loga (concat task " " (loga-input)))))
       ((:register :unregister :version)
        (minibuffer-message (loga-to-shell loga task))))))
+
+(defun loga-produce-contents (search-word word-and-options)
+  (let ((terminal-output
+         (loga-to-shell "\\loga" (concat "lookup " word-and-options))))
+    (loga-register-output (cons search-word terminal-output))
+    terminal-output))
 
 (defun loga-add/update (task)
   (let* ((input (loga-input))
