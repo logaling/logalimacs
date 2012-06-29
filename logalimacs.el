@@ -260,7 +260,7 @@
       (if loga-use-fallback
           (text-translator/logalimacs-fallback-func)
         (minibuffer-message
-         (format "%s is not found" (caar loga-word-cache)))))))
+         (format "%s is not found" source-word))))))
 
 (defun loga-decide-source-word ()
   (if mark-active
