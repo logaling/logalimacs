@@ -178,10 +178,8 @@
 (defun loga-display-detail ()
   "If popup where current endpoint, output to buffer. if buffer, quit buffer"
   (case loga-current-endpoint
-    (:buffer
-     (loga-quit))
-    (:popup
-     (loga-lookup-in-buffer))))
+    (:buffer (loga-quit))
+    (:popup  (loga-lookup-in-buffer))))
 
 ;; @todo apply ansi-color
 (defun loga-to-shell (cmd &optional arg)
@@ -200,8 +198,7 @@
        (loga-register-output
         (cons search-word (loga-to-shell loga (concat task " " word-and-options))))
        (cdar loga-word-cache))
-      ((:add :update)
-       (loga-add/update task))
+      ((:add :update)      (loga-add/update task))
       ((:show :list)
        (loga-make-buffer   (loga-to-shell loga task)))
       ((:config :delete :help :import :new)
@@ -355,7 +352,7 @@
         if (and (not (eq "" token))
                 (multibyte-string-p token)
                 (loga-ignore-character-p token))
-        do (setq sum (+ sum 2))
+        do      (setq sum (+ sum 2))
         else do (setq sum (+ sum 1))
         finally return sum))
 
@@ -389,7 +386,7 @@
       (:update (setq messages '("source: " "target(old): "
                                 "target(new): " "note(optional): ")))
       (:lookup (setq messages '("search: ")))
-      (t (setq messages (list messages))))
+      (t       (setq messages (list messages))))
     (loop with response
           for message in messages
           collect (loga-query message) into response
@@ -522,8 +519,8 @@
          (count              (length line-err-info-list)))
     (while (> count 0)
       (when line-err-info-list
-        (let* ((file       (flymake-ler-file (nth (1- count)
-                                                  line-err-info-list)))
+        (let* ((file      (flymake-ler-file (nth (1- count)
+                                                 line-err-info-list)))
                (full-file (flymake-ler-full-file (nth (1- count)
                                                       line-err-info-list)))
                (text      (flymake-ler-text (nth (1- count)
