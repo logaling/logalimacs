@@ -255,8 +255,8 @@
          (terminal-output (loga-command (concat "\"" source-word "\""))))
     (if (string< "" terminal-output)
         (case endpoint
-          (:popup (loga-make-popup  terminal-output))
-          (t      (loga-make-buffer terminal-output)))
+          (:popup  (loga-make-popup  terminal-output))
+          (:buffer (loga-make-buffer terminal-output)))
       (if loga-use-fallback
           (text-translator/logalimacs-fallback-func)
         (minibuffer-message
