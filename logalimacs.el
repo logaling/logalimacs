@@ -259,11 +259,8 @@
           (t      (loga-make-buffer terminal-output)))
       (if loga-use-fallback
           (text-translator/logalimacs-fallback-func)
-        (loga-not-found)))))
-
-(defun loga-not-found ()
-  (minibuffer-message
-   (format "%s is not found" (caar loga-word-cache))))
+        (minibuffer-message
+         (format "%s is not found" (caar loga-word-cache)))))))
 
 (defun loga-decide-source-word ()
   (if mark-active
