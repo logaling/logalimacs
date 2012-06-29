@@ -346,7 +346,7 @@
 
 (defun loga-less-than-window-half-p (source-length)
   (let* ((half (- (/ (window-width) 2) 2)))
-    (> half source-length)))
+    (< source-length half)))
 
 (defun loga-compute-length (sentence)
   (loop with sum = 0
