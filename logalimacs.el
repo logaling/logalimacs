@@ -230,9 +230,12 @@
 (defun loga-register-output (current-search-words)
   (let* ((cached-list-length (length loga-word-cache)))
     (cond ((<= loga-word-cache-limit cached-list-length)
-           (setq loga-word-cache (nthcar (- cached-list-length 1)
-                                         loga-word-cache))))
+           (setq loga-word-cache (loga-nthcar (- cached-list-length 1)
+                                              loga-word-cache))))
     (push current-search-words loga-word-cache)))
+
+(defun loga-nthcar (n list)
+  (reverse (nthcdr (- (length list) n) (reverse list))))
 
 ;;;###autoload
 (defun loga-add ()
