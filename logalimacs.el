@@ -106,7 +106,7 @@
 (defvar loga-popup-point 0)
 (defvar loga-popup-width 0)
 
-;; Apply your favorite function
+;; Allow your favorite function
 ;; Example:
 ;; (setq loga-fallback-function
 ;;       (lambda (search-word)
