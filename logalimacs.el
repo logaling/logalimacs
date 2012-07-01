@@ -105,13 +105,12 @@
 (defvar loga-base-buffer nil)
 (defvar loga-popup-point 0)
 (defvar loga-popup-width 0)
-
-;; Allow your favorite function
-;; Example:
-;; (setq loga-fallback-function
-;;       (lambda (search-word)
-;;         (my/super-translation-function search-word)))
-(defvar loga-fallback-function nil)
+(defvar loga-fallback-function nil "
+Allow your favorite function.
+Example:
+  (setq loga-fallback-function
+      (lambda (search-word)
+        (my/super-translation-function search-word)))")
 
 (defvar loga-command-alist
   '((?a . :add)
