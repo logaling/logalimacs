@@ -107,6 +107,7 @@
 (defvar loga-popup-width 0)
 (defvar loga-fallback-function nil "
 Allow your favorite function.
+It will be execute when the lookup was failed.
 Example:
   (setq loga-fallback-function
       (lambda (search-word)
