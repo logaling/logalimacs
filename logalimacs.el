@@ -69,11 +69,6 @@
   :group 'logalimacs
   :type 'integer)
 
-(defcustom loga-use-fallback nil
-  "if assign :text-translator, can be fallback."
-  :group 'logalimacs
-  :type 'symbol)
-
 (defvar loga-fly-timer nil
   "timer object for loga-fly-mode")
 
@@ -110,6 +105,13 @@
 (defvar loga-base-buffer nil)
 (defvar loga-popup-point 0)
 (defvar loga-popup-width 0)
+
+;; Apply your favorite function
+;; Example:
+;; (setq loga-fallback-function
+;;       (lambda (search-word)
+;;         (my/super-translation-function search-word)))
+(defvar loga-fallback-function nil)
 
 (defvar loga-command-alist
   '((?a . :add)
@@ -260,8 +262,8 @@
         (case endpoint
           (:popup  (loga-make-popup  terminal-output))
           (:buffer (loga-make-buffer terminal-output)))
-      (if loga-use-fallback
-          (text-translator/logalimacs-fallback-func)
+      (if (functionp loga-fallback-function)
+          (loga-fallback source-word)
         (minibuffer-message
          (format "%s is not found" source-word))))))
 
@@ -567,13 +569,8 @@
     (string-match "[0-9].[0-9].[0-9]" version-string)
     (match-string 0 version-string)))
 
-(when (and (functionp 'text-translator-all)
-           (eq loga-use-fallback :text-translator))
-  (defun text-translator/logalimacs-fallback-func ()
-    (let* ((search-word (caar loga-word-cache)))
-      (text-translator-all (point)
-                           (substring (funcall text-translator-auto-selection-func "" search-word) 1)
-                           search-word))))
+(defun loga-fallback (search-word)
+  (funcall loga-fallback-function search-word))
 
 (provide 'logalimacs)
 
