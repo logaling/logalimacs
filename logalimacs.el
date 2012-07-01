@@ -147,6 +147,7 @@ Example:
     (define-key map "k" 'popup-previous)
     (define-key map "f" 'popup-open)
     (define-key map "b" 'popup-close)
+    (define-key map "o" 'loga-fallback) ;; Other function
     map))
 
 (defun loga-response-of-event (command-alist)
@@ -569,8 +570,11 @@ Example:
     (string-match "[0-9].[0-9].[0-9]" version-string)
     (match-string 0 version-string)))
 
-(defun loga-fallback (search-word)
-  (funcall loga-fallback-function search-word))
+(defun loga-fallback (&optional search-word)
+  (interactive)
+  (funcall loga-fallback-function (or search-word (caar loga-word-cache)))
+  ;; exit popup
+  (keyboard-quit))
 
 (provide 'logalimacs)
 
