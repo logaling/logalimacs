@@ -572,9 +572,10 @@ Example:
 
 (defun loga-fallback (&optional search-word)
   (interactive)
-  (funcall loga-fallback-function (or search-word (caar loga-word-cache)))
-  ;; exit popup
-  (keyboard-quit))
+  (when (functionp loga-fallback-function)
+    (funcall loga-fallback-function (or search-word (caar loga-word-cache)))
+    ;; exit popup
+    (keyboard-quit)))
 
 (provide 'logalimacs)
 
