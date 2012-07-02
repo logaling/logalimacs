@@ -93,7 +93,7 @@
   :type  'integer)
 
 (defcustom loga-use-dictionary-option nil
-  "If nonnil, use --dictionary for lookup option, It can use at more than logaling version 0.1.3"
+  "If nonnil, use --dictionary for lookup option."
   :group 'logalimacs
   :type  'boolean)
 
