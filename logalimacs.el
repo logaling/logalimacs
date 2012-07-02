@@ -355,7 +355,7 @@ Example:
   (loop with sum = 0
         with tokens = (string-to-list (split-string sentence ""))
         for token in tokens
-        if (and (string< "" token)
+        if (and (not (equal "" token))
                 (multibyte-string-p token)
                 (loga-ignore-character-p token))
         do      (setq sum (+ sum 2))
