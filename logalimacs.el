@@ -124,6 +124,8 @@ Example:
 
 (defvar loga-marked-words '())
 
+(defvar loga-buffer-string "")
+
 (defvar loga-command-alist
   '((?a . :add)
     (?c . :config)
@@ -227,14 +229,22 @@ Example:
   (setq loga-marked-words nil)
   (if mark-active
       (loga-return-marked-region))
-  (let* ((input (loga-input))
-         (spew-message (loga-to-shell "\\loga" (concat task " " input))))
-    (if (and (string-match "^term '.+' already exists in '.+'" spew-message)
+  (let* ((input (loga-input)))
+    (async-shell-command (concat "\\loga " task " " input) "*logalimacs*")
+    (loga-read-buffer-string)
+    (if (and (string-match "^term '.+' already exists in '.+'" loga-buffer-string)
              (yes-or-no-p
               (format "%sAre you sure you want to 'update' followed by?"
-                      spew-message)))
+                      loga-buffer-string)))
         (loga-update)
       (loga-quit))))
+
+(defun loga-read-buffer-string ()
+  (interactive)
+  (switch-to-buffer "*logalimacs*")
+  (setq loga-buffer-string ""
+        loga-buffer-string (buffer-string))
+  (switch-to-buffer loga-base-buffer))
 
 (defun loga-lookup-attach-option (search-word)
   (let* ((options '()))
