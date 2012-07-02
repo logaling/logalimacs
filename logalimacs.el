@@ -363,7 +363,8 @@ Example:
         finally return sum))
 
 (defun loga-ignore-character-p (token)
-  "If mixed Japanese language, wrong count at specific character. because it escape character"
+  "If mixed Japanese language, wrong count at specific character.
+Because it escape character"
   (not (string-match "[\\ -/:->{-~\\?^]\\|\\[\\|\\]" token)))
 
 (defun loga-append-margin (source target note max-length)
@@ -401,7 +402,9 @@ Example:
 
 ;;;###autoload
 (defun loga-lookup-at-manually ()
-  "Search word from logaling. if not mark region, search word type on manual. otherwise passed character inside region."
+  "Search word from logaling.
+If not mark region, search word type on manual.
+Otherwise passed character inside region."
   (interactive)
   (setq current-prefix-arg 4)
   (loga-lookup :buffer))
