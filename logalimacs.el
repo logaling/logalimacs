@@ -208,7 +208,8 @@ Example:
   (let* ((loga "\\loga")
          (task (loga-from-symbol-to-string loga-current-command))
          (word-and-options (loga-lookup-attach-option search-word)))
-    (setq loga-base-buffer (current-buffer))
+    (setq loga-base-buffer (current-buffer)
+          loga-marked-words nil)
     (case loga-current-command
       (:lookup             (loga-produce-contents search-word word-and-options))
       ((:add :update)      (loga-add/update task))
@@ -226,7 +227,6 @@ Example:
     terminal-output))
 
 (defun loga-add/update (task)
-  (setq loga-marked-words nil)
   (if mark-active
       (loga-return-marked-region))
   (let* ((input (loga-input)))
