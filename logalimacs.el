@@ -52,22 +52,22 @@
 (defcustom loga-popup-output-type :auto
   "assign 'auto or 'max, available modifying of popup width"
   :group 'logalimacs
-  :type 'symbol)
+  :type  'symbol)
 
 (defcustom loga-log-output nil
   "if nonnil, output log for developer."
   :group 'logalimacs
-  :type 'boolean)
+  :type  'boolean)
 
 (defcustom loga-cascade-output t
   "if nonnil, output by cascade popup"
   :group 'logalimacs
-  :type 'boolean)
+  :type  'boolean)
 
 (defcustom loga-fly-mode-interval 1
   "timer-valiable for loga-fly-mode, credit par sec."
   :group 'logalimacs
-  :type 'integer)
+  :type  'integer)
 
 (defvar loga-fly-timer nil
   "timer object for loga-fly-mode")
@@ -75,27 +75,27 @@
 (defcustom loga-popup-margin 0
   "margin variable for popup-tip"
   :group 'logalimacs
-  :type 'integer)
+  :type  'integer)
 
 (defcustom loga-word-cache-limit 10
   "number of cached words"
   :group 'logalimacs
-  :type 'integer)
+  :type  'integer)
 
 (defcustom loga-width-limit-source 30
   "limit width of source word"
   :group 'logalimacs
-  :type 'integer)
+  :type  'integer)
 
 (defcustom loga-width-limit-target 0
   "limit of width of target word"
   :group 'logalimacs
-  :type 'integer)
+  :type  'integer)
 
 (defcustom loga-use-dictionary-option nil
   "If nonnil, use --dictionary for lookup option, It can use at more than logaling version 0.1.3"
   :group 'logalimacs
-  :type 'boolean)
+  :type  'boolean)
 
 (defvar loga-fly-mode nil "if nonnil, logalimacs use loga-fly-mode")
 (defvar loga-word-cache nil "cache word used by loga-lookup")
@@ -358,8 +358,8 @@ Example:
         if (and (not (equal "" token))
                 (multibyte-string-p token)
                 (loga-ignore-character-p token))
-        do      (setq sum (+ sum 2))
-        else do (setq sum (+ sum 1))
+        do      (setq  sum (+ sum 2))
+        else do (setq  sum (+ sum 1))
         finally return sum))
 
 (defun loga-ignore-character-p (token)
