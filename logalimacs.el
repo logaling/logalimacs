@@ -54,11 +54,6 @@
   :group 'logalimacs
   :type  'symbol)
 
-(defcustom loga-log-output nil
-  "If nonnil, output log for developer."
-  :group 'logalimacs
-  :type  'boolean)
-
 (defcustom loga-cascade-output t
   "If nonnil, output by cascade popup"
   :group 'logalimacs
@@ -440,7 +435,6 @@ Otherwise passed character inside region."
                (word-at-point)
              (backward-word)
              (word-at-point))))
-      (if loga-log-output (print match-word)) ;;log
       (if (string-match "[上-黑]" match-word)
           (loga-reject-hiragana match-word)
         match-word))))
