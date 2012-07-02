@@ -50,45 +50,45 @@
 (require 'flymake)
 
 (defcustom loga-popup-output-type :auto
-  "assign 'auto or 'max, available modifying of popup width"
+  "Assign 'auto or 'max, available modifying of popup width"
   :group 'logalimacs
   :type  'symbol)
 
 (defcustom loga-log-output nil
-  "if nonnil, output log for developer."
+  "If nonnil, output log for developer."
   :group 'logalimacs
   :type  'boolean)
 
 (defcustom loga-cascade-output t
-  "if nonnil, output by cascade popup"
+  "If nonnil, output by cascade popup"
   :group 'logalimacs
   :type  'boolean)
 
 (defcustom loga-fly-mode-interval 1
-  "timer-valiable for loga-fly-mode, credit par sec."
+  "Timer-valiable for loga-fly-mode, credit par sec."
   :group 'logalimacs
   :type  'integer)
 
 (defvar loga-fly-timer nil
-  "timer object for loga-fly-mode")
+  "Timer object for loga-fly-mode.")
 
 (defcustom loga-popup-margin 0
-  "margin variable for popup-tip"
+  "Margin variable for popup-tip."
   :group 'logalimacs
   :type  'integer)
 
 (defcustom loga-word-cache-limit 10
-  "number of cached words"
+  "Number of cached words."
   :group 'logalimacs
   :type  'integer)
 
 (defcustom loga-width-limit-source 30
-  "limit width of source word"
+  "Limit width of source word."
   :group 'logalimacs
   :type  'integer)
 
 (defcustom loga-width-limit-target 0
-  "limit of width of target word"
+  "Limit of width of target word."
   :group 'logalimacs
   :type  'integer)
 
@@ -107,7 +107,7 @@
 (defvar loga-popup-width 0)
 (defvar loga-fallback-function nil "
 Allow your favorite function.
-It will be execute when the lookup was failed.
+It will be execute when the lookup was failed if it set your function.
 Example:
   (setq loga-fallback-function
       (lambda (search-word)
