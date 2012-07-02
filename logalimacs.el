@@ -277,11 +277,15 @@ Example:
 
 (defun loga-decide-source-word ()
   (if mark-active
-      (buffer-substring-no-properties (region-beginning) (region-end))
+      (loga-return-marked-region)
     (if current-prefix-arg
         (loga-input)
       (loga-return-word-on-cursor))))
 
+(defun loga-return-marked-region ()
+  (let ((marked-region
+         (buffer-substring-no-properties (region-beginning) (region-end))))
+    marked-region))
 (defun loga-attach-lang-option-for-ja/en (word)
   (cond
    ((string-match "[ぁ-んァ-ン上-黑]" word)
