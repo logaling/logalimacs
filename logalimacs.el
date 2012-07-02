@@ -224,6 +224,9 @@ Example:
     terminal-output))
 
 (defun loga-add/update (task)
+  (setq loga-marked-words nil)
+  (if mark-active
+      (loga-return-marked-region))
   (let* ((input (loga-input))
          (spew-message (loga-to-shell "\\loga" (concat task " " input))))
     (if (and (string-match "^term '.+' already exists in '.+'" spew-message)
@@ -399,10 +402,24 @@ Because it escape character"
       `(,column))))
 
 (defun loga-query (&optional message)
-  (let* ((input (read-string (or message "types here:"))))
+  (let* ((input (read-string (or message "types here:")
+                             (loga-attach-initial-value message))))
     (case loga-current-command
       ((:add :update) (concat "\"" input "\""))
       (t input))))
+
+(defun loga-attach-initial-value (message)
+  (let ((initial-source (car loga-marked-words))
+        (initial-target (cdr loga-marked-words)))
+    (case loga-current-command
+      ((:add :update)
+       (when (and initial-source
+                  initial-target)
+         (cond ((string-match "source.+" message)
+                initial-source)
+               ((string-match "target.+" message)
+                initial-target)
+               (t nil)))))))
 
 (defun loga-input ()
   (let* ((query (loga-from-symbol-to-string loga-current-command))
