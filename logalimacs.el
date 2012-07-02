@@ -408,7 +408,7 @@ Example:
 
 ;;;###autoload
 (defun loga-lookup-in-popup ()
-  "Display the output of loga-lookup at tooltip, note require popup.el"
+  "Display the output of loga-lookup at tooltip."
   (interactive)
   (loga-lookup :popup))
 
@@ -418,7 +418,7 @@ Example:
   (loga-lookup :buffer))
 
 (defun loga-return-word-on-cursor ()
-  "return word where point on cursor"
+  "Return word where point on cursor."
   (let* (match-word)
     (save-excursion
       (setq match-word
@@ -498,7 +498,7 @@ Example:
 
 ;;;###autoload
 (defun loga-fly-mode ()
-  "toggle loga-fly-mode-on and loga-fly-mode-off"
+  "Toggle loga-fly-mode-on and loga-fly-mode-off."
   (interactive)
   (if loga-fly-mode
       (loga-fly-mode-off)
