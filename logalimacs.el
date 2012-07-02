@@ -97,10 +97,14 @@
   :group 'logalimacs
   :type  'boolean)
 
-(defvar loga-fly-mode nil "if nonnil, logalimacs use loga-fly-mode")
-(defvar loga-word-cache nil "cache word used by loga-lookup")
-(defvar loga-current-command nil "get executed current command-name and symbol")
-(defvar loga-current-endpoint nil "store current endpoint symbol")
+(defvar loga-fly-mode nil
+  "If nonnil, logalimacs use loga-fly-mode")
+(defvar loga-word-cache nil
+  "Cache word used by loga-lookup")
+(defvar loga-current-command nil
+  "Get executed current command-name and symbol")
+(defvar loga-current-endpoint nil
+  "Store current endpoint symbol")
 (defvar loga-current-max-length nil)
 (defvar loga-base-buffer nil)
 (defvar loga-popup-point 0)
