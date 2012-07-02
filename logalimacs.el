@@ -299,7 +299,8 @@ Example:
   (let* ((separator loga-mark-rigion-separator)
          (separate-regexp (concat "^\\(.*\\)" separator "\\(.*\\)")))
     (string-match separate-regexp marked-words)
-    (setq loga-marked-words (cons (match-string 1 marked-words)
+    (setq loga-marked-words (cons (or (match-string 1 marked-words)
+                                      marked-words)
                                   (match-string 2 marked-words)))))
 
 (defun loga-attach-lang-option-for-ja/en (word)
@@ -413,8 +414,8 @@ Because it escape character"
         (initial-target (cdr loga-marked-words)))
     (case loga-current-command
       ((:add :update)
-       (when (and initial-source
-                  initial-target)
+       (when (or initial-source
+                 initial-target)
          (cond ((string-match "source.+" message)
                 initial-source)
                ((string-match "target.+" message)
