@@ -69,9 +69,6 @@
   :group 'logalimacs
   :type  'integer)
 
-(defvar loga-fly-timer nil
-  "Timer object for loga-fly-mode.")
-
 (defcustom loga-popup-margin 0
   "Margin variable for popup-tip."
   :group 'logalimacs
@@ -99,6 +96,9 @@
 
 (defvar loga-fly-mode nil
   "If nonnil, logalimacs use loga-fly-mode")
+
+(defvar loga-fly-timer nil
+  "Timer object for loga-fly-mode.")
 
 (defvar loga-word-cache nil
   "Cache word used by loga-lookup")
