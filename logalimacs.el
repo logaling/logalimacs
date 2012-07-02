@@ -198,8 +198,10 @@ Example:
     (:popup  (loga-lookup-in-buffer))))
 
 ;; @todo apply ansi-color
-(defun loga-to-shell (cmd &optional arg)
-  (ansi-color-apply (shell-command-to-string (concat cmd " " arg " &"))))
+(defun loga-to-shell (cmd &optional arg async?)
+  (if async?
+      (async-shell-command (concat cmd " " arg) "*logalimacs*")
+    (ansi-color-apply (shell-command-to-string (concat cmd " " arg " &")))))
 
 (defun loga-from-symbol-to-string (symbol)
   (replace-regexp-in-string ":" "" (symbol-name symbol)))
@@ -230,7 +232,7 @@ Example:
   (if mark-active
       (loga-return-marked-region))
   (let* ((input (loga-input)))
-    (async-shell-command (concat "\\loga " task " " input) "*logalimacs*")
+    (loga-to-shell "\\loga" (concat task " " input) t)
     (loga-read-buffer-string)
     (if (and (string-match "^term '.+' already exists in '.+'" loga-buffer-string)
              (yes-or-no-p
