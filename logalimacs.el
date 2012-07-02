@@ -434,13 +434,12 @@ Otherwise passed character inside region."
 
 (defun loga-return-word-on-cursor ()
   "Return word where point on cursor."
-  (let* (match-word)
-    (save-excursion
-      (setq match-word
-            (if (looking-at "\\w")
-                (word-at-point)
-              (backward-word)
-              (word-at-point)))
+  (save-excursion
+    (let ((match-word
+           (if (looking-at "\\w")
+               (word-at-point)
+             (backward-word)
+             (word-at-point))))
       (if loga-log-output (print match-word)) ;;log
       (if (string-match "[上-黑]" match-word)
           (loga-reject-hiragana match-word)
