@@ -120,6 +120,10 @@ Example:
       (lambda (search-word)
         (my/super-translation-function search-word)))")
 
+(defvar loga-mark-rigion-separator "/")
+
+(defvar loga-marked-words '())
+
 (defvar loga-command-alist
   '((?a . :add)
     (?c . :config)
@@ -285,7 +289,16 @@ Example:
 (defun loga-return-marked-region ()
   (let ((marked-region
          (buffer-substring-no-properties (region-beginning) (region-end))))
+    (loga-register-mark-words marked-region)
     marked-region))
+
+(defun loga-register-mark-words (marked-words)
+  (let* ((separator loga-mark-rigion-separator)
+         (separate-regexp (concat "^\\(.*\\)" separator "\\(.*\\)")))
+    (string-match separate-regexp marked-words)
+    (setq loga-marked-words (cons (match-string 1 marked-words)
+                                  (match-string 2 marked-words)))))
+
 (defun loga-attach-lang-option-for-ja/en (word)
   (cond
    ((string-match "[ぁ-んァ-ン上-黑]" word)
