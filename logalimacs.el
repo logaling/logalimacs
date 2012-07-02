@@ -99,16 +99,24 @@
 
 (defvar loga-fly-mode nil
   "If nonnil, logalimacs use loga-fly-mode")
+
 (defvar loga-word-cache nil
   "Cache word used by loga-lookup")
+
 (defvar loga-current-command nil
   "Get executed current command-name and symbol")
+
 (defvar loga-current-endpoint nil
   "Store current endpoint symbol")
+
 (defvar loga-current-max-length nil)
+
 (defvar loga-base-buffer nil)
+
 (defvar loga-popup-point 0)
+
 (defvar loga-popup-width 0)
+
 (defvar loga-fallback-function nil "
 Allow your favorite function.
 It will be execute when the lookup was failed if it set your function.
