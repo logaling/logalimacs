@@ -280,6 +280,19 @@ Example:
   (setq loga-current-command :update)
   (loga-command))
 
+(defun loga-ignore-login-message (terminal-output)
+  "Ignore 'user-name has logged on 7 from :0.'etc.. if endpoint is popup"
+  (with-temp-buffer
+    (insert terminal-output)
+    (goto-char (point-min))
+    (search-forward "[\n{" nil t)
+    (backward-char 3)
+    (set-mark-command nil)
+    (search-forward "}\n]" nil t)
+    (forward-char 1)
+    (narrow-to-region (point) (mark))
+    (buffer-string)))
+
 (defun loga-lookup (endpoint)
   (let* ((loga-current-command :lookup)
          (loga-current-endpoint endpoint)
@@ -287,7 +300,8 @@ Example:
          (terminal-output (loga-command (concat "\"" source-word "\""))))
     (if (string< "" terminal-output)
         (case endpoint
-          (:popup  (loga-make-popup  terminal-output))
+          (:popup  (loga-make-popup
+                    (loga-ignore-login-message terminal-output)))
           (:buffer (loga-make-buffer terminal-output)))
       (if (functionp loga-fallback-function)
           (loga-fallback source-word)
