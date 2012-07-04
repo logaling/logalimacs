@@ -357,7 +357,7 @@ Example:
         with source-length and target-length
         for (key . statement) in translation-group do
         (case key
-          ('source (setq source statement
+          ('source (setq source (loga-chop-source statement)
                          source-length (loga-compute-length source)))
           ('target (setq target (loga-chop-target statement)
                          target-length (loga-compute-length target)))
@@ -376,6 +376,12 @@ Example:
                 (> loga-width-limit-source source-length))
         collect (loga-append-margin source target note size) into formated-words
         finally return formated-words))
+
+(defun loga-chop-source (raw-source)
+  (let ((tmp-source-length (loga-compute-length raw-source)))
+    (if (string-match "\\[.+\\]" raw-source)
+        (replace-regexp-in-string "\\[.+\\]" "" raw-source)
+      raw-source)))
 
 (defun loga-chop-target (raw-target)
   (let ((tmp-target-length (loga-compute-length raw-target))
