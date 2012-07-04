@@ -106,6 +106,8 @@
 
 (defvar loga-current-max-length nil)
 
+(defvar loga-current-highlight-regexp "")
+
 (defvar loga-base-buffer nil)
 
 (defvar loga-popup-point 0)
@@ -512,6 +514,7 @@ Otherwise passed character inside region."
     (erase-buffer) ;;initialize
     (insert content)
     (goto-char 0)
+    (loga-highlight (caar loga-word-cache))
     (setq buffer-read-only t))
   (switch-to-buffer loga-base-buffer)
   (popwin:popup-buffer
@@ -520,6 +523,13 @@ Otherwise passed character inside region."
   (case loga-current-command
     ((:lookup :show :list)
      (loga-buffer-or-popup-command))))
+
+(defun loga-highlight (regexp)
+  (let* ((striped-regexp
+          (replace-regexp-in-string "\"" "" regexp)))
+    (when (not (equal "" striped-regexp))
+      (setq loga-current-highlight-regexp striped-regexp)
+      (highlight-regexp striped-regexp))))
 
 (defun loga-make-popup (content)
   (let* ((converted-content (loga-convert-from-json content)))
