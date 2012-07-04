@@ -385,10 +385,19 @@ Example:
 
 (defun loga-chop-target (raw-target)
   (let ((tmp-target-length (loga-compute-length raw-target))
-        (window-half (/ (window-width) 2)))
+        (window-half (/ (window-width) 2))
+        (pretty-target
+         (loga-reject-brackets-character raw-target)))
     (if (< window-half tmp-target-length)
-        (nth 1 (popup-fill-string raw-target window-half))
-      raw-target)))
+        (nth 1 (popup-fill-string pretty-target window-half))
+      pretty-target)))
+
+(defun loga-reject-brackets-character (target)
+  (loop for reject-regexp in '("(.+?)" "^ +")
+        for pretty-characters = target then pretty-characters
+        do (setq pretty-characters
+                 (replace-regexp-in-string reject-regexp "" pretty-characters))
+        finally return pretty-characters))
 
 (defun loga-compute-max-length (words)
   (loop with max-source-length = 0
