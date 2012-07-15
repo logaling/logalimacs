@@ -681,7 +681,7 @@ Otherwise passed character inside region."
     (keyboard-quit)))
 
 (defun loga-one-word-p (search-word)
-  (let ((english-only-p (not (string-match "[^a-z]" search-word)))
+  (let ((english-only-p (not (string-match "[^a-zA-Z]" search-word)))
         (spaceless-p    (not (string-match " "      search-word))))
     (and
      english-only-p
