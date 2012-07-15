@@ -683,9 +683,8 @@ Otherwise passed character inside region."
 (defun loga-one-word-p (search-word)
   (let ((english-only-p (not (string-match "[^a-zA-Z]" search-word)))
         (spaceless-p    (not (string-match " "      search-word))))
-    (and
-     english-only-p
-     spaceless-p)))
+    (and english-only-p
+         spaceless-p)))
 
 ;; TODO: pull request stem.el to MELPA
 (defun loga-strip-from-stem (endpoint source-word)
