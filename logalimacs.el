@@ -89,6 +89,11 @@
   :group 'logalimacs
   :type  'boolean)
 
+(defcustom loga-use-stemming nil
+  "If nonnil, use function of stem.el as fallback"
+  :group 'logalimacs
+  :type  'boolean)
+
 (defvar loga-fly-mode nil
   "If nonnil, logalimacs use loga-fly-mode")
 
@@ -295,20 +300,24 @@ Example:
     (narrow-to-region (point) (mark))
     (buffer-string)))
 
-(defun loga-lookup (endpoint)
+(defun loga-lookup (endpoint &optional striped-source-word)
   (let* ((loga-current-command :lookup)
          (loga-current-endpoint endpoint)
-         (source-word (loga-decide-source-word))
+         (source-word (or striped-source-word (loga-decide-source-word)))
          (terminal-output (loga-command (concat "\"" source-word "\""))))
     (if (string< "" terminal-output)
         (case endpoint
           (:popup  (loga-make-popup
                     (loga-ignore-login-message terminal-output)))
           (:buffer (loga-make-buffer terminal-output)))
-      (if (functionp loga-fallback-function)
-          (loga-fallback source-word)
-        (minibuffer-message
-         (format "%s is not found" source-word))))))
+      (if (and loga-use-stemming
+               (not striped-source-word)
+               (loga-one-word-p source-word))
+          (loga-strip-from-stem endpoint source-word)
+        (if (functionp loga-fallback-function)
+            (loga-fallback (caar loga-word-cache))
+          (minibuffer-message
+           (format "%s is not found" source-word)))))))
 
 (defun loga-decide-source-word ()
   (if mark-active
@@ -670,6 +679,18 @@ Otherwise passed character inside region."
     (funcall loga-fallback-function (or search-word (caar loga-word-cache)))
     ;; exit popup
     (keyboard-quit)))
+
+(defun loga-one-word-p (search-word)
+  (let ((english-only-p (not (string-match "[^a-z]" search-word)))
+        (spaceless-p    (not (string-match " "      search-word))))
+    (and
+     english-only-p
+     spaceless-p)))
+
+;; TODO: pull request stem.el to MELPA
+(defun loga-strip-from-stem (endpoint source-word)
+  (require 'stem nil t)
+  (loga-lookup endpoint (stem:stripping-inflection source-word)))
 
 (provide 'logalimacs)
 
