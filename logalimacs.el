@@ -133,6 +133,8 @@ Example:
 
 (defvar loga-buffer-string "")
 
+(defvar loga-prototype-word "")
+
 (defvar loga-command-alist
   '((?a . :add)
     (?c . :config)
@@ -692,7 +694,8 @@ Otherwise passed character inside region."
 
 ;; TODO: pull request stem.el to MELPA
 (defun loga-extract-prototype-from (source-word)
-  (stem:stripping-inflection source-word))
+  (let* ((loga-prototype-word (stem:stripping-inflection source-word)))
+    loga-prototype-word))
 
 (provide 'logalimacs)
 
