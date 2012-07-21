@@ -313,7 +313,7 @@ Example:
                     (loga-ignore-login-message terminal-output)))
           (:buffer (loga-make-buffer terminal-output)))
       (if (loga-fallback-with-stemming-p source-word prototype-of-search-word)
-          (loga-lookup endpoint (loga-extract-prototype-from source-word))
+          (loga-lookup endpoint loga-prototype-word)
         (if (functionp loga-fallback-function)
             (loga-fallback (caar loga-word-cache))
           (minibuffer-message
@@ -428,10 +428,12 @@ Example:
     (and more-than-max-p less-than-window-half-p below-limit-p)))
 
 (defun loga-fallback-with-stemming-p (source-word prototype-of-search-word)
-  (and loga-use-stemming
-       (not prototype-of-search-word)
-       (loga-one-word-p source-word)
-       (ignore-errors (require 'stem nil t))))
+  (let ((prototype-word (loga-extract-prototype-from source-word)))
+    (and loga-use-stemming
+         (not prototype-of-search-word)
+         (not (equal source-word prototype-word))
+         (loga-one-word-p source-word)
+         (ignore-errors (require 'stem nil t)))))
 
 (defun loga-less-than-window-half-p (source-length)
   (let* ((half (- (/ (window-width) 2) 2)))
