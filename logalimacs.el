@@ -313,7 +313,7 @@ Example:
       (if (and loga-use-stemming
                (not striped-source-word)
                (loga-one-word-p source-word))
-          (loga-lookup endpoint (loga-strip-from-stem source-word))
+          (loga-lookup endpoint (loga-extract-prototype-from source-word))
         (if (functionp loga-fallback-function)
             (loga-fallback (caar loga-word-cache))
           (minibuffer-message
@@ -687,7 +687,7 @@ Otherwise passed character inside region."
          spaceless-p)))
 
 ;; TODO: pull request stem.el to MELPA
-(defun loga-strip-from-stem (source-word)
+(defun loga-extract-prototype-from (source-word)
   (require 'stem nil t)
   (stem:stripping-inflection source-word))
 
