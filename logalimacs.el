@@ -310,9 +310,7 @@ Example:
           (:popup  (loga-make-popup
                     (loga-ignore-login-message terminal-output)))
           (:buffer (loga-make-buffer terminal-output)))
-      (if (and loga-use-stemming
-               (not striped-source-word)
-               (loga-one-word-p source-word))
+      (if (loga-fallback-with-stemming-p source-word striped-source-word)
           (loga-lookup endpoint (loga-extract-prototype-from source-word))
         (if (functionp loga-fallback-function)
             (loga-fallback (caar loga-word-cache))
@@ -426,6 +424,12 @@ Example:
          (loga-less-than-window-half-p source-length))
         (below-limit-p (< source-length loga-width-limit-source)))
     (and more-than-max-p less-than-window-half-p below-limit-p)))
+
+(defun loga-fallback-with-stemming-p (source-word striped-source-word)
+  (and loga-use-stemming
+       (not striped-source-word)
+       (loga-one-word-p source-word)
+       (ignore-errors (require 'stem nil t))))
 
 (defun loga-less-than-window-half-p (source-length)
   (let* ((half (- (/ (window-width) 2) 2)))
@@ -688,7 +692,6 @@ Otherwise passed character inside region."
 
 ;; TODO: pull request stem.el to MELPA
 (defun loga-extract-prototype-from (source-word)
-  (require 'stem nil t)
   (stem:stripping-inflection source-word))
 
 (provide 'logalimacs)
