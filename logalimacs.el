@@ -300,17 +300,17 @@ Example:
     (narrow-to-region (point) (mark))
     (buffer-string)))
 
-(defun loga-lookup (endpoint &optional striped-source-word)
+(defun loga-lookup (endpoint &optional prototype-of-search-word)
   (let* ((loga-current-command :lookup)
          (loga-current-endpoint endpoint)
-         (source-word (or striped-source-word (loga-decide-source-word)))
+         (source-word (or prototype-of-search-word (loga-decide-source-word)))
          (terminal-output (loga-command (concat "\"" source-word "\""))))
     (if (string< "" terminal-output)
         (case endpoint
           (:popup  (loga-make-popup
                     (loga-ignore-login-message terminal-output)))
           (:buffer (loga-make-buffer terminal-output)))
-      (if (loga-fallback-with-stemming-p source-word striped-source-word)
+      (if (loga-fallback-with-stemming-p source-word prototype-of-search-word)
           (loga-lookup endpoint (loga-extract-prototype-from source-word))
         (if (functionp loga-fallback-function)
             (loga-fallback (caar loga-word-cache))
@@ -425,9 +425,9 @@ Example:
         (below-limit-p (< source-length loga-width-limit-source)))
     (and more-than-max-p less-than-window-half-p below-limit-p)))
 
-(defun loga-fallback-with-stemming-p (source-word striped-source-word)
+(defun loga-fallback-with-stemming-p (source-word prototype-of-search-word)
   (and loga-use-stemming
-       (not striped-source-word)
+       (not prototype-of-search-word)
        (loga-one-word-p source-word)
        (ignore-errors (require 'stem nil t))))
 
