@@ -94,6 +94,11 @@
   :group 'logalimacs
   :type  'boolean)
 
+(defcustom loga-use-singular-form nil
+  "If nonnil, convert the search word to singular-form"
+  :group 'logalimacs
+  :type  'boolean)
+
 (defvar loga-fly-mode nil
   "If nonnil, logalimacs use loga-fly-mode")
 
@@ -324,7 +329,7 @@ Example:
       (loga-return-marked-region)
     (if current-prefix-arg
         (loga-input)
-      (loga-return-word-on-cursor))))
+      (loga-to-singular-form (loga-return-word-on-cursor)))))
 
 (defun loga-return-marked-region ()
   (let ((marked-region
@@ -520,6 +525,19 @@ Otherwise passed character inside region."
 (defun loga-lookup-in-buffer ()
   (interactive)
   (loga-lookup :buffer))
+
+
+(defun loga-to-singular-form (word)
+  (if loga-use-singular-form
+      (loop for (regexp replace) in '(("ies$" "y")
+                                      ("ves$" "fe")
+                                      ("es$"  "")
+                                      ("s$"   ""))
+            for singular-word = word then singular-word
+            do (setq singular-word
+                     (replace-regexp-in-string regexp replace singular-word))
+            finally return singular-word)
+    word))
 
 (defun loga-return-word-on-cursor ()
   "Return word where point on cursor."
