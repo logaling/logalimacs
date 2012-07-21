@@ -432,8 +432,7 @@ Example:
     (and loga-use-stemming
          (not prototype-of-search-word)
          (not (equal source-word prototype-word))
-         (loga-one-word-p source-word)
-         (ignore-errors (require 'stem nil t)))))
+         (loga-one-word-p source-word))))
 
 (defun loga-less-than-window-half-p (source-length)
   (let* ((half (- (/ (window-width) 2) 2)))
@@ -696,8 +695,9 @@ Otherwise passed character inside region."
 
 ;; TODO: pull request stem.el to MELPA
 (defun loga-extract-prototype-from (source-word)
-  (let* ((loga-prototype-word (stem:stripping-inflection source-word)))
-    loga-prototype-word))
+  (if (require 'stem nil t)
+      (setq loga-prototype-word (stem:stripping-inflection source-word))
+    source-word))
 
 (provide 'logalimacs)
 
