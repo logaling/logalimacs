@@ -527,6 +527,10 @@ Otherwise passed character inside region."
   (loga-lookup :buffer))
 
 
+(defun loga-delete-popup ()
+  (if (popup-live-p menu)
+      (popup-delete menu)))
+
 (defun loga-to-singular-form (word)
   (if loga-use-singular-form
       (loop for (regexp replace) in '(("ies$" "y")
@@ -666,11 +670,11 @@ Otherwise passed character inside region."
       (setq count (1- count)))))
 
 (defun loga-quit ()
+  (loga-delete-popup)
   (switch-to-buffer "*logalimacs*")
   (when (eq loga-current-endpoint :buffer)
     (quit-window)
-    (switch-to-buffer loga-base-buffer))
-  (keyboard-quit))
+    (switch-to-buffer loga-base-buffer)))
 
 (defun loga-check-state ()
   (interactive)
@@ -702,8 +706,7 @@ Otherwise passed character inside region."
   (interactive)
   (when (functionp loga-fallback-function)
     (funcall loga-fallback-function (or search-word (caar loga-word-cache)))
-    ;; exit popup
-    (keyboard-quit)))
+    (loga-delete-popup)))
 
 (defun loga-one-word-p (search-word)
   (let ((english-only-p (not (string-match "[^a-zA-Z]" search-word)))
