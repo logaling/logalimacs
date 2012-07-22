@@ -550,13 +550,19 @@ Otherwise passed character inside region."
       (popup-delete menu)))
 
 (defun loga-to-singular-form (word)
-  (if loga-use-singular-form
+  (if (and loga-use-singular-form
+           (not (loga-irregular-word-p word)))
       (loop for (regexp replace) in loga-singular-regexp
             for singular-word = word then singular-word
             do (setq singular-word
                      (replace-regexp-in-string regexp replace singular-word))
             finally return singular-word)
     word))
+
+(defun loga-irregular-word-p (sample-word)
+  (loop for irregular-word in '("^basis$" "ious$" "^news$" "ness$")
+        if (string-match irregular-word sample-word)
+        do (return t)))
 
 (defun loga-return-word-on-cursor ()
   "Return word where point on cursor."
