@@ -542,8 +542,13 @@ Otherwise passed character inside region."
 (defun loga-to-singular-form (word)
   (if loga-use-singular-form
       (loop for (regexp replace) in '(("ies$" "y")
-                                      ("ves$" "fe")
-                                      ("es$"  "")
+                                      ("[^t][^i]ves$" "f") ; fe
+                                      ("ses$"  "s")
+                                      ("oes$"  "o")
+                                      ("xes$"  "x")
+                                      ("sses$" "ss")
+                                      ("shes$" "sh")
+                                      ("ches$" "ch")
                                       ("s$"   ""))
             for singular-word = word then singular-word
             do (setq singular-word
