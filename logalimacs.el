@@ -553,10 +553,9 @@ Otherwise passed character inside region."
   (if (and loga-use-singular-form
            (not (loga-irregular-word-p word)))
       (loop for (regexp replace) in loga-singular-regexp
-            for singular-word = word then singular-word
-            do (setq singular-word
-                     (replace-regexp-in-string regexp replace singular-word))
-            finally return singular-word)
+            if (string-match regexp word)
+            do (return (replace-regexp-in-string regexp replace word))
+            finally return word)
     word))
 
 (defun loga-irregular-word-p (sample-word)
