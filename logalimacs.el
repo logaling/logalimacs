@@ -436,6 +436,7 @@ Example:
 (defun loga-fallback-with-stemming-p (source-word prototype-of-search-word)
   (let ((prototype-word (loga-extract-prototype-from source-word)))
     (and loga-use-stemming
+         (equal loga-current-endpoint :popup)
          (not prototype-of-search-word)
          (not (equal source-word prototype-word))
          (loga-one-word-p source-word))))
