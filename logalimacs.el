@@ -174,6 +174,7 @@ Example:
     (define-key map "k" 'popup-previous)
     (define-key map "f" 'popup-open)
     (define-key map "b" 'popup-close)
+    (define-key map "s" 'loga-lookup-by-stemming)
     (define-key map "o" 'loga-fallback) ;; Other function
     map))
 
@@ -318,7 +319,7 @@ Example:
                     (loga-ignore-login-message terminal-output)))
           (:buffer (loga-make-buffer terminal-output)))
       (if (loga-fallback-with-stemming-p source-word prototype-of-search-word)
-          (loga-lookup endpoint loga-prototype-word)
+          (loga-lookup-by-stemming)
         (if (functionp loga-fallback-function)
             (loga-fallback (caar loga-word-cache))
           (minibuffer-message
@@ -526,6 +527,12 @@ Otherwise passed character inside region."
   (interactive)
   (loga-lookup :buffer))
 
+(defun loga-lookup-by-stemming ()
+  (interactive)
+  (when loga-use-stemming
+    (loga-delete-popup)
+    (loga-lookup :popup
+                 (loga-extract-prototype-from (loga-get-search-word)))))
 
 (defun loga-delete-popup ()
   (if (popup-live-p menu)
