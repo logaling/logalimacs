@@ -726,7 +726,9 @@ Otherwise passed character inside region."
 ;; TODO: pull request stem.el to MELPA
 (defun loga-extract-prototype-from (source-word)
   (if (require 'stem nil t)
-      (setq loga-prototype-word (stem:stripping-inflection source-word))
+      (setq loga-prototype-word
+            (or (car (assoc-default source-word stem:irregular-verb-alist))
+                (stem:stripping-inflection source-word)))
     source-word))
 
 (provide 'logalimacs)
