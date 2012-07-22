@@ -140,6 +140,16 @@ Example:
 
 (defvar loga-prototype-word "")
 
+(defconst loga-singular-regexp '(("ies$" "y")
+                                 ("[^t][^i]ves$" "f") ; fe
+                                 ("ses$"  "s")
+                                 ("oes$"  "o")
+                                 ("xes$"  "x")
+                                 ("sses$" "ss")
+                                 ("shes$" "sh")
+                                 ("ches$" "ch")
+                                 ("s$"    "")))
+
 (defvar loga-command-alist
   '((?a . :add)
     (?c . :config)
@@ -541,15 +551,7 @@ Otherwise passed character inside region."
 
 (defun loga-to-singular-form (word)
   (if loga-use-singular-form
-      (loop for (regexp replace) in '(("ies$" "y")
-                                      ("[^t][^i]ves$" "f") ; fe
-                                      ("ses$"  "s")
-                                      ("oes$"  "o")
-                                      ("xes$"  "x")
-                                      ("sses$" "ss")
-                                      ("shes$" "sh")
-                                      ("ches$" "ch")
-                                      ("s$"   ""))
+      (loop for (regexp replace) in loga-singular-regexp
             for singular-word = word then singular-word
             do (setq singular-word
                      (replace-regexp-in-string regexp replace singular-word))
