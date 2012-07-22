@@ -567,7 +567,7 @@ Otherwise passed character inside region."
     (erase-buffer) ;;initialize
     (insert content)
     (goto-char 0)
-    (loga-highlight (caar loga-word-cache))
+    (loga-highlight (loga-get-search-word))
     (setq buffer-read-only t))
   (switch-to-buffer loga-base-buffer)
   (popwin:popup-buffer
@@ -577,12 +577,13 @@ Otherwise passed character inside region."
     ((:lookup :show :list)
      (loga-buffer-or-popup-command))))
 
-(defun loga-highlight (regexp)
-  (let* ((striped-regexp
-          (replace-regexp-in-string "\"" "" regexp)))
-    (when (not (equal "" striped-regexp))
-      (setq loga-current-highlight-regexp striped-regexp)
-      (highlight-regexp striped-regexp))))
+(defun loga-highlight (search-word)
+  (when (not (equal "" search-word))
+    (setq loga-current-highlight-regexp search-word)
+    (highlight-regexp search-word)))
+
+(defun loga-get-search-word ()
+  (replace-regexp-in-string "\"" "" (caar loga-word-cache)))
 
 (defun loga-make-popup (content)
   (let* ((converted-content (loga-convert-from-json content)))
