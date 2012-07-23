@@ -546,8 +546,9 @@ Otherwise passed character inside region."
                  (loga-extract-prototype-from (loga-get-search-word)))))
 
 (defun loga-delete-popup ()
-  (if (popup-live-p menu)
-      (popup-delete menu)))
+  (ignore-errors
+    (if (popup-live-p menu)
+        (popup-delete menu))))
 
 (defun loga-to-singular-form (word)
   (if (and loga-use-singular-form
