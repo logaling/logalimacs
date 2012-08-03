@@ -140,15 +140,15 @@ Example:
 
 (defvar loga-prototype-word "")
 
-(defconst loga-singular-regexp '(("ies$" "y")
+(defconst loga-singular-regexp '(("ies$"         "y")
                                  ("[^t][^i]ves$" "f") ; fe
-                                 ("ses$"  "s")
-                                 ("oes$"  "o")
-                                 ("xes$"  "x")
-                                 ("sses$" "ss")
-                                 ("shes$" "sh")
-                                 ("ches$" "ch")
-                                 ("s$"    "")))
+                                 ("ses$"         "s")
+                                 ("oes$"         "o")
+                                 ("xes$"         "x")
+                                 ("sses$"        "ss")
+                                 ("shes$"        "sh")
+                                 ("ches$"        "ch")
+                                 ("s$"           "")))
 
 (defvar loga-command-alist
   '((?a . :add)
