@@ -340,7 +340,7 @@ Example:
       (loga-return-marked-region)
     (if current-prefix-arg
         (loga-input)
-      (loga-to-singular-form (loga-return-word-on-cursor)))))
+      (loga-singularize (loga-return-word-on-cursor)))))
 
 (defun loga-return-marked-region ()
   (let ((marked-region
@@ -550,7 +550,7 @@ Otherwise passed character inside region."
     (if (popup-live-p menu)
         (popup-delete menu))))
 
-(defun loga-to-singular-form (word)
+(defun loga-singularize (word)
   (if (and loga-use-singular-form
            (not (loga-irregular-word-p word)))
       (loop for (regexp replace) in loga-singular-regexp
