@@ -260,7 +260,7 @@ Example:
     (loga-to-shell "\\loga" (concat task " " input) t)
     (loga-read-buffer-string)
     (if (and (string-match "^term '.+' already exists in '.+'" loga-buffer-string)
-             (yes-or-no-p
+             (y-or-n-p
               (format "%sAre you sure you want to 'update' followed by?"
                       loga-buffer-string)))
         (loga-update)
