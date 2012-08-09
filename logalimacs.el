@@ -150,6 +150,9 @@ Example:
                                  ("ches$"        "ch")
                                  ("s$"           "")))
 
+(defvar loga-irregular-noun-alist
+  '(("stimuli" "stimulus")))
+
 (defvar loga-command-alist
   '((?a . :add)
     (?c . :config)
@@ -740,7 +743,9 @@ Otherwise passed character inside region."
 (defun loga-extract-prototype-from (source-word)
   (if (require 'stem nil t)
       (setq loga-prototype-word
-            (or (car (assoc-default source-word stem:irregular-verb-alist))
+            (or (car (assoc-default source-word
+                                    (append loga-irregular-noun-alist
+                                            stem:irregular-verb-alist)))
                 (stem:stripping-inflection source-word)))
     source-word))
 
