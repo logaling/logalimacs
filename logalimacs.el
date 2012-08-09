@@ -150,6 +150,9 @@ Example:
                                  ("ches$"        "ch")
                                  ("s$"           "")))
 
+(defvar loga-ignoring-regexp-words
+  '("^basis$" "^crisis$" "ious$" "^news$" "ss$" "^stimulus$"))
+
 (defvar loga-irregular-noun-alist
   '(("stimuli" "stimulus")))
 
@@ -563,7 +566,7 @@ Otherwise passed character inside region."
     word))
 
 (defun loga-irregular-word-p (sample-word)
-  (loop for irregular-word in '("^basis$" "^crisis$" "ious$" "^news$" "ss$" "^stimulus$")
+  (loop for irregular-word in loga-ignoring-regexp-words
         if (string-match irregular-word sample-word)
         do (return t)))
 
