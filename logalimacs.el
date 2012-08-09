@@ -563,7 +563,7 @@ Otherwise passed character inside region."
     word))
 
 (defun loga-irregular-word-p (sample-word)
-  (loop for irregular-word in '("^basis$" "ious$" "^news$" "ss$" "^stimulus$")
+  (loop for irregular-word in '("^basis$" "^crisis$" "ious$" "^news$" "ss$" "^stimulus$")
         if (string-match irregular-word sample-word)
         do (return t)))
 
