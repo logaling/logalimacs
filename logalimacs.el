@@ -151,7 +151,7 @@ Example:
                                  ("s$"           "")))
 
 (defvar loga-ignoring-regexp-words
-  '("^basis$" "^crisis$" "ious$" "^news$" "ss$" "^stimulus$"))
+  '("^basis$" "^crisis$" "ious$" "^news$" "shoes" "ss$" "^stimulus$"))
 
 (defvar loga-irregular-noun-alist
   '(("stimuli" "stimulus")))
