@@ -147,7 +147,7 @@ Example:
                                  ("sses$"        "ss")
                                  ("shes$"        "sh")
                                  ("ches$"        "ch")
-                                 ("s$"           "")))
+                                 ("'?s$"           "")))
 
 (defvar loga-ignoring-regexp-words
   '("^basis$" "^crisis$" "ious$" "^news$" "shoes" "ss$" "^stimulus$"
