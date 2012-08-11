@@ -141,7 +141,6 @@ Example:
 (defvar loga-prototype-word "")
 
 (defconst loga-singular-regexp '(("ies$"         "y")
-                                 ("[^t][^i]ves$" "f") ; fe
                                  ("ses$"         "s")
                                  ("oes$"         "o")
                                  ("xes$"         "x")
@@ -151,10 +150,18 @@ Example:
                                  ("s$"           "")))
 
 (defvar loga-ignoring-regexp-words
-  '("^basis$" "^crisis$" "ious$" "^news$" "shoes" "ss$" "^stimulus$"))
+  '("^basis$" "^crisis$" "ious$" "^news$" "shoes" "ss$" "^stimulus$"
+    ;; former English (~fe or ~f -> ~ves)
+    "knives" "lives" "leaves" "halves" "wives" "thieves"))
 
 (defvar loga-irregular-noun-alist
-  '(("stimuli" "stimulus")))
+  '(("stimuli" "stimulus")
+    ("knives"  "knife")
+    ("lives"   "life")
+    ("leaves"  "leaf")
+    ("halves"  "half")
+    ("wives"   "wife")
+    ("thieves" "thief")))
 
 (defvar loga-command-alist
   '((?a . :add)
