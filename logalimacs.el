@@ -573,14 +573,25 @@ Otherwise passed character inside region."
 (defun loga-return-word-on-cursor ()
   "Return word where point on cursor."
   (save-excursion
-    (let ((match-word
-           (if (looking-at "\\w")
-               (word-at-point)
-             (backward-word)
-             (word-at-point))))
+    (let ((match-word (loga-word-at-point)))
       (if (string-match "[上-黑]" match-word)
           (loga-reject-hiragana match-word)
         match-word))))
+
+(defun loga-word-at-point ()
+  (if (looking-at "[ \n]")
+      (skip-chars-backward " "))
+  (loga-skip :backward)
+  (set-mark-command nil)
+  (loga-skip :forward)
+  (buffer-substring-no-properties
+   (region-beginning) (region-end)))
+
+(defun loga-skip (direction)
+  (let ((skip-characters "a-zA-Zぁ-んァ-ン上-黑'"))
+    (case direction
+      (:forward  (skip-chars-forward  skip-characters))
+      (:backward (skip-chars-backward skip-characters)))))
 
 (defun loga-reject-hiragana (string)
   (replace-regexp-in-string "[ぁ-ん]" "" string))
