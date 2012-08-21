@@ -338,16 +338,16 @@ Example:
          (terminal-output (loga-command (concat "\"" source-word "\""))))
     (save-excursion
       (if (string< "" terminal-output)
-        (case endpoint
-          (:popup  (loga-make-popup
-                    (loga-ignore-login-message terminal-output)))
-          (:buffer (loga-make-buffer terminal-output)))
-      (if (loga-fallback-with-stemming-p source-word prototype-of-search-word)
-          (loga-lookup-by-stemming)
-        (if (functionp loga-fallback-function)
-            (loga-fallback (caar loga-word-cache))
-          (minibuffer-message
-           (format "%s is not found" source-word))))))))
+          (case endpoint
+            (:popup  (loga-make-popup
+                      (loga-ignore-login-message terminal-output)))
+            (:buffer (loga-make-buffer terminal-output)))
+        (if (loga-fallback-with-stemming-p source-word prototype-of-search-word)
+            (loga-lookup-by-stemming)
+          (if (functionp loga-fallback-function)
+              (loga-fallback (caar loga-word-cache))
+            (minibuffer-message
+             (format "%s is not found" source-word))))))))
 
 (defun loga-decide-source-word ()
   (if mark-active
