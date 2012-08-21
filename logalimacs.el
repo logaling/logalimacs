@@ -564,6 +564,7 @@ Because it escape character"
 (defun loga-check-language (word)
   (cond ((loga-japanese-p word)
          "ja")
+        ;; TODO: handle against other language
         ((string-match "[a-zA-Z]" word)
          "en")))
 
