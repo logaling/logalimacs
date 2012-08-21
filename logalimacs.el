@@ -336,7 +336,8 @@ Example:
          (loga-current-endpoint endpoint)
          (source-word (or prototype-of-search-word (loga-decide-source-word)))
          (terminal-output (loga-command (concat "\"" source-word "\""))))
-    (if (string< "" terminal-output)
+    (save-excursion
+      (if (string< "" terminal-output)
         (case endpoint
           (:popup  (loga-make-popup
                     (loga-ignore-login-message terminal-output)))
@@ -346,7 +347,7 @@ Example:
         (if (functionp loga-fallback-function)
             (loga-fallback (caar loga-word-cache))
           (minibuffer-message
-           (format "%s is not found" source-word)))))))
+           (format "%s is not found" source-word))))))))
 
 (defun loga-decide-source-word ()
   (if mark-active
