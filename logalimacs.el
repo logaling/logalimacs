@@ -99,6 +99,13 @@
   :group 'logalimacs
   :type  'boolean)
 
+(defcustom loga-use-auto-detect-language nil
+  "
+If nonnil, auto-detect language of word for loga-add/update.
+Note that now can specify en and ja pair only"
+  :group 'logalimacs
+  :type 'boolean)
+
 (defvar loga-fly-mode nil
   "If nonnil, logalimacs use loga-fly-mode")
 
@@ -117,6 +124,8 @@
 (defvar loga-current-max-length nil)
 
 (defvar loga-current-highlight-regexp "")
+
+(defvar loga-current-language-option '())
 
 (defvar loga-base-buffer nil)
 
@@ -370,13 +379,6 @@ Example:
                                       marked-words)
                                   (match-string 2 marked-words)))))
 
-(defun loga-attach-lang-option-for-ja/en (word)
-  (cond
-   ((string-match "[ぁ-んァ-ン上-黑]" word)
-    (return (concat word " -S=ja -T=en")))
-   ((string-match "[a-zA-Z]" word)
-    (return (concat word " -S=en -T=ja")))))
-
 (defun loga-convert-from-json (raw-json-data)
   (let* ((mixed-list (json-read-from-string raw-json-data))
          (keywords (loga-extract-keywords-from mixed-list))
@@ -516,7 +518,8 @@ Because it escape character"
   (let* ((query (loga-from-symbol-to-string loga-current-command))
          (task loga-current-command)
          (messages (concat query ": "))
-         (loga-base-buffer (current-buffer)))
+         (loga-base-buffer (current-buffer))
+         result)
     (case task
       ((:add :update :config :delete :help :import :new
              :register :unregister)
@@ -527,10 +530,39 @@ Because it escape character"
                                 "target(new): " "note(optional): ")))
       (:lookup (setq messages '("search: ")))
       (t       (setq messages `(,messages))))
-    (loop with response
-          for message in messages
-          collect (loga-query message) into response
-          finally return (mapconcat 'identity response " "))))
+    (setq result (loga-solve-queries task messages))
+    (mapconcat 'identity
+               (case task
+                 ((:add :update)
+                  (append result loga-current-language-option))
+                 (t       result))
+               " ")))
+
+(defun loga-solve-queries (task messages)
+  (loop with response
+        for message in messages
+        for query = (loga-query message)
+        if (case task ((:add :update) t))
+        do (loga-store-language-option message query)
+        collect query into response
+        finally return response))
+
+(defun loga-store-language-option (message input)
+  (when loga-use-auto-detect-language
+    (cond ((equal message "source: ")
+           (setq loga-current-language-option
+                 `(,(concat "-S=" (loga-check-language input)))))
+          ((or (equal message "target: ")
+               (equal message "target(new): "))
+           (push
+            (concat "-T=" (loga-check-language input))
+            loga-current-language-option)))))
+
+(defun loga-check-language (word)
+  (cond ((string-match "[ぁ-んァ-ン上-黑]" word)
+         "ja")
+        ((string-match "[a-zA-Z]" word)
+         "en")))
 
 ;;;###autoload
 (defun loga-lookup-at-manually ()
