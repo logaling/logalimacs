@@ -104,7 +104,7 @@
 If nonnil, auto-detect language of word for loga-add/update.
 Note that now can specify en and ja pair only"
   :group 'logalimacs
-  :type 'boolean)
+  :type  'boolean)
 
 (defvar loga-fly-mode nil
   "If nonnil, logalimacs use loga-fly-mode")
@@ -264,7 +264,7 @@ Example:
           loga-marked-words nil)
     (case loga-current-command
       (:lookup             (loga-produce-contents search-word word-and-options))
-      ((:add :update)      (loga-add/update task))
+      ((:add  :update)     (loga-add/update task))
       ((:show :list)
        (loga-make-buffer   (loga-to-shell loga task)))
       ((:config :delete :help :import :new)
