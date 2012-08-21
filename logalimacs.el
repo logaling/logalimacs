@@ -250,6 +250,9 @@ Example:
       (async-shell-command (concat cmd " " arg) "*logalimacs*")
     (ansi-color-apply (shell-command-to-string (concat cmd " " arg " &")))))
 
+(defun loga-do-ruby (body)
+  (shell-command-to-string (concat "ruby -e " "'" body "'")))
+
 (defun loga-from-symbol-to-string (symbol)
   (replace-regexp-in-string ":" "" (symbol-name symbol)))
 
@@ -559,10 +562,17 @@ Because it escape character"
             loga-current-language-option)))))
 
 (defun loga-check-language (word)
-  (cond ((string-match "[ぁ-んァ-ン上-黑]" word)
+  (cond ((loga-japanese-p word)
          "ja")
         ((string-match "[a-zA-Z]" word)
          "en")))
+
+(defun loga-japanese-p (word)
+  (zerop
+   (string-to-number
+    (loga-do-ruby
+     (concat "puts %s/" word "/ =~ /\\p{hiragana}|\\p{katakana}|\\p{Han}/ "
+             "? 0 : 1")))))
 
 ;;;###autoload
 (defun loga-lookup-at-manually ()
