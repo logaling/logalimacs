@@ -206,8 +206,8 @@ Example:
         collect (loga-mixture-bracket prefix command) into commands
         finally return (mapconcat 'identity commands ",")))
 
-(defun loga-mixture-bracket (command-prefix command)
-  (let* ((command (loga-from-symbol-to-string command))
+(defun loga-mixture-bracket (command-prefix command-symbol)
+  (let* ((command (loga-from-symbol-to-string command-symbol))
          (prefix  (char-to-string command-prefix))
          (list-of-rest (nthcdr 2 (string-to-list (split-string command ""))))
          (rest (mapconcat 'identity list-of-rest "")))
