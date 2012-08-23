@@ -101,8 +101,8 @@
 
 (defcustom loga-use-auto-detect-language nil
   "
-If nonnil, auto-detect language of word for loga-add/update.
-Note that now can specify en and ja pair only"
+If nonnil, auto-detect language of source and target for loga-add/update.
+Note that yet can specify en and ja pair only"
   :group 'logalimacs
   :type  'boolean)
 
@@ -139,7 +139,7 @@ It will be execute when the lookup was failed if it set your function.
 Example:
   (setq loga-fallback-function
       (lambda (search-word)
-        (my/super-translation-function search-word)))")
+        (your-awesome-translation-function search-word)))")
 
 (defvar loga-mark-rigion-separator "/")
 
