@@ -203,10 +203,10 @@ Example:
 (defun loga-make-displaying-commands ()
   (loop with commands = '()
         for (prefix . command) in loga-command-alist
-        collect (loga-insert-bracket prefix command) into commands
+        collect (loga-mixture-bracket prefix command) into commands
         finally return (mapconcat 'identity commands ",")))
 
-(defun loga-insert-bracket (command-prefix command)
+(defun loga-mixture-bracket (command-prefix command)
   (loop with command = (loga-from-symbol-to-string command)
         with prefix = (char-to-string command-prefix)
         with rest = '()
