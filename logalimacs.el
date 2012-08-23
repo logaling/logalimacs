@@ -210,8 +210,8 @@ Example:
   (loop with command = (loga-from-symbol-to-string command)
         with prefix = (char-to-string command-prefix)
         with rest = '()
-        for j from 1 upto (1- (length command))
-        collect (char-to-string (aref command j)) into rest
+        for i from 1 upto (1- (length command))
+        collect (char-to-string (aref command i)) into rest
         finally return (concat prefix ")"
                                (mapconcat 'identity rest ""))))
 
