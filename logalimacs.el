@@ -172,21 +172,6 @@ Example:
     ("wives"   "wife")
     ("thieves" "thief")))
 
-(defvar loga-command-alist
-  '((?a . :add)
-    (?c . :config)
-    (?d . :delete)
-    (?h . :help)
-    (?i . :import)
-    (?l . :lookup)
-    (?L . :list)
-    (?n . :new)
-    (?r . :register)
-    (?U . :unregister)
-    (?u . :update)
-    (?s . :show)
-    (?v . :version)))
-
 (defvar loga-buffer-or-popup-command-alist
   '((?b . :buffer)
     (?q . :quit)
@@ -195,6 +180,8 @@ Example:
     (?j . :next-line)
     (?k . :previous-line)
     (?d . :detail)))
+
+(defvar loga-command-alist nil)
 
 (defvar loga-popup-menu-keymap
   (let ((map (copy-keymap popup-menu-keymap)))
@@ -813,6 +800,21 @@ Otherwise passed character inside region."
                                             stem:irregular-verb-alist)))
                 (stem:stripping-inflection source-word)))
     source-word))
+
+(setq loga-command-alist
+      `((?a . :add)
+        (?c . ,(if (version< "0.1.7" (loga-version)) :copy :config))
+        (?d . :delete)
+        (?h . :help)
+        (?i . :import)
+        (?l . :lookup)
+        (?L . :list)
+        (?n . :new)
+        (?r . :register)
+        (?U . :unregister)
+        (?u . :update)
+        (?s . :show)
+        (?v . :version)))
 
 (provide 'logalimacs)
 
