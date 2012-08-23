@@ -207,13 +207,11 @@ Example:
         finally return (mapconcat 'identity commands ",")))
 
 (defun loga-mixture-bracket (command-prefix command)
-  (loop with command = (loga-from-symbol-to-string command)
-        with prefix = (char-to-string command-prefix)
-        with rest = '()
-        for i from 1 upto (1- (length command))
-        collect (char-to-string (aref command i)) into rest
-        finally return (concat prefix ")"
-                               (mapconcat 'identity rest ""))))
+  (let* ((command (loga-from-symbol-to-string command))
+         (prefix  (char-to-string command-prefix))
+         (list-of-rest (nthcdr 2 (string-to-list (split-string command ""))))
+         (rest (mapconcat 'identity list-of-rest "")))
+    (concat prefix ")" rest)))
 
 ;;;###autoload
 (defun loga-interactive-command ()
