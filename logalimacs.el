@@ -200,11 +200,27 @@ Example:
 (defun loga-response-of-event (command-alist)
   (assoc-default last-input-event command-alist))
 
+(defun loga-make-displaying-commands ()
+  (loop with commands = '()
+        for (prefix . command) in loga-command-alist
+        collect (loga-insert-bracket prefix command) into commands
+        finally return (mapconcat 'identity commands ",")))
+
+(defun loga-insert-bracket (command-prefix command)
+  (loop with command = (loga-from-symbol-to-string command)
+        with prefix = (char-to-string command-prefix)
+        with rest = '()
+        for j from 1 upto (1- (length command))
+        collect (char-to-string (aref command j)) into rest
+        finally return (concat prefix ")"
+                               (mapconcat 'identity rest ""))))
+
 ;;;###autoload
 (defun loga-interactive-command ()
   "interactive-command for logaling-command, types following mini-buffer."
   (interactive)
-  (read-event "types prefix of feature that want you :\n a)dd,c)onfig,d)elete,h)elp,i)mport,l)ookup,L)ist,n)ew,r)egister,U)nregister,u)pdate,v)ersion")
+  (read-event (concat "types prefix of feature that want you :\n "
+                      (loga-make-displaying-commands)))
   (setq loga-current-command (loga-response-of-event loga-command-alist))
   (case loga-current-command
     (:lookup (loga-lookup-at-manually))
@@ -254,7 +270,7 @@ Example:
       ((:add  :update)     (loga-add/update task))
       ((:show :list)
        (loga-make-buffer   (loga-to-shell loga task)))
-      ((:config :delete :help :import :new)
+      ((:config :copy :delete :help :import :new)
        (loga-make-buffer   (loga-to-shell loga (concat task " " (loga-input)))))
       ((:register :unregister :version)
        (minibuffer-message (loga-to-shell loga task))))))
@@ -511,7 +527,7 @@ Because it escape character"
          (loga-base-buffer (current-buffer))
          result)
     (case task
-      ((:add :update :config :delete :help :import :new
+      ((:add :update :config :copy :delete :help :import :new
              :register :unregister)
        (loga-make-buffer (loga-to-shell "\\loga help" query))))
     (case task
