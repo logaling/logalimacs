@@ -787,7 +787,7 @@ Otherwise passed character inside region."
         (message "Note: if use rvm, require rvm.el and sets the config to your dot emacs.")))
      (t (message "Note: require 'sudo gem install logaling-command'")))))
 
-(defun loga-version-number ()
+(defun loga-version ()
   (let* ((version-string (loga-to-shell "\\loga version")))
     (string-match "[0-9].[0-9].[0-9]" version-string)
     (match-string 0 version-string)))
