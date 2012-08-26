@@ -583,12 +583,21 @@ Because it escape character"
         ((string-match "[a-zA-Z]" word)
          "en")))
 
-(defun loga-japanese-p (word)
-  (zerop
-   (string-to-number
-    (loga-do-ruby
-     (concat "puts %s/" word "/ =~ /\\p{hiragana}|\\p{katakana}|\\p{Han}/ "
-             "? 0 : 1")))))
+(defun loga-japanese-p (word &optional choice)
+  (let* ((hiragana "\\p{hiragana}")
+         (katakana "\\p{katakana}")
+         (kanji    "\\p{Han}")
+         (japanese-regexp
+          (case choice
+            (:hiragana hiragana)
+            (:katakana katakana)
+            (:kanji    kanji)
+            (t         (concat hiragana "|" katakana "|" kanji)))))
+    (zerop
+     (string-to-number
+      (loga-do-ruby
+       (concat "puts %s/" word "/ =~ /" japanese-regexp "/ ? 0 : 1"))))))
+
 
 ;;;###autoload
 (defun loga-lookup-at-manually ()
