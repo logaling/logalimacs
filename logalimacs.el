@@ -61,9 +61,6 @@
 ;; json
 (require 'json)
 
-;; for ansi-color
-(require 'ansi-color)
-
 ;; for flymake-err-info
 (require 'flymake)
 
@@ -263,11 +260,10 @@ Example:
     (:buffer (loga-quit))
     (:popup  (loga-lookup-in-buffer))))
 
-;; @todo apply ansi-color
 (defun loga-to-shell (cmd &optional arg async?)
   (if async?
       (async-shell-command (concat cmd " " arg) "*logalimacs*")
-    (ansi-color-apply (shell-command-to-string (concat cmd " " arg " &")))))
+    (shell-command-to-string (concat cmd " " arg " &"))))
 
 (defun loga-do-ruby (body)
   (shell-command-to-string (concat "ruby -e " "'" body "'")))
