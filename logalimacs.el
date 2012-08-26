@@ -746,6 +746,7 @@ Otherwise passed character inside region."
        (popup-cascade-menu converted-content
                            :point loga-popup-point
                            :width loga-popup-width
+                           :height (/ (window-height) 2)
                            :keymap loga-popup-menu-keymap))
       (string
        (popup-tip converted-content
