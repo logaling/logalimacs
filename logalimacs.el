@@ -598,6 +598,11 @@ Because it escape character"
       (loga-do-ruby
        (concat "puts %s/" word "/ =~ /" japanese-regexp "/ ? 0 : 1"))))))
 
+(defun loga-character-of-point ()
+  (lexical-let* ((line (thing-at-point 'line))
+                 (address (- (point) (point-at-bol)))
+                 (character (char-to-string (aref line address))))
+    character))
 
 ;;;###autoload
 (defun loga-lookup-at-manually ()
@@ -654,19 +659,53 @@ Otherwise passed character inside region."
         match-word))))
 
 (defun loga-word-at-point ()
-  (if (looking-at "[ \n]")
-      (skip-chars-backward " "))
-  (loga-skip :backward)
-  (set-mark-command nil)
-  (loga-skip :forward)
-  (buffer-substring-no-properties
-   (region-beginning) (region-end)))
+  (interactive)
+  (save-excursion
+    (let* ((character      (loga-character-of-point))
+           (classification (loga-classify-language character))
+           kanji+hiragana)
+      (when (string-match "[ \n]" character)
+        (skip-chars-backward " "))
+      (if (null classification)
+          (word-at-point)
+        (case classification
+          (:english  (loga-skip :backward :english))
+          (:hiragana (loga-skip :backward :hiragana)
+                     (when (loga-japanese-p
+                            (char-to-string (char-before)) :kanji)
+                       (setq kanji+hiragana t)
+                       (loga-skip :backward :kanji)))
+          (:katakana (loga-skip :backward :katakana))
+          (:kanji    (loga-skip :backward :kanji)))
+        (set-mark-command nil)
+        (loga-skip :forward
+                   (case classification
+                     (:english           :english)
+                     (:hiragana          (if kanji+hiragana :kanji :hiragana))
+                     (:kanji             :kanji)
+                     (:katakana          :katakana)))
+        (buffer-substring-no-properties
+         (region-beginning) (region-end))))))
 
-(defun loga-skip (direction)
-  (let ((skip-characters "a-zA-Zぁ-んァ-ン上-黑'"))
+(defun loga-classify-language (character)
+  (if (string-match "[a-zA-Z']" character)
+      :english
+    (loop for classification in '(:hiragana :katakana :kanji)
+          if (loga-japanese-p character classification)
+          do (return classification)
+          finally return nil)))
+
+(defun loga-skip (direction &optional group)
+  (let ((skip-group
+         (case group
+           (:kanji           "上-黑")
+           (:hiragana        "ぁ-ん")
+           (:katakana        "ァ-ン")
+           (:english         "a-zA-Z'")
+           (t                "a-zA-Zぁ-んァ-ン上-黑'"))))
     (case direction
-      (:forward  (skip-chars-forward  skip-characters))
-      (:backward (skip-chars-backward skip-characters)))))
+      (:forward  (skip-chars-forward  skip-group))
+      (:backward (skip-chars-backward skip-group)))))
 
 (defun loga-reject-hiragana (string)
   (replace-regexp-in-string "[ぁ-ん]" "" string))
