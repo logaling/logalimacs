@@ -28,6 +28,24 @@
 ;; Logalimacs.el lookup to registered term at logaling-command and,
 ;; Executes other commands for logaling-command from emacs.
 
+;;; Usage
+;;  Paste below Emacs lisp code to config file as ~/.emacs.d/init.el etc..
+;; (require 'logalimacs)
+;; (global-set-key (kbd "M-g M-i") 'loga-interactive-command)
+;; (global-set-key (kbd "C-:") 'loga-lookup-in-popup)
+
+;;; Preference setting
+;; (setq
+;;  ;; Attach dictionary option for loga-lookup.
+;;  loga-use-dictionary-option t
+;;  ;; Attempt fallback by stemming if the lookup failed (require stem.el).
+;;  loga-use-stemming t
+;;  ;; Transform to singular-form from multiple form.
+;;  loga-use-singular-form t
+;;  ;; Detect language automatically when loga-add/update is used.
+;;  ;; Note that yet Japanese and English pair only.
+;;  loga-use-auto-detect-language t)
+
 (eval-when-compile
   (require 'cl))
 
