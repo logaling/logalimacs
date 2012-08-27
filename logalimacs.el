@@ -6,7 +6,7 @@
 ;; Author: Yuta Yamada <cokesboy"at"gmail.com>
 ;; URL: https://github.com/logaling/logalimacs
 ;; Version: 1.0.1
-;; Package-Requires: ((popwin "20120529") (popup "20120331"))
+;; Package-Requires: ((popwin "20120529") (popup "20120331") (stem "20120826))
 ;; Keywords: translation, logaling-command
 
 ;;; License:
@@ -63,6 +63,9 @@
 
 ;; for flymake-err-info
 (require 'flymake)
+
+;; for stem:stripping-inflection function
+(require 'stem)
 
 (defcustom loga-popup-output-type :auto
   "Assign 'auto or 'max, available modifying of popup width"
@@ -868,15 +871,13 @@ Otherwise passed character inside region."
     (and english-only-p
          spaceless-p)))
 
-;; TODO: pull request stem.el to MELPA
 (defun loga-extract-prototype-from (source-word)
-  (if (require 'stem nil t)
-      (setq loga-prototype-word
-            (or (car (assoc-default source-word
-                                    (append loga-irregular-noun-alist
-                                            stem:irregular-verb-alist)))
-                (stem:stripping-inflection source-word)))
-    source-word))
+  (setq loga-prototype-word
+        (or (car (assoc-default source-word
+                                (append loga-irregular-noun-alist
+                                        stem:irregular-verb-alist)))
+            (stem:stripping-inflection source-word)))
+  loga-prototype-word)
 
 (setq loga-command-alist
       `((?a . :add)
