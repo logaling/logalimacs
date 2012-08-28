@@ -601,7 +601,7 @@ Because it escape character"
       (loga-do-ruby
        (concat "puts %s/" word "/ =~ /" japanese-regexp "/ ? 0 : 1"))))))
 
-(defun loga-character-of-point ()
+(defun loga-character-at-point ()
   (lexical-let* ((line (thing-at-point 'line))
                  (address (- (point) (point-at-bol)))
                  (limit   (1- (- (point-at-eol) (point-at-bol))))
@@ -665,7 +665,7 @@ Otherwise passed character inside region."
 (defun loga-word-at-point ()
   (interactive)
   (save-excursion
-    (let* ((character      (loga-character-of-point))
+    (let* ((character      (loga-character-at-point))
            (classification (loga-classify-language character))
            kanji+hiragana)
       (when (string-match "[ \n]" character)
