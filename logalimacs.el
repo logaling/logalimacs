@@ -603,8 +603,9 @@ Because it escape character"
 
 (defun loga-character-of-point ()
   (lexical-let* ((line (thing-at-point 'line))
-                 (address (1- (- (point) (point-at-bol))))
-                 (character (char-to-string (aref line address))))
+                 (address (- (point) (point-at-bol)))
+                 (limit   (1- (- (point-at-eol) (point-at-bol))))
+                 (character (char-to-string (aref line (min address limit)))))
     character))
 
 ;;;###autoload
