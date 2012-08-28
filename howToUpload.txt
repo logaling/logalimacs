@@ -1,3 +1,19 @@
+MELPAへのアップロード方法
+./melpa/recipes以下に自分のパッケージを追加して
+以下の関数をディレクトリとパッケージ名を変更して実行し、
+./melpa/packages以下に作成されるか確認する。
+
+(defun my/melpa-upload ()
+  (interactive)
+  (let* ((melpa-directory "~/Dropbox/work/melpa/"))
+    (dired melpa-directory)
+    (load-file (concat melpa-directory "package-build.el"))
+    (package-build-archive 'stem)))
+
+;; package名の抽出になぜかこれではだめだった...
+;; (package-build-archive (make-symbol (read-string "package-name here: ")))
+
+
 Marmaladeへのアップロード方法
 
 パッケージの修正を終えてMarmaladeへアップロードできる準備が整ったら

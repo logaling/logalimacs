@@ -28,13 +28,13 @@
 ;; Logalimacs.el lookup to registered term at logaling-command and,
 ;; Executes other commands for logaling-command from emacs.
 
-;;; Usage
+;;; Usage:
 ;;  Paste below Emacs lisp code to config file as ~/.emacs.d/init.el etc..
 ;; (require 'logalimacs)
 ;; (global-set-key (kbd "M-g M-i") 'loga-interactive-command)
 ;; (global-set-key (kbd "C-:") 'loga-lookup-in-popup)
 
-;;; Preference setting
+;;; Preference setting:
 ;; (setq
 ;;  ;; Attach dictionary option for loga-lookup.
 ;;  loga-use-dictionary-option t
