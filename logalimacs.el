@@ -1,4 +1,4 @@
-;;; -*- coding: utf-8; lexical-binding: t -*-
+;;; -*- coding: utf-8 -*-
 ;;; logalimacs.el --- Front-end to logaling-command for Ruby gems
 
 ;; Copyright (C) 2011, 2012 by Yuta Yamada
@@ -225,7 +225,7 @@ Example:
         finally return (mapconcat 'identity commands ",")))
 
 (defun loga-mixture-bracket (command-prefix command-symbol)
-  (let* ((command (loga-from-symbol-to-string command-symbol))
+  (lexical-let* ((command (loga-from-symbol-to-string command-symbol))
          (prefix  (char-to-string command-prefix))
          (list-of-rest (nthcdr 2 (string-to-list (split-string command ""))))
          (rest (mapconcat 'identity list-of-rest "")))
@@ -244,12 +244,13 @@ Example:
 
 (defun loga-buffer-or-popup-command ()
   (read-event "")
-  (let ((event (loga-response-of-event loga-buffer-or-popup-command-alist))
-        (scroll-logalimacs-buffer
-         (lambda (up-or-down)
-           (unless (eq loga-current-endpoint :popup)
-             (scroll-other-window up-or-down)
-             (loga-buffer-or-popup-command)))))
+  (lexical-let
+      ((event (loga-response-of-event loga-buffer-or-popup-command-alist))
+       (scroll-logalimacs-buffer
+        (lambda (up-or-down)
+          (unless (eq loga-current-endpoint :popup)
+            (scroll-other-window up-or-down)
+            (loga-buffer-or-popup-command)))))
     (case event
       (:next-line     (funcall scroll-logalimacs-buffer  1))
       (:previous-line (funcall scroll-logalimacs-buffer -1))
@@ -275,9 +276,9 @@ Example:
   (replace-regexp-in-string ":" "" (symbol-name symbol)))
 
 (defun loga-command (&optional search-word)
-  (let* ((loga "\\loga")
-         (task (loga-from-symbol-to-string loga-current-command))
-         (word-and-options (loga-lookup-attach-option search-word)))
+  (lexical-let* ((loga "\\loga")
+                 (task (loga-from-symbol-to-string loga-current-command))
+                 (word-and-options (loga-lookup-attach-option search-word)))
     (setq loga-base-buffer (current-buffer)
           loga-marked-words nil)
     (case loga-current-command
@@ -291,15 +292,15 @@ Example:
        (minibuffer-message (loga-to-shell loga task))))))
 
 (defun loga-produce-contents (search-word word-and-options)
-  (let ((terminal-output
-         (loga-to-shell "\\loga" (concat "lookup " word-and-options))))
+  (lexical-let ((terminal-output
+                 (loga-to-shell "\\loga" (concat "lookup " word-and-options))))
     (loga-register-output (cons search-word terminal-output))
     terminal-output))
 
 (defun loga-add/update (task)
   (if mark-active
       (loga-return-marked-region))
-  (let* ((input (loga-input)))
+  (lexical-let* ((input (loga-input)))
     (loga-to-shell "\\loga" (concat task " " input) t)
     (loga-read-buffer-string)
     (if (and (string-match "^term '.+' already exists in '.+'" loga-buffer-string)
@@ -317,7 +318,7 @@ Example:
   (switch-to-buffer loga-base-buffer))
 
 (defun loga-lookup-attach-option (search-word)
-  (let* ((options '()))
+  (lexical-let* ((options '()))
     (if loga-use-dictionary-option
         (push "--dictionary" options))
     (if (eq loga-current-endpoint :popup)
@@ -325,7 +326,7 @@ Example:
     (concat search-word " " (mapconcat 'identity options " "))))
 
 (defun loga-register-output (current-search-words)
-  (let* ((cached-list-length (length loga-word-cache)))
+  (lexical-let* ((cached-list-length (length loga-word-cache)))
     (cond ((<= loga-word-cache-limit cached-list-length)
            (setq loga-word-cache (loga-nthcar (- cached-list-length 1)
                                               loga-word-cache))))
@@ -387,23 +388,24 @@ Example:
       (loga-singularize (loga-return-word-on-cursor)))))
 
 (defun loga-return-marked-region ()
-  (let ((marked-region
-         (buffer-substring-no-properties (region-beginning) (region-end))))
+  (lexical-let ((marked-region
+                 (buffer-substring-no-properties
+                  (region-beginning) (region-end))))
     (loga-register-mark-words marked-region)
     marked-region))
 
 (defun loga-register-mark-words (marked-words)
-  (let* ((separator loga-mark-rigion-separator)
-         (separate-regexp (concat "^\\(.*\\)" separator "\\(.*\\)")))
+  (lexical-let* ((separator loga-mark-rigion-separator)
+                 (separate-regexp (concat "^\\(.*\\)" separator "\\(.*\\)")))
     (string-match separate-regexp marked-words)
     (setq loga-marked-words (cons (or (match-string 1 marked-words)
                                       marked-words)
                                   (match-string 2 marked-words)))))
 
 (defun loga-convert-from-json (raw-json-data)
-  (let* ((mixed-list (json-read-from-string raw-json-data))
-         (keywords (loga-extract-keywords-from mixed-list))
-         (converted-list (loga-format keywords)))
+  (lexical-let* ((mixed-list (json-read-from-string raw-json-data))
+                 (keywords (loga-extract-keywords-from mixed-list))
+                 (converted-list (loga-format keywords)))
     (if loga-cascade-output
         converted-list
       (loga-format-to-string converted-list))))
@@ -440,16 +442,16 @@ Example:
         finally return formated-words))
 
 (defun loga-chop-source (raw-source)
-  (let ((tmp-source-length (loga-compute-length raw-source)))
+  (lexical-let ((tmp-source-length (loga-compute-length raw-source)))
     (if (string-match "\\[.+\\]" raw-source)
         (replace-regexp-in-string "\\[.+\\]" "" raw-source)
       raw-source)))
 
 (defun loga-chop-target (raw-target)
-  (let ((tmp-target-length (loga-compute-length raw-target))
-        (window-half (/ (window-width) 2))
-        (pretty-target
-         (loga-reject-brackets-character raw-target)))
+  (lexical-let ((tmp-target-length (loga-compute-length raw-target))
+                (window-half (/ (window-width) 2))
+                (pretty-target
+                 (loga-reject-brackets-character raw-target)))
     (if (< window-half tmp-target-length)
         (nth 1 (popup-fill-string pretty-target window-half))
       pretty-target)))
@@ -473,15 +475,15 @@ Example:
 
 (defun loga-clear-condition-p (max-source-length max-target-length
                                source-length target-length)
-  (let ((more-than-max-p (or (< max-source-length source-length)
-                             (< max-target-length target-length)))
-        (less-than-window-half-p
-         (loga-less-than-window-half-p source-length))
-        (below-limit-p (< source-length loga-width-limit-source)))
+  (lexical-let ((more-than-max-p (or (< max-source-length source-length)
+                                     (< max-target-length target-length)))
+                (less-than-window-half-p
+                 (loga-less-than-window-half-p source-length))
+                (below-limit-p (< source-length loga-width-limit-source)))
     (and more-than-max-p less-than-window-half-p below-limit-p)))
 
 (defun loga-fallback-with-stemming-p (source-word prototype-of-search-word)
-  (let ((prototype-word (loga-extract-prototype-from source-word)))
+  (lexical-let ((prototype-word (loga-extract-prototype-from source-word)))
     (and loga-use-stemming
          (equal loga-current-endpoint :popup)
          (not prototype-of-search-word)
@@ -489,7 +491,7 @@ Example:
          (loga-one-word-p source-word))))
 
 (defun loga-less-than-window-half-p (source-length)
-  (let* ((half (- (/ (window-width) 2) 2)))
+  (lexical-let* ((half (- (/ (window-width) 2) 2)))
     (< source-length half)))
 
 (defun loga-compute-length (sentence)
@@ -509,22 +511,22 @@ Because it escape character"
   (not (string-match "[\\ -/:->{-~\\?^]\\|\\[\\|\\]" token)))
 
 (defun loga-append-margin (source target note max-length)
-  (let* ((margin (- (car max-length) (loga-compute-length source)))
-         (column (concat source (spaces-string margin) ":" target)))
+  (lexical-let* ((margin (- (car max-length) (loga-compute-length source)))
+                 (column (concat source (spaces-string margin) ":" target)))
     (if note
         `(,column ,(concat "\n" note))
       `(,column))))
 
 (defun loga-query (&optional message)
-  (let* ((input (read-string (or message "types here:")
-                             (loga-attach-initial-value message))))
+  (lexical-let* ((input (read-string (or message "types here:")
+                                     (loga-attach-initial-value message))))
     (case loga-current-command
       ((:add :update) (concat "\"" input "\""))
       (t input))))
 
 (defun loga-attach-initial-value (message)
-  (let ((initial-source (car loga-marked-words))
-        (initial-target (cdr loga-marked-words)))
+  (lexical-let ((initial-source (car loga-marked-words))
+                (initial-target (cdr loga-marked-words)))
     (case loga-current-command
       ((:add :update)
        (when (or initial-source
@@ -536,11 +538,11 @@ Because it escape character"
                (t nil)))))))
 
 (defun loga-input ()
-  (let* ((query (loga-from-symbol-to-string loga-current-command))
-         (task loga-current-command)
-         (messages (concat query ": "))
-         (loga-base-buffer (current-buffer))
-         result)
+  (lexical-let* ((query (loga-from-symbol-to-string loga-current-command))
+                 (task loga-current-command)
+                 (messages (concat query ": "))
+                 (loga-base-buffer (current-buffer))
+                 result)
     (case task
       ((:add :update :config :copy :delete :help :import :new
              :register :unregister)
@@ -587,15 +589,15 @@ Because it escape character"
          "en")))
 
 (defun loga-japanese-p (word &optional choice)
-  (let* ((hiragana "\\p{hiragana}")
-         (katakana "\\p{katakana}")
-         (kanji    "\\p{Han}")
-         (japanese-regexp
-          (case choice
-            (:hiragana hiragana)
-            (:katakana katakana)
-            (:kanji    kanji)
-            (t         (concat hiragana "|" katakana "|" kanji)))))
+  (lexical-let* ((hiragana "\\p{hiragana}")
+                 (katakana "\\p{katakana}")
+                 (kanji    "\\p{Han}")
+                 (japanese-regexp
+                  (case choice
+                    (:hiragana hiragana)
+                    (:katakana katakana)
+                    (:kanji    kanji)
+                    (t         (concat hiragana "|" katakana "|" kanji)))))
     (zerop
      (string-to-number
       (loga-do-ruby
@@ -657,7 +659,7 @@ Otherwise passed character inside region."
 (defun loga-return-word-on-cursor ()
   "Return word where point on cursor."
   (save-excursion
-    (let ((match-word (loga-word-at-point)))
+    (lexical-let ((match-word (loga-word-at-point)))
       (if (string-match "[上-黑]" match-word)
           (loga-reject-hiragana match-word)
         match-word))))
@@ -665,9 +667,9 @@ Otherwise passed character inside region."
 (defun loga-word-at-point ()
   (interactive)
   (save-excursion
-    (let* ((character      (loga-character-at-point))
-           (classification (loga-classify-language character))
-           kanji+hiragana)
+    (lexical-let* ((character      (loga-character-at-point))
+                   (classification (loga-classify-language character))
+                   kanji+hiragana)
       (when (string-match "[ \n]" character)
         (skip-chars-backward " "))
       (if (null classification)
@@ -700,13 +702,13 @@ Otherwise passed character inside region."
           finally return nil)))
 
 (defun loga-skip (direction &optional group)
-  (let ((skip-group
-         (case group
-           (:kanji           "上-黑")
-           (:hiragana        "ぁ-ん")
-           (:katakana        "ァ-ン")
-           (:english         "a-zA-Z'")
-           (t                "a-zA-Zぁ-んァ-ン上-黑'"))))
+  (lexical-let ((skip-group
+                 (case group
+                   (:kanji           "上-黑")
+                   (:hiragana        "ぁ-ん")
+                   (:katakana        "ァ-ン")
+                   (:english         "a-zA-Z'")
+                   (t                "a-zA-Zぁ-んァ-ン上-黑'"))))
     (case direction
       (:forward  (skip-chars-forward  skip-group))
       (:backward (skip-chars-backward skip-group)))))
@@ -742,7 +744,7 @@ Otherwise passed character inside region."
   (replace-regexp-in-string "\"" "" (caar loga-word-cache)))
 
 (defun loga-make-popup (content)
-  (let* ((converted-content (loga-convert-from-json content)))
+  (lexical-let* ((converted-content (loga-convert-from-json content)))
     (setq loga-current-endpoint :popup)
     (loga-setup-point-and-width)
     (typecase converted-content
@@ -759,16 +761,16 @@ Otherwise passed character inside region."
                   :width loga-popup-width)))))
 
 (defun loga-compute-point ()
-  (let* ((half (/ (window-width) 2))
-         (quarter (/ half 2))
-         (cursor (- (point) (point-at-bol))))
+  (lexical-let* ((half (/ (window-width) 2))
+                 (quarter (/ half 2))
+                 (cursor (- (point) (point-at-bol))))
     (cond
      ((< half cursor)
       (+ (point-at-bol) quarter))
      (t (point)))))
 
 (defun loga-popup-output-type ()
-  (let ((type (symbol-name loga-popup-output-type)))
+  (lexical-let ((type (symbol-name loga-popup-output-type)))
     (if (string-match ":" type)
         loga-popup-output-type
       (make-symbol (concat ":" type)))))
@@ -836,13 +838,13 @@ Otherwise passed character inside region."
 
 (defun loga-check-state ()
   (interactive)
-  (let* ((ruby '(lambda (arg)
-                  (shell-command-to-string (concat "ruby -e " arg))))
-         (version (funcall ruby "'print RUBY_VERSION'"))
-         (installed-p
-          (not (string-match "no such file to load"
-                             (funcall ruby "'require \"logaling\"'"))))
-         (rvm-p (eq 0 (shell-command "which rvm"))))
+  (lexical-let* ((ruby '(lambda (arg)
+                          (shell-command-to-string (concat "ruby -e " arg))))
+                 (version (funcall ruby "'print RUBY_VERSION'"))
+                 (installed-p
+                  (not (string-match "no such file to load"
+                                     (funcall ruby "'require \"logaling\"'"))))
+                 (rvm-p (eq 0 (shell-command "which rvm"))))
     (cond
      ((and installed-p version)
       (message "Check OK: logaling-command already installed")
@@ -856,7 +858,7 @@ Otherwise passed character inside region."
      (t (message "Note: require 'sudo gem install logaling-command'")))))
 
 (defun loga-version ()
-  (let* ((version-string (loga-to-shell "\\loga version")))
+  (lexical-let* ((version-string (loga-to-shell "\\loga version")))
     (string-match "[0-9].[0-9].[0-9]" version-string)
     (match-string 0 version-string)))
 
@@ -867,8 +869,8 @@ Otherwise passed character inside region."
     (loga-delete-popup)))
 
 (defun loga-one-word-p (search-word)
-  (let ((english-only-p (not (string-match "[^a-zA-Z]" search-word)))
-        (spaceless-p    (not (string-match " "      search-word))))
+  (lexical-let ((english-only-p (not (string-match "[^a-zA-Z]" search-word)))
+                (spaceless-p    (not (string-match " "      search-word))))
     (and english-only-p
          spaceless-p)))
 
