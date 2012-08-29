@@ -1,11 +1,11 @@
 #!/bin/sh
 
 bootemacs() {
-    if [ "$1" != "" ]; then
-        emacs23 -q --load `pwd`/logalimacs_configs.el
-    else
-        emacs -q --load `pwd`/logalimacs_configs.el
+    EMACS=emacs
+    if [ "$#" = 0 ]; then
+        EMACS=emacs23
     fi
+    ${EMACS} -q --load `pwd`/logalimacs_configs.el
 }
 
 bootemacs
