@@ -838,12 +838,10 @@ Otherwise passed character inside region."
 
 (defun loga-check-state ()
   (interactive)
-  (lexical-let* ((ruby '(lambda (arg)
-                          (shell-command-to-string (concat "ruby -e " arg))))
-                 (version (funcall ruby "'print RUBY_VERSION'"))
+  (lexical-let* ((version (loga-do-ruby "print RUBY_VERSION"))
                  (installed-p
                   (not (string-match "no such file to load"
-                                     (funcall ruby "'require \"logaling\"'"))))
+                                     (loga-do-ruby "require \"logaling\""))))
                  (rvm-p (eq 0 (shell-command "which rvm"))))
     (cond
      ((and installed-p version)
