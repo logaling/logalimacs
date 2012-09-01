@@ -128,7 +128,7 @@ Note that yet can specify en and ja pair only"
   "Set list of major-mode for not displayed as errant format when popup used.
 Example:
 \(setq loga-popup-ignoring-major-mode-list
-  '('org-mode 'twittering-mode))"
+  '(org-mode twittering-mode))"
   :group 'logalimacs
   :type  'list)
 
