@@ -159,7 +159,7 @@ Example:
       (lambda (search-word)
         (your-awesome-translation-function search-word)))")
 
-(defvar loga-mark-rigion-separator "/")
+(defvar loga-mark-region-separator "/")
 
 (defvar loga-marked-words '())
 
@@ -395,7 +395,7 @@ Example:
     marked-region))
 
 (defun loga-register-mark-words (marked-words)
-  (lexical-let* ((separator loga-mark-rigion-separator)
+  (lexical-let* ((separator loga-mark-region-separator)
                  (separate-regexp (concat "^\\(.*\\)" separator "\\(.*\\)")))
     (string-match separate-regexp marked-words)
     (setq loga-marked-words (cons (or (match-string 1 marked-words)
