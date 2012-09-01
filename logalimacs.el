@@ -225,10 +225,11 @@ Example:
         finally return (mapconcat 'identity commands ",")))
 
 (defun loga-mixture-bracket (command-prefix command-symbol)
-  (lexical-let* ((command (loga-from-symbol-to-string command-symbol))
-         (prefix  (char-to-string command-prefix))
-         (list-of-rest (nthcdr 2 (string-to-list (split-string command ""))))
-         (rest (mapconcat 'identity list-of-rest "")))
+  (lexical-let*
+      ((command (loga-from-symbol-to-string command-symbol))
+       (prefix  (char-to-string command-prefix))
+       (list-of-rest (nthcdr 2 (string-to-list (split-string command ""))))
+       (rest (mapconcat 'identity list-of-rest "")))
     (concat prefix ")" rest)))
 
 ;;;###autoload
