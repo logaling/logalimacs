@@ -633,9 +633,15 @@ Otherwise passed character inside region."
 (defun loga-lookup-in-popup ()
   "Display the output of loga-lookup at tooltip."
   (interactive)
-  (if loga-popup-ignoring-major-mode-list
+  (if (loga-match-ignoring-list-p)
       (loga-lookup :buffer)
     (loga-lookup :popup)))
+
+(defun loga-match-ignoring-list-p ()
+  (loop for major-mode-name in loga-popup-ignoring-major-mode-list
+        if (eq major-mode-name major-mode)
+        do (return t)
+        finally return nil))
 
 ;;;###autoload
 (defun loga-lookup-in-buffer ()
