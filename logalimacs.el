@@ -124,6 +124,14 @@ Note that yet can specify en and ja pair only"
   :group 'logalimacs
   :type  'boolean)
 
+(defcustom loga-popup-ignoring-major-mode-list '()
+  "Set list of major-mode for not displayed as errant format when popup used.
+Example:
+\(setq loga-popup-ignoring-major-mode-list
+  '('org-mode 'twittering-mode))"
+  :group 'logalimacs
+  :type  'list)
+
 (defvar loga-fly-mode nil
   "If nonnil, logalimacs use loga-fly-mode")
 
@@ -625,7 +633,9 @@ Otherwise passed character inside region."
 (defun loga-lookup-in-popup ()
   "Display the output of loga-lookup at tooltip."
   (interactive)
-  (loga-lookup :popup))
+  (if loga-popup-ignoring-major-mode-list
+      (loga-lookup :buffer)
+    (loga-lookup :popup)))
 
 ;;;###autoload
 (defun loga-lookup-in-buffer ()
