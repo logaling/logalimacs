@@ -184,6 +184,9 @@ Example:
                                  ("ches$"        "ch")
                                  ("'?s$"         "")))
 
+(defconst logalimacs-buffer "*logalimacs*"
+  "buffer name for logalimacs")
+
 (defvar loga-ignoring-regexp-words
   '("^basis$" "^crisis$" "ious$" "^news$" "shoes" "ss$" "^stimulus$"
     ;; former English (~fe or ~f -> ~ves)
@@ -275,7 +278,7 @@ Example:
 
 (defun loga-to-shell (cmd &optional arg async?)
   (if async?
-      (async-shell-command (concat cmd " " arg) "*logalimacs*")
+      (async-shell-command (concat cmd " " arg) logalimacs-buffer)
     (shell-command-to-string (concat cmd " " arg " &"))))
 
 (defun loga-do-ruby (body)
@@ -321,7 +324,7 @@ Example:
 
 (defun loga-read-buffer-string ()
   (interactive)
-  (switch-to-buffer "*logalimacs*")
+  (switch-to-buffer logalimacs-buffer)
   (setq loga-buffer-string ""
         loga-buffer-string (buffer-string))
   (switch-to-buffer loga-base-buffer))
@@ -736,9 +739,9 @@ Otherwise passed character inside region."
 
 (defun loga-make-buffer(content)
   (setq loga-current-endpoint :buffer
-        other-window-scroll-buffer "*logalimacs*")
+        other-window-scroll-buffer logalimacs-buffer)
   (with-temp-buffer
-    (switch-to-buffer (get-buffer-create "*logalimacs*"))
+    (switch-to-buffer (get-buffer-create logalimacs-buffer))
     (setq buffer-read-only nil)
     (erase-buffer) ;;initialize
     (insert content)
@@ -747,7 +750,7 @@ Otherwise passed character inside region."
     (setq buffer-read-only t))
   (switch-to-buffer loga-base-buffer)
   (popwin:popup-buffer
-   (get-buffer-create "*logalimacs*")
+   (get-buffer-create logalimacs-buffer)
    :noselect t :stick t :height 10 :position :top)
   (case loga-current-command
     ((:lookup :show :list)
@@ -849,7 +852,7 @@ Otherwise passed character inside region."
 
 (defun loga-quit ()
   (loga-delete-popup)
-  (switch-to-buffer "*logalimacs*")
+  (switch-to-buffer logalimacs-buffer)
   (when (eq loga-current-endpoint :buffer)
     (quit-window)
     (switch-to-buffer loga-base-buffer)))
