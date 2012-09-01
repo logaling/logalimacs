@@ -212,7 +212,7 @@ Example:
 
 (defvar loga-command-alist nil)
 
-(defvar logalimacs-mode-map
+(defvar logalimacs-popup-mode-map
   (let ((map (copy-keymap popup-menu-keymap)))
     (define-key map "q" 'keyboard-quit)
     (define-key map "d" 'loga-lookup-in-buffer)
@@ -774,7 +774,7 @@ Otherwise passed character inside region."
                            :point loga-popup-point
                            :width loga-popup-width
                            :height (/ (window-height) 2)
-                           :keymap logalimacs-mode-map))
+                           :keymap logalimacs-popup-mode-map))
       (string
        (popup-tip converted-content
                   :margin loga-popup-margin
