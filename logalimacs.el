@@ -201,15 +201,6 @@ Example:
     ("wives"   "wife")
     ("thieves" "thief")))
 
-(defvar loga-buffer-or-popup-command-alist
-  '((?b . :buffer)
-    (?q . :quit)
-    (?n . :next-line)
-    (?p . :previous-line)
-    (?j . :next-line)
-    (?k . :previous-line)
-    (?d . :detail)))
-
 (defvar loga-command-alist nil)
 
 (defvar logalimacs-popup-mode-map
@@ -225,6 +216,39 @@ Example:
     (define-key map "s" 'loga-lookup-by-stemming)
     (define-key map "o" 'loga-fallback) ;; Other function
     map))
+
+(defvar logalimacs-buffer-mode-map
+  (let ((map (make-sparse-keymap)))
+    (loop for i from ?a to ?z do
+          (define-key map (char-to-string i) 'logalimacs-buffer-mode-off))
+    (define-key map "n" 'loga-next-scroll-line)
+    (define-key map "p" 'loga-previous-scroll-line)
+    (define-key map "j" 'loga-next-scroll-line)
+    (define-key map "k" 'loga-previous-scroll-line)
+    map))
+
+(easy-mmode-define-minor-mode
+ logalimacs-buffer-minor-mode
+ "Minor mode for logalimacs buffer" nil " LG"
+ (copy-keymap logalimacs-buffer-mode-map))
+
+(defun logalimacs-buffer-mode-on ()
+  (interactive)
+  (loga-delete-popup)
+  (logalimacs-buffer-minor-mode t))
+
+(defun logalimacs-buffer-mode-off ()
+  (interactive)
+  (kill-buffer logalimacs-buffer)
+  (logalimacs-buffer-minor-mode 0))
+
+(defun loga-next-scroll-line ()
+  (interactive)
+  (scroll-other-window 1))
+
+(defun loga-previous-scroll-line ()
+  (interactive)
+  (scroll-other-window -1))
 
 (defun loga-response-of-event (command-alist)
   (assoc-default last-input-event command-alist))
@@ -253,28 +277,6 @@ Example:
   (case loga-current-command
     (:lookup (loga-lookup-at-manually))
     (t       (loga-command))))
-
-(defun loga-buffer-or-popup-command ()
-  (read-event "")
-  (lexical-let
-      ((event (loga-response-of-event loga-buffer-or-popup-command-alist))
-       (scroll-logalimacs-buffer
-        (lambda (up-or-down)
-          (unless (eq loga-current-endpoint :popup)
-            (scroll-other-window up-or-down)
-            (loga-buffer-or-popup-command)))))
-    (case event
-      (:next-line     (funcall scroll-logalimacs-buffer  1))
-      (:previous-line (funcall scroll-logalimacs-buffer -1))
-      (:buffer        (loga-make-buffer (cdar loga-word-cache)))
-      (:quit          (loga-quit))
-      (:detail        (loga-display-detail)))))
-
-(defun loga-display-detail ()
-  "If popup where current endpoint, output to buffer. if buffer, quit buffer"
-  (case loga-current-endpoint
-    (:buffer (loga-quit))
-    (:popup  (loga-lookup-in-buffer))))
 
 (defun loga-to-shell (cmd &optional arg async?)
   (if async?
@@ -754,7 +756,7 @@ Otherwise passed character inside region."
    :noselect t :stick t :height 10 :position :top)
   (case loga-current-command
     ((:lookup :show :list)
-     (loga-buffer-or-popup-command))))
+     (logalimacs-buffer-mode-on))))
 
 (defun loga-highlight (search-word)
   (when (not (equal "" search-word))
