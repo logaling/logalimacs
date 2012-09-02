@@ -254,10 +254,11 @@ Example:
   (assoc-default last-input-event command-alist))
 
 (defun loga-make-displaying-commands ()
-  (loop with commands = '()
-        for (prefix . command) in loga-command-alist
-        collect (loga-mixture-bracket prefix command) into commands
-        finally return (mapconcat 'identity commands ",")))
+  (lexical-let
+      ((commands
+        (loop for (prefix . command) in loga-command-alist
+              collect (loga-mixture-bracket prefix command))))
+    (mapconcat 'identity commands ",")))
 
 (defun loga-mixture-bracket (command-prefix command-symbol)
   (lexical-let*
@@ -425,10 +426,8 @@ Example:
       (loga-format-to-string converted-list))))
 
 (defun loga-extract-keywords-from (all-data)
-  (loop with keywords
-        for translation-group across all-data
-        collect (loga-trim-and-compute-length translation-group) into keywords
-        finally return keywords))
+  (loop for translation-group across all-data
+        collect (loga-trim-and-compute-length translation-group)))
 
 (defun loga-trim-and-compute-length (translation-group)
   (loop with source and target and note
@@ -447,13 +446,11 @@ Example:
 
 (defun loga-format (words)
   (setq loga-current-max-length (loga-compute-max-length words))
-  (loop with formated-words = '()
-        with size = loga-current-max-length
+  (loop with size = loga-current-max-length
         for (source target note source-length target-length) in words
         if (and (loga-less-than-window-half-p source-length)
                 (> loga-width-limit-source source-length))
-        collect (loga-append-margin source target note size) into formated-words
-        finally return formated-words))
+        collect (loga-append-margin source target note size)))
 
 (defun loga-chop-source (raw-source)
   (lexical-let ((tmp-source-length (loga-compute-length raw-source)))
@@ -576,13 +573,11 @@ Because it escape character"
                " ")))
 
 (defun loga-solve-queries (task messages)
-  (loop with response
-        for message in messages
+  (loop for message in messages
         for query = (loga-query message)
         if (case task ((:add :update) t))
         do (loga-store-language-option message query)
-        collect query into response
-        finally return response))
+        collect query))
 
 (defun loga-store-language-option (message input)
   (when loga-use-auto-detect-language
@@ -806,10 +801,11 @@ Otherwise passed character inside region."
                  loga-popup-point (point-at-bol)))))
 
 (defun loga-compute-width ()
-  (loop for (source-length . target-length) in `(,loga-current-max-length)
-        with sum = 0
-        collect (+ source-length  target-length) into sum
-        finally return (min (+ (car sum) 1) (window-width))))
+  (lexical-let*
+      ((sum
+        (loop for (source-length . target-length) in `(,loga-current-max-length)
+              collect (+ source-length  target-length))))
+    (min (+ (car sum) 1) (window-width))))
 
 ;;;###autoload
 (defun loga-fly-mode ()
