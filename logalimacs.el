@@ -225,6 +225,7 @@ Example:
     (define-key map "p" 'loga-previous-scroll-line)
     (define-key map "j" 'loga-next-scroll-line)
     (define-key map "k" 'loga-previous-scroll-line)
+    (define-key map "o" 'loga-fallback)
     map))
 
 (easy-mmode-define-minor-mode
