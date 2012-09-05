@@ -540,6 +540,8 @@ Because it escape character"
   (lexical-let ((initial-source (car loga-marked-words))
                 (initial-target (cdr loga-marked-words)))
     (case loga-current-command
+      (:lookup
+       (if current-prefix-arg (loga-get-search-word)))
       ((:add :update)
        (when (or initial-source
                  initial-target)
