@@ -225,6 +225,7 @@ Example:
     (define-key map "p" 'loga-previous-scroll-line)
     (define-key map "j" 'loga-next-scroll-line)
     (define-key map "k" 'loga-previous-scroll-line)
+    (define-key map "s" 'loga-lookup-by-stemming)
     (define-key map "o" 'loga-fallback)
     map))
 
@@ -379,8 +380,8 @@ Example:
     (buffer-string)))
 
 (defun loga-lookup (endpoint &optional prototype-of-search-word)
+  (setq loga-current-endpoint endpoint)
   (let* ((loga-current-command :lookup)
-         (loga-current-endpoint endpoint)
          (source-word (or prototype-of-search-word (loga-decide-source-word)))
          (terminal-output (loga-command (concat "\"" source-word "\""))))
     (save-excursion
@@ -497,7 +498,6 @@ Example:
 (defun loga-fallback-with-stemming-p (source-word prototype-of-search-word)
   (lexical-let ((prototype-word (loga-extract-prototype-from source-word)))
     (and loga-use-stemming
-         (equal loga-current-endpoint :popup)
          (not prototype-of-search-word)
          (not (equal source-word prototype-word))
          (loga-one-word-p source-word))))
@@ -655,7 +655,7 @@ Otherwise passed character inside region."
   (interactive)
   (when loga-use-stemming
     (loga-delete-popup)
-    (loga-lookup :popup
+    (loga-lookup loga-current-endpoint
                  (loga-extract-prototype-from (loga-get-search-word)))))
 
 (defun loga-delete-popup ()
