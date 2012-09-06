@@ -219,7 +219,7 @@ Example:
 
 (defvar logalimacs-buffer-mode-map
   (let ((map (make-sparse-keymap)))
-    (loop for i from ?a to ?z do
+    (loop for i from ?a upto ?z do
           (define-key map (char-to-string i) 'logalimacs-buffer-mode-off))
     (define-key map "n" 'loga-next-scroll-line)
     (define-key map "p" 'loga-previous-scroll-line)
