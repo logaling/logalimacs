@@ -393,7 +393,7 @@ Example:
         (if (loga-fallback-with-stemming-p source-word prototype-of-search-word)
             (loga-lookup-by-stemming)
           (if (functionp loga-fallback-function)
-              (loga-fallback (caar loga-word-cache))
+              (loga-fallback (loga-get-search-word))
             (minibuffer-message
              (format "%s is not found" source-word))))))))
 
@@ -885,7 +885,7 @@ Otherwise passed character inside region."
 (defun loga-fallback (&optional search-word)
   (interactive)
   (when (functionp loga-fallback-function)
-    (funcall loga-fallback-function (or search-word (caar loga-word-cache)))
+    (funcall loga-fallback-function (or search-word (loga-get-search-word)))
     (loga-delete-popup)))
 
 (defun loga-one-word-p (search-word)
