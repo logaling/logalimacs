@@ -132,6 +132,11 @@ Example:
   :group 'logalimacs
   :type  'list)
 
+(defcustom loga-result-limit 0
+  "Attach `head' of shell command"
+  :group 'logalimacs
+  :type  'integer)
+
 (defvar loga-fly-mode nil
   "If nonnil, logalimacs use loga-fly-mode")
 
@@ -663,11 +668,19 @@ Otherwise passed character inside region."
    (get-buffer-create logalimacs-buffer)
    :noselect t :stick t :height 10 :position :top)
   (loga-to-shell "\\loga lookup "
-                 (format "\"%s\" --no-pager"
+                 (format "\"%s\" --no-pager %s"
                          (loga-decide-source-word)
-                         ) t)
+                         (loga-get-option :result-limit)) t)
   (switch-to-buffer loga-base-buffer)
   (logalimacs-buffer-mode-on))
+
+(defun loga-get-option (option)
+  (case option
+    (:result-limit
+     (if (not (zerop loga-result-limit))
+         (format "| \\head -n %s"
+                 (number-to-string loga-result-limit))
+       ""))))
 
 (defun loga-lookup-by-stemming ()
   (interactive)
