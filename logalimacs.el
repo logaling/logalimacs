@@ -652,6 +652,23 @@ Otherwise passed character inside region."
   (interactive)
   (loga-lookup :buffer))
 
+;;;###autoload
+(defun loga-lookup-in-buffer-light()
+  "Use async shell commad for lookup and output *logalimacs* buffer"
+  (interactive)
+  (setq loga-base-buffer (current-buffer)
+        loga-current-endpoint :buffer
+        other-window-scroll-buffer logalimacs-buffer)
+  (popwin:popup-buffer
+   (get-buffer-create logalimacs-buffer)
+   :noselect t :stick t :height 10 :position :top)
+  (loga-to-shell "\\loga lookup "
+                 (format "\"%s\" --no-pager"
+                         (loga-decide-source-word)
+                         ) t)
+  (switch-to-buffer loga-base-buffer)
+  (logalimacs-buffer-mode-on))
+
 (defun loga-lookup-by-stemming ()
   (interactive)
   (when loga-use-stemming
