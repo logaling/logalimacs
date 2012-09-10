@@ -316,7 +316,7 @@ Example:
 
 (defun loga-produce-contents (search-word word-and-options)
   (lexical-let ((terminal-output
-                 (loga-to-shell "\\loga" (concat "lookup " word-and-options))))
+                 (loga-to-shell "\\loga" (format "lookup %s" word-and-options))))
     (loga-register-output (cons search-word terminal-output))
     terminal-output))
 
@@ -388,8 +388,10 @@ Example:
 (defun loga-lookup (endpoint &optional prototype-of-search-word)
   (setq loga-current-endpoint endpoint)
   (let* ((loga-current-command :lookup)
-         (source-word (or prototype-of-search-word (loga-decide-source-word)))
-         (terminal-output (loga-command (concat "\"" source-word "\""))))
+         (source-word
+          (format "\"%s\""
+                  (or prototype-of-search-word (loga-decide-source-word))))
+         (terminal-output (loga-command source-word)))
     (save-excursion
       (if (string< "" terminal-output)
           (case endpoint
