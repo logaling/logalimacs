@@ -672,7 +672,8 @@ Otherwise passed character inside region."
   (loga-to-shell "\\loga lookup "
                  (format "\"%s\" --no-pager %s"
                          (loga-decide-source-word)
-                         (loga-get-option :result-limit)) t)
+                         (loga-get-option :result-limit))
+                 t)
   (switch-to-buffer loga-base-buffer)
   (logalimacs-buffer-mode-on))
 
