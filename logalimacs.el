@@ -784,7 +784,8 @@ Otherwise passed character inside region."
     (erase-buffer) ;;initialize
     (insert content)
     (goto-char 0)
-    (loga-highlight (loga-get-search-word))
+    (when (eq :lookup loga-current-command)
+      (loga-highlight (loga-get-search-word)))
     (setq buffer-read-only t))
   (switch-to-buffer loga-base-buffer)
   (popwin:popup-buffer
