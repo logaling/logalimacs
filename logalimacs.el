@@ -693,9 +693,13 @@ Otherwise passed character inside region."
                  (loga-extract-prototype-from (loga-get-search-word)))))
 
 (defun loga-delete-popup ()
-  (ignore-errors
-    (if (popup-live-p menu)
-        (popup-delete menu))))
+  (let ((delete-popup
+          (lambda ()
+            (popup-live-p menu)
+            (popup-delete menu))))
+    (condition-case error
+        (funcall delete-popup)
+      (error error))))
 
 (defun loga-singularize (word)
   (if (and loga-use-singular-form
