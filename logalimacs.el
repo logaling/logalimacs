@@ -674,8 +674,7 @@ Otherwise passed character inside region."
                          (loga-decide-source-word)
                          (loga-get-option :result-limit))
                  t)
-  (switch-to-buffer loga-base-buffer)
-  (logalimacs-buffer-mode-on))
+  (switch-to-buffer loga-base-buffer))
 
 (defun loga-get-option (option)
   (case option
