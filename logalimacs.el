@@ -193,13 +193,15 @@ Example:
   "buffer name for logalimacs")
 
 (defvar loga-ignoring-regexp-words
-  '("^alps$" "^basis$" "^crisis$" "ious$" "^news$" "shoes" "ss$" "^stimulus$"
+  '("^alps$" "^basis$" "^crisis$" "^foes$"
+    "ious$" "^news$" "shoes" "ss$" "^stimulus$"
     "^ties$"
     ;; former English (~fe or ~f -> ~ves)
     "knives" "lives" "leaves" "halves" "wives" "thieves"))
 
 (defvar loga-irregular-noun-alist
   '(("stimuli" "stimulus")
+    ("foes"    "foe")
     ;; former English (~fe or ~f -> ~ves)
     ("knives"  "knife")
     ("lives"   "life")
