@@ -609,7 +609,8 @@ Because it escape character"
          "en")))
 
 (defun loga-japanese-p (word &optional choice)
-  (lexical-let* ((sep      loga-mark-region-separator)
+  (lexical-let* ((striped-word (replace-regexp-in-string "'" "" word))
+                 (sep      loga-mark-region-separator)
                  (hiragana "\\p{hiragana}")
                  (katakana "\\p{katakana}")
                  (kanji    "\\p{Han}")
@@ -622,7 +623,8 @@ Because it escape character"
     (zerop
      (string-to-number
       (loga-do-ruby
-       (concat "puts %s" sep word sep " =~ /" japanese-regexp "/ ? 0 : 1"))))))
+       (concat
+        "puts %s" sep striped-word sep " =~ /" japanese-regexp "/ ? 0 : 1"))))))
 
 (defun loga-character-at-point ()
   (lexical-let* ((line (thing-at-point 'line))
