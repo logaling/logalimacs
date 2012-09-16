@@ -670,8 +670,9 @@ Otherwise passed character inside region."
    (get-buffer-create logalimacs-buffer)
    :noselect t :stick t :height 10 :position :top)
   (loga-to-shell "\\loga lookup "
-                 (format "\"%s\" --no-pager %s"
+                 (format "\"%s\" %s --no-pager %s"
                          (loga-decide-source-word)
+                         (loga-lookup-attach-option "")
                          (loga-get-option :result-limit))
                  t)
   (switch-to-buffer logalimacs-buffer)
