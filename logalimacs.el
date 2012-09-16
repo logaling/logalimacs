@@ -200,6 +200,7 @@ Example:
 
 (defvar loga-irregular-noun-alist
   '(("stimuli" "stimulus")
+    ;; former English (~fe or ~f -> ~ves)
     ("knives"  "knife")
     ("lives"   "life")
     ("leaves"  "leaf")
