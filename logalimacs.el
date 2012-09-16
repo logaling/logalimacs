@@ -674,6 +674,10 @@ Otherwise passed character inside region."
                          (loga-decide-source-word)
                          (loga-get-option :result-limit))
                  t)
+  (switch-to-buffer logalimacs-buffer)
+  (setq truncate-lines t)
+  (switch-to-buffer loga-base-buffer))
+
   (switch-to-buffer loga-base-buffer))
 
 (defun loga-get-option (option)
