@@ -680,10 +680,11 @@ Otherwise passed character inside region."
                          (loga-lookup-attach-option "")
                          (loga-get-option :result-limit))
                  t)
-  (switch-to-buffer logalimacs-buffer)
-  (setq truncate-lines t)
-  (switch-to-buffer loga-base-buffer))
+  (loga-modify-buffer-configuration :truncate-line t))
 
+(defun* loga-modify-buffer-configuration (&key truncate-line)
+  (switch-to-buffer logalimacs-buffer)
+  (if truncate-line (setq truncate-lines t))
   (switch-to-buffer loga-base-buffer))
 
 (defun loga-get-option (option)
