@@ -691,8 +691,7 @@ Otherwise passed character inside region."
   (case option
     (:result-limit
      (if (not (zerop loga-result-limit))
-         (format "| \\head -n %s"
-                 (number-to-string loga-result-limit))
+         (format "| \\head -n %i" loga-result-limit)
        ""))))
 
 (defun loga-lookup-by-stemming ()
