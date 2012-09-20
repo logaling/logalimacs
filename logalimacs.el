@@ -199,7 +199,7 @@ Example:
     ;; former English (~fe or ~f -> ~ves)
     "knives" "lives" "leaves" "halves" "wives" "thieves"))
 
-(defvar loga-irregular-noun-alist
+(defvar loga-irregular-nouns
   '(("stimuli" "stimulus")
     ("foes"    "foe")
     ;; former English (~fe or ~f -> ~ves)
@@ -945,7 +945,7 @@ Otherwise passed character inside region."
 (defun loga-extract-prototype-from (source-word)
   (setq loga-prototype-word
         (or (car (assoc-default source-word
-                                (append loga-irregular-noun-alist
+                                (append loga-irregular-nouns
                                         stem:irregular-verb-alist)))
             (stem:stripping-inflection source-word)))
   loga-prototype-word)
