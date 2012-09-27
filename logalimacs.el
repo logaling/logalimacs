@@ -720,7 +720,9 @@ Otherwise passed character inside region."
 (defun loga-singularize (word)
   (if (and loga-use-singular-form
            (not (loga-irregular-word-p word)))
-      (loop for (regexp replace) in loga-singular-regexp
+      (loop with singlurar-regexp = (append loga-irregular-nouns
+                                            loga-singular-regexp)
+            for (regexp replace) in singlurar-regexp
             if (string-match regexp word)
             do (return (replace-regexp-in-string regexp replace word))
             finally return word)
