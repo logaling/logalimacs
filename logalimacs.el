@@ -192,6 +192,11 @@ Example:
 (defconst logalimacs-buffer "*logalimacs*"
   "buffer name for logalimacs")
 
+(defun loga-pave-regexp (list)
+  (loop for (plural single) in list
+        collect `(,(format "^%s$" plural)
+                  ,single)))
+
 (defvar loga-ignoring-regexp-words
   '("^alps$" "^basis$" "^crisis$" "^foes$"
     "ious$" "^news$" "shoes" "ss$" "^stimulus$"
@@ -200,15 +205,17 @@ Example:
     "knives" "lives" "leaves" "halves" "wives" "thieves"))
 
 (defvar loga-irregular-nouns
-  '(("stimuli" "stimulus")
-    ("foes"    "foe")
-    ;; former English (~fe or ~f -> ~ves)
-    ("knives"  "knife")
-    ("lives"   "life")
-    ("leaves"  "leaf")
-    ("halves"  "half")
-    ("wives"   "wife")
-    ("thieves" "thief")))
+  (loga-pave-regexp
+   '(("stimuli" "stimulus")
+     ("ties"    "tie")
+     ("foes"    "foe")
+     ;; former English (~fe or ~f -> ~ves)
+     ("knives"  "knife")
+     ("lives"   "life")
+     ("leaves"  "leaf")
+     ("halves"  "half")
+     ("wives"   "wife")
+     ("thieves" "thief"))))
 
 (defvar loga-command-alist nil)
 
