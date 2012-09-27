@@ -200,9 +200,7 @@ Example:
 (defvar loga-ignoring-regexp-words
   '("^alps$" "^apparatus$" "^as$" "^basis$" "^census$" "^crisis$" "^ethics$"
     "[enmiu]ous$" "^news$" "^pathos$" "^perhaps$" "^surplus$" "shoes" "ss$"
-    "^stimulus$" "^thesis$" "^this$"
-    ;; former English (~fe or ~f -> ~ves)
-    "knives" "lives" "leaves" "halves" "wives" "thieves"))
+    "^stimulus$" "^thesis$" "^this$"))
 
 (defvar loga-irregular-nouns
   (loga-pave-regexp
