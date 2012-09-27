@@ -198,9 +198,9 @@ Example:
                   ,single)))
 
 (defvar loga-ignoring-regexp-words
-  '("^alps$" "^basis$" "^crisis$" "^foes$"
-    "ious$" "^news$" "shoes" "ss$" "^stimulus$"
-    "^ties$"
+  '("^alps$" "^apparatus$" "^as$" "^basis$" "^census$" "^crisis$" "^ethics$"
+    "[enmiu]ous$" "^news$" "^pathos$" "^perhaps$" "^surplus$" "shoes" "ss$"
+    "^stimulus$" "^thesis$" "^this$"
     ;; former English (~fe or ~f -> ~ves)
     "knives" "lives" "leaves" "halves" "wives" "thieves"))
 
