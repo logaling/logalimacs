@@ -959,7 +959,8 @@ Otherwise passed character inside region."
 
 (setq loga-command-alist
       `((?a . :add)
-        (?c . ,(if (version< "0.1.7" (loga-version)) :copy :config))
+        (?c . :config)
+        (?C . :copy)
         (?d . :delete)
         (?h . :help)
         (?i . :import)
