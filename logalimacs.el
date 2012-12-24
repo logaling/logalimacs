@@ -198,22 +198,36 @@ Example:
                   ,single)))
 
 (defvar loga-ignoring-regexp-words
-  '("^alps$" "^apparatus$" "^as$" "^basis$" "^census$" "^crisis$" "^ethics$"
-    "[enmiu]ous$" "^news$" "^pathos$" "^perhaps$" "^surplus$" "shoes" "ss$"
-    "^stimulus$" "^thesis$" "^this$"))
+  '("^alps$" "^aegis$" "^apparatus$" "^as$" "^census$"
+    "^Christmas$"
+    "^ethics$" "^news$" "^overseas$" "^pathos$"
+    "^perhaps$" "^radius$" "^shoes$" "^stimulus$"
+    "^this$" "^thus$" "^Xmas$"
+    ;; word for suffix is "ous"
+    "[ceghijklmnortuv]ous$"
+    ;; periplus surplus plus etc..
+    "plus$"
+    ;; basis crisis emphasis necrosis thesis hypothesis etc..
+    "sis$"
+    ;; amass bless press etc..
+    "ss$"))
 
 (defvar loga-irregular-nouns
   (loga-pave-regexp
-   '(("stimuli" "stimulus")
-     ("ties"    "tie")
-     ("foes"    "foe")
+   '(("expenses"  "expense")
+     ("dies"      "die")
+     ("headaches" "headache")
+     ("stimuli"   "stimulus")
+     ("ties"      "tie")
+     ("foes"      "foe")
+     ("lies"      "lie")
      ;; former English (~fe or ~f -> ~ves)
-     ("knives"  "knife")
-     ("lives"   "life")
-     ("leaves"  "leaf")
-     ("halves"  "half")
-     ("wives"   "wife")
-     ("thieves" "thief"))))
+     ("knives"    "knife")
+     ("lives"     "life")
+     ("leaves"    "leaf")
+     ("halves"    "half")
+     ("wives"     "wife")
+     ("thieves"   "thief"))))
 
 (defvar loga-command-alist nil)
 
