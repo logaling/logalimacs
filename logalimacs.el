@@ -314,8 +314,8 @@ Example:
       (async-shell-command (concat cmd " " arg) logalimacs-buffer)
     (shell-command-to-string (concat cmd " " arg " &"))))
 
-(defun loga-do-ruby (body)
-  (shell-command-to-string (concat "ruby -e " "'" body "'")))
+(defun loga-do-ruby (body &optional lang)
+  (shell-command-to-string (concat lang "ruby -e " "'" body "'")))
 
 (defun loga-from-symbol-to-string (symbol)
   (replace-regexp-in-string ":" "" (symbol-name symbol)))
@@ -646,7 +646,10 @@ Because it escape character"
      (string-to-number
       (loga-do-ruby
        (concat
-        "puts %s" sep striped-word sep " =~ /" japanese-regexp "/ ? 0 : 1"))))))
+        "puts %s" sep striped-word sep " =~ /" japanese-regexp "/ ? 0 : 1"))
+      ;; If set LANG=C, then can't return Boolean correctly.
+      ;; To fix this problem add below LANG.
+      "LANG=ja_JP.UTF-8 "))))
 
 (defun loga-character-at-point ()
   (lexical-let* ((line (thing-at-point 'line))
