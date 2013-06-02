@@ -646,10 +646,10 @@ Because it escape character"
      (string-to-number
       (loga-do-ruby
        (concat
-        "puts %s" sep striped-word sep " =~ /" japanese-regexp "/ ? 0 : 1"))
-      ;; If set LANG=C, then can't return Boolean correctly.
-      ;; To fix this problem add below LANG.
-      "LANG=ja_JP.UTF-8 "))))
+        "puts %s" sep striped-word sep " =~ /" japanese-regexp "/ ? 0 : 1")
+       ;; If set LANG=C, then can't return Boolean correctly.
+       ;; To fix this problem add below LANG.
+       "LANG=ja_JP.UTF-8 ")))))
 
 (defun loga-character-at-point ()
   (lexical-let* ((line (thing-at-point 'line))
