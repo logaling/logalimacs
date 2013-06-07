@@ -202,9 +202,11 @@ Example:
     "^Christmas$"
     "^ethics$" "^news$" "^overseas$" "^pathos$"
     "^perhaps$" "^radius$" "^shoes$" "^stimulus$"
-    "^this$" "^thus$" "^Xmas$"
+    "^this$" "^thus$" "^virus$" "^Xmas$"
     ;; word for suffix is "ous"
     "[ceghijklmnortuv]ous$"
+    ;; selves themselves ourselves yourselves
+    "selves$"
     ;; periplus surplus plus etc..
     "plus$"
     ;; basis crisis emphasis necrosis thesis hypothesis etc..
