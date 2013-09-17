@@ -1,4 +1,3 @@
-;;; -*- coding: utf-8; mode: emacs-lisp; -*-
 ;;; logalimacs.el --- Front-end to logaling-command for Ruby gems
 
 ;; Copyright (C) 2011, 2012 by Yuta Yamada
@@ -993,5 +992,10 @@ Otherwise passed character inside region."
         (?v . :version)))
 
 (provide 'logalimacs)
+
+;; Local Variables:
+;; coding: utf-8
+;; mode: emacs-lisp
+;; End:
 
 ;;; logalimacs.el ends here
