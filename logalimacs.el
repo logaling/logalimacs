@@ -638,11 +638,12 @@ Because it escape character"
                  (katakana "\p{katakana}")
                  (kanji    "\p{Han}")
                  (japanese-regexp
-                  (case choice
-                    (:hiragana hiragana)
-                    (:katakana katakana)
-                    (:kanji    kanji)
-                    (t         (concat hiragana "|" katakana "|" kanji)))))
+                  (shell-quote-argument
+                   (case choice
+                     (:hiragana hiragana)
+                     (:katakana katakana)
+                     (:kanji    kanji)
+                     (t         (concat hiragana "|" katakana "|" kanji))))))
     (zerop
      (string-to-number
       (loga-do-ruby
