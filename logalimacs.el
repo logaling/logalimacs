@@ -634,16 +634,15 @@ Because it escape character"
 (defun loga-japanese-p (word &optional choice)
   (lexical-let* ((striped-word (replace-regexp-in-string "'" "" word))
                  (sep      loga-mark-region-separator)
-                 (hiragana "\p{hiragana}")
-                 (katakana "\p{katakana}")
-                 (kanji    "\p{Han}")
+                 (hiragana "\\p{hiragana}")
+                 (katakana "\\p{katakana}")
+                 (kanji    "\\p{Han}")
                  (japanese-regexp
-                  (shell-quote-argument
-                   (case choice
+                  (case choice
                      (:hiragana hiragana)
                      (:katakana katakana)
                      (:kanji    kanji)
-                     (t         (concat hiragana "|" katakana "|" kanji))))))
+                     (t         (concat hiragana "|" katakana "|" kanji)))))
     (zerop
      (string-to-number
       (loga-do-ruby
