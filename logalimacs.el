@@ -727,8 +727,9 @@ Otherwise passed character inside region."
 (defun loga-delete-popup ()
   (let ((delete-popup
          (lambda ()
-           (popup-live-p menu)
-           (popup-delete menu))))
+           (with-no-warnings
+             (popup-live-p menu)
+             (popup-delete menu)))))
     (condition-case error
         (funcall delete-popup)
       (error error))))
