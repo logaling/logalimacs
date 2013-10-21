@@ -5,7 +5,7 @@
 ;; Author: Yuta Yamada <cokesboy"at"gmail.com>
 ;; URL: https://github.com/logaling/logalimacs
 ;; Version: 1.0.1
-;; Package-Requires: ((popwin "20130329") (popup "20130708") (stem "20130120"))
+;; Package-Requires: ((popwin "0.6.2") (popup "0.5.0") (stem "20130120"))
 ;; Keywords: translation, logaling-command
 
 ;;; License:
